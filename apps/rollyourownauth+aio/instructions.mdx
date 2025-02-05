@@ -1,0 +1,183 @@
+# Building Custom User Authentication with Prisma
+
+This seems like a nice way. Let's start over and build a custom user authentication system using Prisma in my current Nextjs project.
+
+## Generic architecture
+
+We use a extremely seperated architecture. EACH function with BUSINESS LOGIC is in a separate file, same for utillities etc. We export these with * in the root index.ts
+
+We have a `server` folder for all the business logic and a `shared` folder for all the utilities etc. Shadcn also lives there, but no need to know since u can import it like so:
+
+```ts
+import { Button, Input, Card } from "ui";
+```
+
+Each feature or module has its own folder in `src/modules`. Inside there, we have all the folders needed. `modules/authentication/components` `modules/authentication/state/index.ts` for zustand for example `modules/authentication/utils` etc. `/src/modules/authentication/models/index.ts` which exports all zod files which have this file convention: `z.filename.ts` Also here, only one model per file. Same applies for types and hooks etc. We priorities SSR ALWAYS. 
+
+## Queries and Mutations
+
+We don't calll them actions, nor do we use API routes expect for no other options. We use optimistic UI, ISR, Pre rendering, skeleton loaders, all on the server. We seperate this logic in our modules/x/server. Which will result in this psuedo:
+
+```ts
+src/modules/authentication/server/queries/index.ts  <-- exports all queries
+src/modules/authentication/server/queries/get-user.ts
+src/modules/authentication/server/queries/get-users.ts
+src/modules/authentication/server/queries/get-admin.ts
+src/modules/authentication/server/queries/get-user-by-email.ts
+src/modules/authentication/server/queries/get-user-profile.ts
+
+src/modules/authentication/server/mutations/index.ts  <-- expots all mutations
+src/modules/authentication/server/mutations/create-user.ts
+src/modules/authentication/server/mutations/delete-user.ts
+src/modules/authentication/server/mutations/login-user.ts
+src/modules/authentication/server/mutations/logout-user.ts
+src/modules/authentication/server/mutations/update-user.ts
+```
+
+The `index.ts` files are used to export all the queries and mutations.
+
+The UI layer is also co-located in the same module folder like so:
+```ts
+src/modules/authentication/components/forms/login-form.ts
+src/modules/authentication/components/forms/register-form.ts
+src/modules/authentication/components/forms/reset-password-form.ts
+src/modules/authentication/components/forms/update-password-form.ts
+```
+As you can see we have a lot of forms. Thus we need a `<Form></Form>` component which centralizes UI, state, logic, zod validation, etc. It's dependand on the module if we create that reusable form in `src/shared/components/common/crud-form.ts` or if it's module specific like so:  
+
+```ts
+src/modules/authentication/components/forms/form.ts
+```
+
+Shadcn is famous for using `cn`. This, is located in `src/shared/helpers/cn.ts`, which also has a `index.ts` which is symlinked in the `tsconfig` with the alias `helpers`. Thus we can use it like so:
+
+```ts
+import { cn } from "helpers";
+```
+
+## types
+
+Are either module specific or located in `src/shared/types`. We also have a couple global types in `src/shared/types/global.d.ts`. For eaxmple the type `PageProps` which is used to type `{children: React.ReactNode}`, thus becomming `{children}: PageProps`.
+
+## Prisma / api setup
+
+Our base Prisma schema in `prisma/schema.prisma`:
+
+```prisma
+generator client {
+ provider = "prisma-client-js"
+}   
+
+datasource db {
+ provider = "sqlite"
+ url      = env("DATABASE_URL")
+}
+```
+
+Our database configuration in `.env`:
+
+```bash
+DATABASE_URL="file:./dev.db"
+```
+
+## Project Configuration
+
+We have the following path aliases configured in `tsconfig.json`:
+
+```json
+{
+ "compilerOptions": {
+   "paths": {
+     "ui": ["./src/shared/components/ui/index.ts"],
+     "@server/*": ["./src/server/*"],
+     "db": ["./src/server/db/index.ts"]
+   }
+ }
+}
+```
+
+This allows us to use convenient imports:
+
+```ts
+// Import database client
+import { db } from "db";
+
+// Import UI components
+import { Button } from "ui";
+```
+
+# Additional Instructions for Building Authentication
+
+## Authentication Flow
+
+1. **User Registration**: 
+   - Collect user details such as email, password, and username.
+   - Use Zod for input validation.
+   - Hash passwords before storing them in the database using a library like bcrypt.
+
+2. **User Login**:
+   - Validate user credentials.
+   - Implement session management using cookies or JWTs.
+   - Ensure secure storage of tokens.
+
+3. **Password Management**:
+   - Implement password reset functionality.
+   - Use secure token generation for password reset links.
+   - Allow users to update their passwords securely.
+
+## Security Considerations
+
+- **Password Hashing**: Always hash passwords before storing them in the database. Use a strong hashing algorithm like bcrypt.
+- **Session Management**: Use secure cookies or JWTs for session management. Ensure tokens are stored securely and are not exposed to client-side scripts.
+- **Input Validation**: Use Zod to validate all user inputs to prevent injection attacks.
+- **Rate Limiting**: Implement rate limiting on authentication endpoints to prevent brute force attacks.
+
+## Directory Structure
+
+- **Authentication Module**:
+  - `src/modules/authentication/`
+    - `components/`: Contains UI components related to authentication.
+    - `server/`: Contains server-side logic for authentication.
+    - `utils/`: Contains utility functions specific to authentication.
+    - `models/`: Contains data models and validation schemas.
+
+## Example Code Snippets
+
+### User Registration
+
+```typescript
+// src/modules/authentication/server/mutations/register-user.ts
+import { hashPassword } from '../utils/hash';
+import { db } from 'db';
+
+export async function registerUser(email: string, password: string, username: string) {
+  const hashedPassword = await hashPassword(password);
+  return db.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      username,
+    },
+  });
+}
+```
+
+### Password Hashing Utility
+
+```typescript
+// src/modules/authentication/utils/hash.ts
+import bcrypt from 'bcrypt';
+
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 10;
+  return bcrypt.hash(password, saltRounds);
+}
+```
+
+## Testing
+
+- We don't test. We do however write zod schemas for all the data that comes in and goes out of our api. We also try  to strictly type. No use of `any` type. 'unknown' if needed. We prefer types over interfaces. Reusable non file-sepcific types stored in `src/shared/types` and export in `src/shared/types/index.ts`. We have a alias for it in `tsconfig.json` called `types`.
+
+## Documentation
+
+- Document all public functions and components using JSDoc or TypeScript comments. No need to overdo it. @author and @description are nice to have with 1-3 lines max and if needed a little extra infrmation. If we provide a example, that's BELOW all the logic at the end of the file.

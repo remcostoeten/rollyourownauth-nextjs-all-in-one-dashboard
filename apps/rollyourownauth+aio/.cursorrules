@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cursor-rules>
+    <directory-structure>
+        <base-dir>src</base-dir>
+        <rules>
+            <rule id="use-src">All application code must be placed within the src directory</rule>
+            <rule id="no-app-dir">Do not create files directly in app directory, use src/app instead</rule>
+        </rules>
+        
+        <directories>
+            <directory path="src/app">
+                <description>Next.js app router pages and layouts</description>
+                <patterns>
+                    <pattern>src/app/**/(page|layout|loading|error).tsx</pattern>
+                </patterns>
+            </directory>
+            
+            <directory path="src/components">
+                <description>React components</description>
+                <subdirectories>
+                    <directory>ui</directory>
+                    <directory>layout</directory>
+                    <directory>forms</directory>
+                    <directory>shared</directory>
+                </subdirectories>
+            </directory>
+            
+            <directory path="src/core">
+                <description>Core application code</description>
+                <subdirectories>
+                    <directory>config</directory>
+                    <directory>types</directory>
+                    <directory>utils</directory>
+                    <directory>hooks</directory>
+                </subdirectories>
+            </directory>
+            
+            <directory path="src/styles">
+                <description>Global styles and CSS modules</description>
+            </directory>
+            
+            <directory path="src/modules">
+                <description>Modules/features go here. Strong seperation ofconcerns,build in agnostic isolated way</description>
+            </directory>
+        </directories>
+    </directory-structure>
+
+    <coding-standards>
+        <typescript>
+            <rule>Use type instead of interface</rule>
+            <rule>Export types from dedicated type files</rule>
+            <rule>Use proper type imports: import type { Type } from 'module'</rule>
+        </typescript>
+
+        <components>
+            <rule>Use 'use client' directive for client components</rule>
+            <rule>Export default for page components</rule>
+            <rule>Use named exports for shared components</rule>
+            <rule>Follow the pattern: export default function ComponentName({prop}: PropType)</rule>
+        </components>
+
+        <styles>
+            <rule>Use Tailwind CSS for styling</rule>
+            <rule>Group related Tailwind classes using cn utility</rule>
+            <rule>Define custom classes in globals.css</rule>
+        </styles>
+
+        <naming>
+            <rule>Use kebab-case for files</rule>
+            <rule>Use PascalCase for components</rule>
+            <rule>Use camelCase for functions and variables</rule>
+        </naming>
+    </coding-standards>
+
+    <separation-of-concerns>
+        <rule>Keep components pure and focused</rule>
+        <rule>Separate business logic into hooks</rule>
+        <rule>Keep configuration in dedicated config files</rule>
+        <rule>Use proper type declarations in core/types</rule>
+        <rule>Keep animations in shared/lib/animations</rule>
+        <rule>Store constants in core/constants</rule>
+    </separation-of-concerns>
+</cursor-rules> 
