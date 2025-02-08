@@ -1,0 +1,176 @@
+---
+title: "Monorepo Architecture"
+description: "Understanding our monorepo structure and shared packages"
+---
+
+# Monorepo Architecture
+
+## Overview
+
+Our project uses a monorepo structure to manage multiple applications and shared packages efficiently. This approach allows us to maintain consistent configurations, share code, and streamline development across different parts of the project.
+
+## Directory Structure
+
+```bash
+ryoa-mono/
+├── apps/                  # Application directories
+│   ├── rollyourownauth/  # Main application
+│   └── docs/             # Documentation site
+├── packages/             # Shared packages
+│   ├── ui/              # Shared UI components
+│   ├── config/          # Shared configurations
+│   └── tsconfig/        # TypeScript configurations
+└── pnpm-workspace.yaml  # Workspace configuration
+```
+
+## Shared Packages
+
+### UI Package (`@ryoa/ui`)
+
+Contains reusable UI components used across applications:
+
+```typescript
+// Example usage
+import { Button } from '@ryoa/ui/button';
+import { Card } from '@ryoa/ui/card';
+```
+
+### Config Package (`@ryoa/config`)
+
+Centralizes configuration for various tools:
+
+```typescript
+import { 
+  siteConfig,
+  tailwindConfig,
+  eslintConfig,
+  prettierConfig 
+} from '@ryoa/config';
+```
+
+### TypeScript Config (`@ryoa/tsconfig`)
+
+Provides base TypeScript configurations:
+
+```json
+{
+  "extends": "@ryoa/tsconfig/next.json"
+}
+```
+
+## Workspace Configuration
+
+Our workspace is managed using PNPM workspaces:
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  # Applications
+  - "apps/*"
+  # Shared packages
+  - "packages/*"
+```
+
+## Package Management
+
+We use PNPM for package management with workspaces:
+
+```bash
+# Install dependencies across all packages
+pnpm install
+
+# Add a dependency to a specific app/package
+pnpm add <package> --filter <app-name>
+
+# Add a workspace package as a dependency
+pnpm add @ryoa/ui --filter docs
+```
+
+## Development Workflow
+
+1. **Running Applications**
+   ```bash
+   # Start all applications
+   pnpm dev
+
+   # Start a specific application
+   pnpm dev --filter docs
+   ```
+
+2. **Building**
+   ```bash
+   # Build all packages and applications
+   pnpm build
+
+   # Build a specific package/application
+   pnpm build --filter @ryoa/ui
+   ```
+
+3. **Testing**
+   ```bash
+   # Run tests across all packages
+   pnpm test
+
+   # Test a specific package
+   pnpm test --filter @ryoa/ui
+   ```
+
+## Package Dependencies
+
+### Main Application Dependencies
+```json
+{
+  "dependencies": {
+    "@ryoa/ui": "workspace:*",
+    "@ryoa/config": "workspace:*"
+  }
+}
+```
+
+### Documentation Site Dependencies
+```json
+{
+  "dependencies": {
+    "@ryoa/ui": "workspace:*",
+    "@ryoa/config": "workspace:*",
+    "fumadocs-ui": "^15.0.2"
+  }
+}
+```
+
+## Best Practices
+
+1. **Version Management**
+   - Use `workspace:*` for internal dependencies
+   - Keep shared package versions in sync
+   - Use changesets for version management
+
+2. **Code Sharing**
+   - Place reusable components in `@ryoa/ui`
+   - Share configurations through `@ryoa/config`
+   - Use TypeScript path aliases for clean imports
+
+3. **Development Flow**
+   - Develop shared packages in isolation
+   - Test changes across all consuming applications
+   - Use proper scoping for package scripts
+
+## Related Topics
+
+<Cards>
+  <Card 
+    title="Project Setup" 
+    href="/docs/getting-started/setup"
+    description="Learn how to set up the project locally" 
+  />
+  <Card 
+    title="UI Components" 
+    href="/docs/components/overview"
+    description="Explore our shared UI components" 
+  />
+  <Card 
+    title="Configuration" 
+    href="/docs/configuration/overview"
+    description="Learn about our shared configurations" 
+  />
+</Cards> 
