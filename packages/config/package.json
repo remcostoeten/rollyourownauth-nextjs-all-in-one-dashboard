@@ -1,0 +1,50 @@
+{
+  "name": "@ryoa/config",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./tailwind": {
+      "types": "./dist/tailwind.d.ts",
+      "import": "./dist/tailwind.mjs",
+      "require": "./dist/tailwind.js"
+    },
+    "./eslint": {
+      "types": "./dist/eslint.d.ts",
+      "import": "./dist/eslint.mjs",
+      "require": "./dist/eslint.js"
+    },
+    "./prettier": {
+      "types": "./dist/prettier.d.ts",
+      "import": "./dist/prettier.mjs",
+      "require": "./dist/prettier.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint .",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.10",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "tailwindcss": "^3.4.1",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3"
+  }
+} 

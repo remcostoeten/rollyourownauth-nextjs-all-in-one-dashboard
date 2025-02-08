@@ -1,0 +1,14 @@
+
+> ryoa@0.1.0 build C:\Users\gerar\Downloads\ryoa-mono-docs\apps\rollyourownauth+aio
+> next build
+
+   ▲ Next.js 15.1.0
+   - Experiments (use with caution):
+     · typedRoutes
+
+   Creating an optimized production build ...
+
+> Build error occurred
+[Error: error TS5083: Cannot read file 'C:/Users/gerar/Downloads/ryoa-mono-docs/tsconfig.json'.
+]
+ ELIFECYCLE  Command failed with exit code 1.

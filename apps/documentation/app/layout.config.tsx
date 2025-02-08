@@ -1,4 +1,4 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import { siteConfig } from '../../../packages/core/config/site-config'
 
 /**
  * Shared layout configurations
@@ -7,10 +7,15 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
  * Home Layout: app/(home)/layout.tsx
  * Docs Layout: app/docs/layout.tsx
  */
-export const baseOptions: BaseLayoutProps = {
+export const navConfig = {
+  enableSearch: true,
+  title: siteConfig.name,
+  transparentMode: 'top',
+} as const;
+
+export const layoutConfig = {
   nav: {
-    // can be JSX too!
-    title: 'My App',
+    title: siteConfig.name,
   },
   links: [
     {
@@ -18,5 +23,10 @@ export const baseOptions: BaseLayoutProps = {
       url: '/docs',
       active: 'nested-url',
     },
+    {
+      text: 'API',
+      url: '/api',
+      active: 'nested-url',
+    },
   ],
-};
+} as const;

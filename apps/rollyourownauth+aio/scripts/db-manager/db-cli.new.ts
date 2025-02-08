@@ -11,11 +11,20 @@ import {
     describeTable,
     testConnection,
 } from './db-manager'
+import { execSync } from 'child_process'
 
 type Provider = 'sqlite' | 'neon' | 'turso'
 
-async function mainMenu() {
-    const { action } = await prompt<{ action: string }>({
+interface MenuAction {
+    action: 'generate' | 'push' | 'studio' | 'exit'
+}
+
+interface ProviderChoice {
+    provider: Provider
+}
+
+async function mainMenu(): Promise<void> {
+    const { action } = await prompt<MenuAction>({
         type: 'select',
         name: 'action',
         message: '🚀 What would you like to do?',

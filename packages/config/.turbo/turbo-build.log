@@ -1,0 +1,60 @@
+
+> @ryoa/config@0.1.0 build C:\Users\gerar\Downloads\ryoa-mono-docs\packages\config
+> tsup
+
+[34mCLI[39m Building entry: src/eslint.ts, src/index.ts, src/prettier.ts, src/tailwind.ts
+[34mCLI[39m Using tsconfig: tsconfig.json
+[34mCLI[39m tsup v8.3.6
+[34mCLI[39m Using tsup config: C:\Users\gerar\Downloads\ryoa-mono-docs\packages\config\tsup.config.ts
+[34mCLI[39m Target: es2017
+[34mCLI[39m Cleaning output folder
+[34mESM[39m Build start
+[34mCJS[39m Build start
+[32mESM[39m [1mdist\index.mjs              [22m[32m1.36 KB[39m
+[32mESM[39m [1mdist\chunk-LCHV4R2V.mjs     [22m[32m448.00 B[39m
+[32mESM[39m [1mdist\eslint.mjs             [22m[32m155.00 B[39m
+[32mESM[39m [1mdist\prettier.mjs           [22m[32m161.00 B[39m
+[32mESM[39m [1mdist\chunk-3NAXEB44.mjs     [22m[32m315.00 B[39m
+[32mESM[39m [1mdist\tailwind.mjs           [22m[32m161.00 B[39m
+[32mESM[39m [1mdist\chunk-G2YTRODY.mjs     [22m[32m1.13 KB[39m
+[32mESM[39m [1mdist\chunk-BJTO5JO5.mjs     [22m[32m475.00 B[39m
+[32mESM[39m [1mdist\index.mjs.map          [22m[32m2.00 KB[39m
+[32mESM[39m [1mdist\chunk-LCHV4R2V.mjs.map [22m[32m759.00 B[39m
+[32mESM[39m [1mdist\eslint.mjs.map         [22m[32m71.00 B[39m
+[32mESM[39m [1mdist\prettier.mjs.map       [22m[32m73.00 B[39m
+[32mESM[39m [1mdist\chunk-3NAXEB44.mjs.map [22m[32m555.00 B[39m
+[32mESM[39m [1mdist\tailwind.mjs.map       [22m[32m73.00 B[39m
+[32mESM[39m [1mdist\chunk-G2YTRODY.mjs.map [22m[32m2.19 KB[39m
+[32mESM[39m [1mdist\chunk-BJTO5JO5.mjs.map [22m[32m79.00 B[39m
+[32mESM[39m ⚡️ Build success in 530ms
+[32mCJS[39m [1mdist\index.js        [22m[32m3.18 KB[39m
+[32mCJS[39m [1mdist\eslint.js       [22m[32m457.00 B[39m
+[32mCJS[39m [1mdist\prettier.js     [22m[32m330.00 B[39m
+[32mCJS[39m [1mdist\tailwind.js     [22m[32m1.48 KB[39m
+[32mCJS[39m [1mdist\index.js.map    [22m[32m5.21 KB[39m
+[32mCJS[39m [1mdist\eslint.js.map   [22m[32m752.00 B[39m
+[32mCJS[39m [1mdist\tailwind.js.map [22m[32m2.20 KB[39m
+[32mCJS[39m [1mdist\prettier.js.map [22m[32m550.00 B[39m
+[32mCJS[39m ⚡️ Build success in 529ms
+[34mDTS[39m Build start
+src/tailwind.ts(46,3): error TS1360: Type '{ theme: { extend: { fontFamily: { mono: [string, ...string[]]; sans: [string, ...string[]]; }; colors: { brand: { 50: string; 100: string; 200: string; 300: string; 400: string; 500: string; 600: string; 700: string; 800: string; 900: string; 950: string; }; dark: { ...; }; light: { ...; }; }; }; }; plugins: any[]; }' does not satisfy the expected type 'Config'.
+  Property 'content' is missing in type '{ theme: { extend: { fontFamily: { mono: [string, ...string[]]; sans: [string, ...string[]]; }; colors: { brand: { 50: string; 100: string; 200: string; 300: string; 400: string; 500: string; 600: string; 700: string; 800: string; 900: string; 950: string; }; dark: { ...; }; light: { ...; }; }; }; }; plugins: any[]; }' but required in type 'RequiredConfig'.
+
+[31mError: error occurred in dts build
+    at Worker.<anonymous> (C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\tsup@8.3.6_postcss@8.5.1_typescript@5.7.3\node_modules\tsup\dist\index.js:1541:26)
+    at Worker.emit (node:events:511:28)
+    at MessagePort.<anonymous> (node:internal/worker:260:53)
+    at [nodejs.internal.kHybridDispatch] (node:internal/event_target:761:20)
+    at exports.emitMessage (node:internal/per_context/messageport:23:28)[39m
+[31mDTS[39m [31mBuild error[39m
+[31mRollupError: [plugin dts] src/tailwind.ts: Failed to compile. Check the logs above.
+    at getRollupError (C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\rollup@4.34.6\node_modules\rollup\dist\shared\parseAst.js:285:41)
+    at Object.error (C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\rollup@4.34.6\node_modules\rollup\dist\shared\parseAst.js:281:42)
+    at Object.error (C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\rollup@4.34.6\node_modules\rollup\dist\shared\rollup.js:888:32)
+    at Object.error (C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\rollup@4.34.6\node_modules\rollup\dist\shared\rollup.js:21808:42)
+    at generateDtsFromTs (C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\tsup@8.3.6_postcss@8.5.1_typescript@5.7.3\node_modules\tsup\dist\rollup.js:8000:22)
+    at C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\tsup@8.3.6_postcss@8.5.1_typescript@5.7.3\node_modules\tsup\dist\rollup.js:8007:59
+    at _nullishCoalesce (C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\tsup@8.3.6_postcss@8.5.1_typescript@5.7.3\node_modules\tsup\dist\rollup.js:1:473)
+    at Object.transform (C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\tsup@8.3.6_postcss@8.5.1_typescript@5.7.3\node_modules\tsup\dist\rollup.js:8007:18)
+    at C:\Users\gerar\Downloads\ryoa-mono-docs\node_modules\.pnpm\rollup@4.34.6\node_modules\rollup\dist\shared\rollup.js:1073:40[39m
+ ELIFECYCLE  Command failed with exit code 1.
