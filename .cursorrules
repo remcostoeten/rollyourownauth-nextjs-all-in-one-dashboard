@@ -1,5 +1,3 @@
-## custom rolled authentication with jwt jose, sessions , orm.
-
 We are building a scalable Next.js application with a custom-rolled architecture and a strong focus on modularity and separation of concerns. Below are the core principles of our architecture:
 
 ---
