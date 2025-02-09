@@ -13,18 +13,8 @@ export const baseOptions: BaseLayoutProps = {
   },
   links: [
     {
-      text: 'Application',
-      url: '/',
-      active: 'nested-url',
-    },
-    {
       text: 'Documentation',
       url: '/docs',
-      active: 'nested-url',
-    },
-    {
-      text: 'GitHub',
-      url: siteConfig.githubUrl,
       active: 'nested-url',
     },
   ],

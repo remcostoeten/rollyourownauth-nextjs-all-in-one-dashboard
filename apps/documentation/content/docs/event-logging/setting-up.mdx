@@ -1,0 +1,156 @@
+---
+title: "Setting Up the Activity Logs Project"
+description: "Step-by-step guide to set up the Next.js project with Drizzle ORM"
+---
+
+# Setting Up the Activity Logs Project
+
+## Prerequisites
+
+- Node.js 18.17 or later
+- pnpm (recommended) or npm
+
+## Step 1: Create a New Next.js Project
+
+```bash
+pnpm create next-app activity-logs --typescript
+cd activity-logs
+```
+
+## Step 2: Install Dependencies
+
+```bash
+pnpm add drizzle-orm @libsql/client
+pnpm add -D drizzle-kit
+```
+
+## Step 3: Configure Next.js
+
+Update `next.config.js` to enable Server Actions:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    serverActions: true,
+  },
+}
+
+module.exports = nextConfig
+```
+
+## Step 4: Set Up Drizzle ORM
+
+Create a `drizzle.config.ts` file in the project root:
+
+```typescript
+import type { Config } from 'drizzle-kit';
+
+export default {
+  schema: './src/db/schema.ts',
+  out: './drizzle',
+  driver: 'libsql',
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+} satisfies Config;
+```
+
+## Step 5: Create Database Schema
+
+Create a new file `src/db/schema.ts`:
+
+```typescript
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+
+export const userActions = sqliteTable('user_actions', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: text('user_id').notNull(),
+  actionType: text('action_type').notNull(),
+  timestamp: integer('timestamp').notNull(),
+  // Add other fields as needed
+});
+
+// Add other tables (contentInteractions, systemPerformance) here
+```
+
+## Step 6: Set Up Database Client
+
+Create a new file `src/db/index.ts`:
+
+```typescript
+import { drizzle } from 'drizzle-orm/libsql';
+import { createClient } from '@libsql/client';
+
+const client = createClient({
+  url: process.env.DATABASE_URL!,
+});
+
+export const db = drizzle(client);
+```
+
+## Step 7: Generate Migration
+
+Run the following command to generate your first migration:
+
+```bash
+pnpm drizzle-kit generate:sqlite
+```
+
+## Step 8: Apply Migration
+
+Create a new file `src/db/migrate.ts`:
+
+```typescript
+import { migrate } from 'drizzle-orm/libsql/migrator';
+import { db } from './index';
+
+async function runMigration() {
+  console.log('Running migration...');
+  await migrate(db, { migrationsFolder: './drizzle' });
+  console.log('Migration completed');
+  process.exit(0);
+}
+
+runMigration().catch((err) => {
+  console.error('Migration failed', err);
+  process.exit(1);
+});
+```
+
+Add a script to `package.json`:
+
+```json
+{
+  "scripts": {
+    // ... other scripts
+    "db:migrate": "tsx src/db/migrate.ts"
+  }
+}
+```
+
+Run the migration:
+
+```bash
+pnpm db:migrate
+```
+
+## Next Steps
+
+<Cards>
+  <Card 
+    title="Implementing Server Actions" 
+    href="/docs/activity-logs/server-actions"
+    description="Create server actions for logging user activities" 
+  />
+  <Card 
+    title="Client-Side Integration" 
+    href="/docs/activity-logs/client-integration"
+    description="Integrate logging into your React components" 
+  />
+  <Card 
+    title="Admin Dashboard" 
+    href="/docs/activity-logs/admin-dashboard"
+    description="Build an admin dashboard to view and analyze logs" 
+  />
+</Cards>
