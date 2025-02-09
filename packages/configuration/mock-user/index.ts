@@ -1,8 +1,10 @@
 type MockUser = {
   id: string;
   email: string;
+
   profile: {
     firstName: string;
+    image: string;
     lastName: string;
     avatar: string;
     bio: string;

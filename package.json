@@ -5,13 +5,19 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "turbo run format",
+    "format:fix": "next lint --fix && prettier \"**/*.{ts,tsx,md,json,yaml,css}\" --write --ignore-path .gitignore",
+    "format:check": "prettier \"**/*.{ts,tsx,md,json,yaml,css}\" --check --ignore-path .gitignore",
     "clean": "rm -rf node_modules && rm -rf apps/**/node_modules && rm -rf packages/**/node_modules",
     "clean:next": "rm -rf apps/**/.next",
     "rmall": "pnpm clean && pnpm clean:next"
   },
   "devDependencies": {
-    
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
     "prettier": "^3.2.5",
     "turbo": "^2.3.3",
     "typescript": "5.5.4"

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid"
 export interface List {
 	id: string
 	name: string
-	tasks: any[]
+	tasks: unknown[]
 }
 
 interface ListsState {

@@ -11,24 +11,3 @@
      · parallelServerBuildTraces
 
  [37m[1m [22m[39m Creating an optimized production build ...
-(node:31796) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
-(Use `node --trace-deprecation ...` to show where the warning was created)
- [32m[1m✓[22m[39m Compiled successfully
- [37m[1m [22m[39m Skipping validation of types
- [37m[1m [22m[39m Skipping linting
-[?25l [37m[1m [22m[39m Collecting page data  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting page data  [36m..[39m[2K[1G[?25h [37m[1m [22m[39m Collecting page data     [32m[1m✓[22m[39m Collecting page data 
-[?25l [37m[1m [22m[39m Generating static pages (0/4)  [36m[    ][39m[2K[1G [37m[1m [22m[39m Generating static pages (0/4)  [36m[=   ][39m[2K[1G [37m[1m [22m[39m Generating static pages (0/4)  [36m[==  ][39m[2K[1G[?25hError occurred prerendering page "/". Read more: https://nextjs.org/docs/messages/prerender-error
-TypeError: A is not a function
-    at /home/remcostoeten/PROPAH/ryoa-mono-docs/apps/simple-task/.next/server/app/page.js:13:108511
-    at nO (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:45959)
-    at nI (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:47734)
-    at nL (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:65533)
-    at nN (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:63164)
-    at nI (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:62152)
-    at nL (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:65533)
-    at nN (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:63164)
-    at n$ (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:46311)
-    at nI (/home/remcostoeten/PROPAH/ryoa-mono-docs/node_modules/.pnpm/next@15.1.6_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:20:47780)
-Export encountered an error on /page: /, exiting the build.
- [31m[1m⨯[22m[39m Static worker exited with code: 1 and signal: null
-[?25h[41m[30m ELIFECYCLE [39m[49m [31mCommand failed with exit code 1.[39m

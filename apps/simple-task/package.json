@@ -9,7 +9,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "f": "prettier --write \"src/**/*.{ts,tsx,mdx,json}\" --cache"
+    "f": "prettier --write \"src/**/*.{ts,tsx,md,json,yaml,css}\" --ignore-path ../../.gitignore",
+    "db": "tsx ../rollyourownauth+aio/scripts/db-cli.ts"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -67,6 +68,7 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.2",
     "use-sync-external-store": "latest",
     "uuid": "latest",
     "vaul": "^0.9.6",
