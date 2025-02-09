@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { create } from "zustand"
-import { v4 as uuidv4 } from "uuid"
+import { create } from 'zustand'
+import { v4 as uuidv4 } from 'uuid'
 
 export interface List {
 	id: string
@@ -20,10 +20,21 @@ interface ListsState {
 export const useListsStore = create<ListsState>((set) => ({
 	lists: [],
 	addList: (list) => set((state) => ({ lists: [...state.lists, list] })),
-	removeList: (id) => set((state) => ({ lists: state.lists.filter((list) => list.id !== id) })),
-	createList: () => set((state) => ({ lists: [...state.lists, { id: uuidv4(), name: 'New List', tasks: [] }] })),
+	removeList: (id) =>
+		set((state) => ({
+			lists: state.lists.filter((list) => list.id !== id)
+		})),
+	createList: () =>
+		set((state) => ({
+			lists: [
+				...state.lists,
+				{ id: uuidv4(), name: 'New List', tasks: [] }
+			]
+		})),
 	updateList: (id, updates) =>
 		set((state) => ({
-			lists: state.lists.map((list) => (list.id === id ? { ...list, ...updates } : list))
+			lists: state.lists.map((list) =>
+				list.id === id ? { ...list, ...updates } : list
+			)
 		}))
 }))

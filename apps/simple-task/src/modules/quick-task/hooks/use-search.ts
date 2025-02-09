@@ -14,40 +14,43 @@ export function useSearch(query: string) {
 	const [results, setResults] = useState<SearchResult[]>([])
 	const { lists } = useListsStore()
 	const searchableContent = useMemo(() => {
-		return lists.reduce<SearchResult[]>((acc: SearchResult[]  , list: List) => {
-			// Add list itself as a searchable item
-			acc.push({
-				type: 'list',
-				id: list.id,
-				title: list.name,
-				matchedOn: 'title'
-			})
-
-			// Add all tasks from the list
-			list.tasks.forEach((task) => {
+		return lists.reduce<SearchResult[]>(
+			(acc: SearchResult[], list: List) => {
+				// Add list itself as a searchable item
 				acc.push({
-					type: 'task',
-					id: task.id,
-					title: task.title,
-					parentListId: list.id,
+					type: 'list',
+					id: list.id,
+					title: list.name,
 					matchedOn: 'title'
 				})
 
-				// If task has description, add it as searchable content
-				if (task.description) {
+				// Add all tasks from the list
+				list.tasks.forEach((task) => {
 					acc.push({
 						type: 'task',
 						id: task.id,
 						title: task.title,
 						parentListId: list.id,
-						matchedOn: 'description',
-						preview: task.description
+						matchedOn: 'title'
 					})
-				}
-			})
 
-			return acc
-		}, [])
+					// If task has description, add it as searchable content
+					if (task.description) {
+						acc.push({
+							type: 'task',
+							id: task.id,
+							title: task.title,
+							parentListId: list.id,
+							matchedOn: 'description',
+							preview: task.description
+						})
+					}
+				})
+
+				return acc
+			},
+			[]
+		)
 	}, [lists])
 
 	useEffect(() => {

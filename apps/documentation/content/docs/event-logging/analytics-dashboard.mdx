@@ -250,17 +250,17 @@ Update the log components to accept a `page` prop and use it for pagination:
 // Update this in UserActionLogs.tsx, ContentInteractionLogs.tsx, and SystemPerformanceLogs.tsx
 
 async function getUserActionLogs(page: number) {
-  const offset = (page - 1) * ITEMS_PER_PAGE
+  const offset = (page - 1) * ITEMS_PER_PAGE;
   return db
     .select()
     .from(userActions)
     .orderBy(desc(userActions.timestamp))
     .limit(ITEMS_PER_PAGE)
-    .offset(offset)
+    .offset(offset);
 }
 
 export async function UserActionLogs({ page }: { page: number }) {
-  const logs = await getUserActionLogs(page)
+  const logs = await getUserActionLogs(page);
 
   // ... rest of the component remains the same
 }
@@ -372,23 +372,29 @@ Update the log components to accept filter props:
 // Update this in UserActionLogs.tsx, ContentInteractionLogs.tsx, and SystemPerformanceLogs.tsx
 
 async function getUserActionLogs(page: number, actionType?: string) {
-  const offset = (page - 1) * ITEMS_PER_PAGE
+  const offset = (page - 1) * ITEMS_PER_PAGE;
   let query = db
     .select()
     .from(userActions)
     .orderBy(desc(userActions.timestamp))
     .limit(ITEMS_PER_PAGE)
-    .offset(offset)
+    .offset(offset);
 
   if (actionType) {
-    query = query.where(eq(userActions.actionType, actionType))
+    query = query.where(eq(userActions.actionType, actionType));
   }
 
-  return query
+  return query;
 }
 
-export async function UserActionLogs({ page, actionType }: { page: number; actionType?: string }) {
-  const logs = await getUserActionLogs(page, actionType)
+export async function UserActionLogs({
+  page,
+  actionType,
+}: {
+  page: number;
+  actionType?: string;
+}) {
+  const logs = await getUserActionLogs(page, actionType);
 
   // ... rest of the component remains the same
 }
@@ -397,19 +403,19 @@ export async function UserActionLogs({ page, actionType }: { page: number; actio
 ## Next Steps
 
 <Cards>
-  <Card 
-    title="Performance Optimization" 
+  <Card
+    title="Performance Optimization"
     href="/docs/activity-logs/performance-optimization"
-    description="Optimize the logging system and admin dashboard for better performance" 
+    description="Optimize the logging system and admin dashboard for better performance"
   />
-  <Card 
-    title="Testing and Validation" 
+  <Card
+    title="Testing and Validation"
     href="/docs/activity-logs/testing"
-    description="Implement tests for the logging system and admin dashboard" 
+    description="Implement tests for the logging system and admin dashboard"
   />
-  <Card 
-    title="Security Enhancements" 
+  <Card
+    title="Security Enhancements"
     href="/docs/activity-logs/security"
-    description="Implement additional security measures for the logging system" 
+    description="Implement additional security measures for the logging system"
   />
 </Cards>

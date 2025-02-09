@@ -1,5 +1,5 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-import { siteConfig } from '../../../packages/configuration/site-config';
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import { siteConfig } from "../../../packages/configuration/site-config";
 /**
  * Shared layout configurations
  *
@@ -13,9 +13,9 @@ export const baseOptions: BaseLayoutProps = {
   },
   links: [
     {
-      text: 'Documentation',
-      url: '/docs',
-      active: 'nested-url',
+      text: "Documentation",
+      url: "/docs",
+      active: "nested-url",
     },
   ],
 };

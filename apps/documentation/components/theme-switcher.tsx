@@ -1,23 +1,23 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const themes = [
-  { name: 'neutral', label: 'Neutral', isDark: false },
-  { name: 'neutral-dark', label: 'Neutral Dark', isDark: true },
-  { name: 'black', label: 'Black', isDark: true },
-  { name: 'vitepress', label: 'Vitepress', isDark: false },
-  { name: 'vitepress-dark', label: 'Vitepress Dark', isDark: true },
-  { name: 'dusk', label: 'Dusk', isDark: true },
-  { name: 'catppuccin', label: 'Catppuccin', isDark: false },
-  { name: 'catppuccin-dark', label: 'Catppuccin Dark', isDark: true },
-  { name: 'ocean', label: 'Ocean', isDark: false },
-  { name: 'ocean-dark', label: 'Ocean Dark', isDark: true },
-  { name: 'purple', label: 'Purple', isDark: false },
-  { name: 'purple-dark', label: 'Purple Dark', isDark: true }
+  { name: "neutral", label: "Neutral", isDark: false },
+  { name: "neutral-dark", label: "Neutral Dark", isDark: true },
+  { name: "black", label: "Black", isDark: true },
+  { name: "vitepress", label: "Vitepress", isDark: false },
+  { name: "vitepress-dark", label: "Vitepress Dark", isDark: true },
+  { name: "dusk", label: "Dusk", isDark: true },
+  { name: "catppuccin", label: "Catppuccin", isDark: false },
+  { name: "catppuccin-dark", label: "Catppuccin Dark", isDark: true },
+  { name: "ocean", label: "Ocean", isDark: false },
+  { name: "ocean-dark", label: "Ocean Dark", isDark: true },
+  { name: "purple", label: "Purple", isDark: false },
+  { name: "purple-dark", label: "Purple Dark", isDark: true },
 ];
 
-const THEME_KEY = 'docs-theme-preference';
+const THEME_KEY = "docs-theme-preference";
 
 export default function ThemeSwitcher() {
   const [currentTheme, setCurrentTheme] = useState(0);
@@ -26,7 +26,7 @@ export default function ThemeSwitcher() {
     // Load saved theme
     const savedTheme = localStorage.getItem(THEME_KEY);
     if (savedTheme) {
-      const themeIndex = themes.findIndex(t => t.name === savedTheme);
+      const themeIndex = themes.findIndex((t) => t.name === savedTheme);
       if (themeIndex !== -1) {
         setCurrentTheme(themeIndex);
       }
@@ -35,14 +35,14 @@ export default function ThemeSwitcher() {
 
   useEffect(() => {
     // Remove previous theme
-    themes.forEach(theme => {
+    themes.forEach((theme) => {
       document.documentElement.classList.remove(`theme-${theme.name}`);
     });
     // Add current theme
     const newTheme = themes[currentTheme];
     document.documentElement.classList.add(`theme-${newTheme.name}`);
     // Set dark mode
-    document.documentElement.dataset.theme = newTheme.isDark ? 'dark' : 'light';
+    document.documentElement.dataset.theme = newTheme.isDark ? "dark" : "light";
     // Save theme preference
     localStorage.setItem(THEME_KEY, newTheme.name);
   }, [currentTheme]);
@@ -77,4 +77,4 @@ export default function ThemeSwitcher() {
       </svg>
     </button>
   );
-} 
+}

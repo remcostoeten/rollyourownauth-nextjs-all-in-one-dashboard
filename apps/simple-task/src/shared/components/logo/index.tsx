@@ -58,10 +58,10 @@ export function Logo({
 
 	const pathStyle = animated
 		? {
-			opacity: 1,
-			transform: 'scale(1)',
-			transition: 'all 0.3s ease'
-		}
+				opacity: 1,
+				transform: 'scale(1)',
+				transition: 'all 0.3s ease'
+			}
 		: {}
 
 	const pathHoverStyle = {
@@ -85,7 +85,7 @@ export function Logo({
 
 	const LogoSVG = (
 		<svg
-			className={cn("!text-offwhite", className)}
+			className={cn('!text-offwhite', className)}
 			xmlns="http://www.w3.org/2000/svg"
 			width={finalWidth}
 			height={finalHeight}
@@ -95,7 +95,8 @@ export function Logo({
 			style={containerStyle}
 			onMouseEnter={(e) => {
 				if (e.currentTarget) {
-					e.currentTarget.style.transform = containerHoverStyle.transform
+					e.currentTarget.style.transform =
+						containerHoverStyle.transform
 				}
 			}}
 			onMouseLeave={(e) => {
@@ -137,8 +138,6 @@ export function Logo({
 			{LogoSVG}
 		</Link>
 	) : (
-		<div className="transition-colors">
-			{LogoSVG}
-		</div>
+		<div className="transition-colors">{LogoSVG}</div>
 	)
-} 
+}

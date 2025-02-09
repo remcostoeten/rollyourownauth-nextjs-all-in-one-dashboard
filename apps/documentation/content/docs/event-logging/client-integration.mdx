@@ -14,45 +14,45 @@ In this section, we'll integrate our logging system into React components, focus
 Create a new file `src/hooks/useLogger.ts`:
 
 ```typescript
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { logUserAction, logContentInteraction } from '@/app/actions/logging'
+import { useCallback } from "react";
+import { logUserAction, logContentInteraction } from "@/app/actions/logging";
 
 export function useLogger() {
-  const logAction = useCallback(async (
-    actionType: string,
-    additionalInfo?: Record<string, any>
-  ) => {
-    const userId = localStorage.getItem('userId') // Adjust based on your auth system
-    await logUserAction(
-      userId || 'anonymous',
-      actionType,
-      'client', // IP address will be determined server-side
-      navigator.userAgent,
-      'client', // Geolocation will be determined server-side
-      additionalInfo
-    )
-  }, [])
+  const logAction = useCallback(
+    async (actionType: string, additionalInfo?: Record<string, any>) => {
+      const userId = localStorage.getItem("userId"); // Adjust based on your auth system
+      await logUserAction(
+        userId || "anonymous",
+        actionType,
+        "client", // IP address will be determined server-side
+        navigator.userAgent,
+        "client", // Geolocation will be determined server-side
+        additionalInfo,
+      );
+    },
+    [],
+  );
 
-  const logInteraction = useCallback(async (
-    interactionType: string,
-    additionalInfo?: Record<string, any>
-  ) => {
-    const userId = localStorage.getItem('userId') // Adjust based on your auth system
-    await logContentInteraction(
-      userId,
-      interactionType,
-      window.location.href,
-      /Mobile/.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-      navigator.platform,
-      'client', // Country will be determined server-side
-      false, // isNewVisitor will be determined server-side
-      additionalInfo
-    )
-  }, [])
+  const logInteraction = useCallback(
+    async (interactionType: string, additionalInfo?: Record<string, any>) => {
+      const userId = localStorage.getItem("userId"); // Adjust based on your auth system
+      await logContentInteraction(
+        userId,
+        interactionType,
+        window.location.href,
+        /Mobile/.test(navigator.userAgent) ? "Mobile" : "Desktop",
+        navigator.platform,
+        "client", // Country will be determined server-side
+        false, // isNewVisitor will be determined server-side
+        additionalInfo,
+      );
+    },
+    [],
+  );
 
-  return { logAction, logInteraction }
+  return { logAction, logInteraction };
 }
 ```
 
@@ -174,19 +174,19 @@ export default function Home() {
 ## Next Steps
 
 <Cards>
-  <Card 
-    title="Admin Dashboard" 
+  <Card
+    title="Admin Dashboard"
     href="/docs/activity-logs/admin-dashboard"
-    description="Build an admin dashboard to view and analyze logs" 
+    description="Build an admin dashboard to view and analyze logs"
   />
-  <Card 
-    title="Performance Optimization" 
+  <Card
+    title="Performance Optimization"
     href="/docs/activity-logs/performance-optimization"
-    description="Optimize the logging system for better performance" 
+    description="Optimize the logging system for better performance"
   />
-  <Card 
-    title="Testing and Validation" 
+  <Card
+    title="Testing and Validation"
     href="/docs/activity-logs/testing"
-    description="Implement tests for the logging system" 
+    description="Implement tests for the logging system"
   />
 </Cards>

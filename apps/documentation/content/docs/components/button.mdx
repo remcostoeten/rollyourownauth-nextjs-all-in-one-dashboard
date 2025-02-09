@@ -10,14 +10,14 @@ The `AnimatedButton` component extends the base button functionality with smooth
 ## Usage
 
 ```tsx
-import { AnimatedButton } from '@/components/custom';
+import { AnimatedButton } from "@/components/custom";
 
 export default function MyComponent() {
   return (
     <AnimatedButton
       variant="primary"
       animation="bounce"
-      onClick={() => console.log('Clicked!')}
+      onClick={() => console.log("Clicked!")}
     >
       Click Me
     </AnimatedButton>
@@ -32,11 +32,11 @@ export default function MyComponent() {
   <AnimatedButton variant="primary" animation="bounce">
     Bounce
   </AnimatedButton>
-  
+
   <AnimatedButton variant="secondary" animation="pulse">
     Pulse
   </AnimatedButton>
-  
+
   <AnimatedButton variant="outline" animation="scale">
     Scale
   </AnimatedButton>
@@ -45,49 +45,47 @@ export default function MyComponent() {
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'primary' \| 'secondary' \| 'outline' \| 'ghost'` | `'primary'` | The visual style variant of the button |
-| `animation` | `'bounce' \| 'pulse' \| 'scale' \| 'none'` | `'none'` | The animation preset to use |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | The size of the button |
-| `isLoading` | `boolean` | `false` | Whether to show a loading spinner |
-| `disabled` | `boolean` | `false` | Whether the button is disabled |
-| `className` | `string` | `undefined` | Additional CSS classes |
-| `children` | `ReactNode` | `undefined` | The button content |
-| `onClick` | `(event: MouseEvent) => void` | `undefined` | Click handler |
+| Prop        | Type                                               | Default     | Description                            |
+| ----------- | -------------------------------------------------- | ----------- | -------------------------------------- |
+| `variant`   | `'primary' \| 'secondary' \| 'outline' \| 'ghost'` | `'primary'` | The visual style variant of the button |
+| `animation` | `'bounce' \| 'pulse' \| 'scale' \| 'none'`         | `'none'`    | The animation preset to use            |
+| `size`      | `'sm' \| 'md' \| 'lg'`                             | `'md'`      | The size of the button                 |
+| `isLoading` | `boolean`                                          | `false`     | Whether to show a loading spinner      |
+| `disabled`  | `boolean`                                          | `false`     | Whether the button is disabled         |
+| `className` | `string`                                           | `undefined` | Additional CSS classes                 |
+| `children`  | `ReactNode`                                        | `undefined` | The button content                     |
+| `onClick`   | `(event: MouseEvent) => void`                      | `undefined` | Click handler                          |
 
 ## Animation Presets
 
 ### Bounce
+
 A subtle bounce effect when the button is clicked.
 
 ```tsx
-<AnimatedButton animation="bounce">
-  Bounce Effect
-</AnimatedButton>
+<AnimatedButton animation="bounce">Bounce Effect</AnimatedButton>
 ```
 
 ### Pulse
+
 A pulsing animation that draws attention to the button.
 
 ```tsx
-<AnimatedButton animation="pulse">
-  Pulse Effect
-</AnimatedButton>
+<AnimatedButton animation="pulse">Pulse Effect</AnimatedButton>
 ```
 
 ### Scale
+
 A scale transform that activates on hover and click.
 
 ```tsx
-<AnimatedButton animation="scale">
-  Scale Effect
-</AnimatedButton>
+<AnimatedButton animation="scale">Scale Effect</AnimatedButton>
 ```
 
 ## Customization
 
 ### Custom Animation
+
 You can override the default animations using the className prop and Tailwind CSS:
 
 ```tsx
@@ -100,6 +98,7 @@ You can override the default animations using the className prop and Tailwind CS
 ```
 
 ### Custom Styling
+
 The component accepts all standard button HTML attributes and can be styled using Tailwind classes:
 
 ```tsx
@@ -114,6 +113,7 @@ The component accepts all standard button HTML attributes and can be styled usin
 ## Accessibility
 
 The `AnimatedButton` component:
+
 - Maintains ARIA roles and states
 - Supports keyboard navigation
 - Respects reduced motion preferences
@@ -123,39 +123,41 @@ The `AnimatedButton` component:
 
 ```tsx
 // components/custom/AnimatedButton/types.ts
-export interface AnimatedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  animation?: 'bounce' | 'pulse' | 'scale' | 'none';
-  size?: 'sm' | 'md' | 'lg';
+export interface AnimatedButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "secondary" | "outline" | "ghost";
+  animation?: "bounce" | "pulse" | "scale" | "none";
+  size?: "sm" | "md" | "lg";
   isLoading?: boolean;
 }
 
 // components/custom/AnimatedButton/index.tsx
-import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { AnimatedButtonProps } from './types';
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { AnimatedButtonProps } from "./types";
 
 export const AnimatedButton = ({
-  variant = 'primary',
-  animation = 'none',
-  size = 'md',
+  variant = "primary",
+  animation = "none",
+  size = "md",
   isLoading = false,
   className,
   children,
   ...props
 }: AnimatedButtonProps) => {
   const baseStyles = cn(
-    'rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
+    "rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
     {
-      'px-4 py-2': size === 'md',
-      'px-3 py-1.5': size === 'sm',
-      'px-6 py-3': size === 'lg',
-      'bg-primary text-white hover:bg-primary/90': variant === 'primary',
-      'bg-secondary text-white hover:bg-secondary/90': variant === 'secondary',
-      'border-2 border-primary text-primary hover:bg-primary/10': variant === 'outline',
-      'text-primary hover:bg-primary/10': variant === 'ghost',
+      "px-4 py-2": size === "md",
+      "px-3 py-1.5": size === "sm",
+      "px-6 py-3": size === "lg",
+      "bg-primary text-white hover:bg-primary/90": variant === "primary",
+      "bg-secondary text-white hover:bg-secondary/90": variant === "secondary",
+      "border-2 border-primary text-primary hover:bg-primary/10":
+        variant === "outline",
+      "text-primary hover:bg-primary/10": variant === "ghost",
     },
-    className
+    className,
   );
 
   const animations = {
@@ -163,9 +165,9 @@ export const AnimatedButton = ({
       tap: { scale: 0.95 },
     },
     pulse: {
-      animate: { 
+      animate: {
         scale: [1, 1.05, 1],
-        transition: { repeat: Infinity, duration: 2 }
+        transition: { repeat: Infinity, duration: 2 },
       },
     },
     scale: {
@@ -195,4 +197,4 @@ export const AnimatedButton = ({
     </motion.button>
   );
 };
-``` 
+```

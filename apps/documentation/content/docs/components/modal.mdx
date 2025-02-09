@@ -10,7 +10,7 @@ The `Modal` component is a customizable dialog that can be used to display conte
 ## Usage
 
 ```tsx
-import { Modal } from '@/components/custom';
+import { Modal } from "@/components/custom";
 
 export default function MyComponent() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +18,7 @@ export default function MyComponent() {
   return (
     <>
       <button onClick={() => setIsOpen(true)}>Open Modal</button>
-      
+
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -39,7 +39,7 @@ export default function MyComponent() {
 ```tsx live
 function ModalDemo() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   return (
     <>
       <button
@@ -48,7 +48,7 @@ function ModalDemo() {
       >
         Open Modal
       </button>
-      
+
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -77,17 +77,17 @@ function ModalDemo() {
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isOpen` | `boolean` | `false` | Controls the visibility of the modal |
-| `onClose` | `() => void` | `undefined` | Callback function when modal is closed |
-| `title` | `string` | `undefined` | The title shown in the modal header |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'full'` | `'md'` | The size of the modal |
-| `closeOnOverlayClick` | `boolean` | `true` | Whether clicking the overlay closes the modal |
-| `showCloseButton` | `boolean` | `true` | Whether to show the close button |
-| `className` | `string` | `undefined` | Additional CSS classes for the modal |
-| `overlayClassName` | `string` | `undefined` | Additional CSS classes for the overlay |
-| `children` | `ReactNode` | `undefined` | The modal content |
+| Prop                  | Type                             | Default     | Description                                   |
+| --------------------- | -------------------------------- | ----------- | --------------------------------------------- |
+| `isOpen`              | `boolean`                        | `false`     | Controls the visibility of the modal          |
+| `onClose`             | `() => void`                     | `undefined` | Callback function when modal is closed        |
+| `title`               | `string`                         | `undefined` | The title shown in the modal header           |
+| `size`                | `'sm' \| 'md' \| 'lg' \| 'full'` | `'md'`      | The size of the modal                         |
+| `closeOnOverlayClick` | `boolean`                        | `true`      | Whether clicking the overlay closes the modal |
+| `showCloseButton`     | `boolean`                        | `true`      | Whether to show the close button              |
+| `className`           | `string`                         | `undefined` | Additional CSS classes for the modal          |
+| `overlayClassName`    | `string`                         | `undefined` | Additional CSS classes for the overlay        |
+| `children`            | `ReactNode`                      | `undefined` | The modal content                             |
 
 ## Variants
 
@@ -123,7 +123,7 @@ function ModalDemo() {
 
 ```tsx
 <Modal
-  animationVariant="slide"  // or "fade", "scale"
+  animationVariant="slide" // or "fade", "scale"
   {...props}
 >
   Content
@@ -133,6 +133,7 @@ function ModalDemo() {
 ## Accessibility
 
 The Modal component:
+
 - Traps focus within the modal when open
 - Supports closing with the Escape key
 - Uses proper ARIA attributes
@@ -147,48 +148,51 @@ export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
-  size?: 'sm' | 'md' | 'lg' | 'full';
+  size?: "sm" | "md" | "lg" | "full";
   closeOnOverlayClick?: boolean;
   showCloseButton?: boolean;
   className?: string;
   overlayClassName?: string;
   headerClassName?: string;
-  animationVariant?: 'fade' | 'scale' | 'slide';
+  animationVariant?: "fade" | "scale" | "slide";
   children: ReactNode;
 }
 
 // components/custom/Modal/index.tsx
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useCallback } from 'react';
-import { createPortal } from 'react-dom';
-import { cn } from '@/lib/utils';
-import { ModalProps } from './types';
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
+import { cn } from "@/lib/utils";
+import { ModalProps } from "./types";
 
 export const Modal = ({
   isOpen,
   onClose,
   title,
-  size = 'md',
+  size = "md",
   closeOnOverlayClick = true,
   showCloseButton = true,
   className,
   overlayClassName,
   headerClassName,
-  animationVariant = 'scale',
+  animationVariant = "scale",
   children,
 }: ModalProps) => {
-  const handleEscape = useCallback((event: KeyboardEvent) => {
-    if (event.key === 'Escape') onClose();
-  }, [onClose]);
+  const handleEscape = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    },
+    [onClose],
+  );
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, handleEscape]);
 
@@ -211,10 +215,10 @@ export const Modal = ({
   };
 
   const sizeClasses = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
-    full: 'max-w-full m-4',
+    sm: "max-w-sm",
+    md: "max-w-md",
+    lg: "max-w-lg",
+    full: "max-w-full m-4",
   };
 
   if (!isOpen) return null;
@@ -228,38 +232,48 @@ export const Modal = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className={cn(
-              'fixed inset-0 bg-black/50 backdrop-blur-sm',
-              overlayClassName
+              "fixed inset-0 bg-black/50 backdrop-blur-sm",
+              overlayClassName,
             )}
             onClick={closeOnOverlayClick ? onClose : undefined}
           />
-          
+
           <div className="min-h-full flex items-center justify-center p-4">
             <motion.div
               {...variants[animationVariant]}
               className={cn(
-                'relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full',
+                "relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full",
                 sizeClasses[size],
-                className
+                className,
               )}
               onClick={(e) => e.stopPropagation()}
             >
               {(title || showCloseButton) && (
-                <div className={cn(
-                  'flex items-center justify-between p-4 border-b',
-                  headerClassName
-                )}>
-                  {title && (
-                    <h2 className="text-lg font-semibold">{title}</h2>
+                <div
+                  className={cn(
+                    "flex items-center justify-between p-4 border-b",
+                    headerClassName,
                   )}
+                >
+                  {title && <h2 className="text-lg font-semibold">{title}</h2>}
                   {showCloseButton && (
                     <button
                       onClick={onClose}
                       className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       <span className="sr-only">Close</span>
-                      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   )}
@@ -271,6 +285,7 @@ export const Modal = ({
         </div>
       )}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
-}; 
+};
+```

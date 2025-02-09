@@ -15,9 +15,9 @@ export type DatabaseProvider = 'sqlite' | 'neon' | 'turso'
  * @property {string} [authToken] - Authentication token (required for Turso)
  */
 export type DatabaseConfig = {
-    provider: DatabaseProvider
-    url?: string
-    authToken?: string
+	provider: DatabaseProvider
+	url?: string
+	authToken?: string
 }
 
 /**
@@ -25,5 +25,5 @@ export type DatabaseConfig = {
  * Uses local SQLite for development by default
  */
 export const DEFAULT_CONFIG: DatabaseConfig = {
-    provider: 'sqlite'
-} 
+	provider: 'sqlite'
+}

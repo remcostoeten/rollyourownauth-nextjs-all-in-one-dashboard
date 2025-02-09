@@ -17,7 +17,7 @@ src/shared/components/
 │   └── ...
 │
 ├── custom/                  # Custom components
-│   ├── AnimatedButton/     
+│   ├── AnimatedButton/
 │   │   ├── index.tsx      # Component implementation
 │   │   ├── types.ts       # TypeScript types
 │   │   └── styles.ts      # Component styles
@@ -35,37 +35,40 @@ src/shared/components/
 Here's a list of our custom components with links to their detailed documentation:
 
 <Cards>
-  <Card 
-    title="Animated Button" 
+  <Card
+    title="Animated Button"
     href="/docs/components/button"
-    description="A customizable button component with built-in animations" 
+    description="A customizable button component with built-in animations"
   />
-  <Card 
-    title="Modal" 
+  <Card
+    title="Modal"
     href="/docs/components/modal"
-    description="A flexible modal component with customizable transitions" 
+    description="A flexible modal component with customizable transitions"
   />
-  <Card 
-    title="Toast" 
+  <Card
+    title="Toast"
     href="/docs/components/toast"
-    description="A versatile toast notification system with multiple variants and animations" 
+    description="A versatile toast notification system with multiple variants and animations"
   />
 </Cards>
 
 ## Usage Guidelines
 
 1. **Importing Components**
+
    ```typescript
    // Import custom components using the alias
-   import { AnimatedButton, Modal } from '@/components/custom';
+   import { AnimatedButton, Modal } from "@/components/custom";
    ```
 
 2. **Styling**
+
    - All components support custom className props for styling overrides
    - Use Tailwind CSS for custom styles
    - Components are built with dark mode support
 
 3. **TypeScript**
+
    - All components are fully typed
    - Props interfaces are exported for reuse
 
@@ -82,4 +85,4 @@ When creating new custom components:
 2. Include comprehensive TypeScript types
 3. Add proper documentation with examples
 4. Include accessibility considerations
-5. Add unit tests for the component 
+5. Add unit tests for the component

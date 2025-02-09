@@ -1,3 +1,4 @@
+export * from './dropdown-menu'
 export * from './accordion'
 export * from './button'
 export * from './color-picker'

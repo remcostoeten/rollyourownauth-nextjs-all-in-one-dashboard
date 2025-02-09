@@ -14,11 +14,15 @@ In this section, we'll implement server actions to handle activity logging. Thes
 Create a new file `src/app/actions/logging.ts`:
 
 ```typescript
-'use server'
+"use server";
 
-import { db } from '@/db'
-import { userActions, contentInteractions, systemPerformance } from '@/db/schema'
-import { revalidatePath } from 'next/cache'
+import { db } from "@/db";
+import {
+  userActions,
+  contentInteractions,
+  systemPerformance,
+} from "@/db/schema";
+import { revalidatePath } from "next/cache";
 
 export async function logUserAction(
   userId: string,
@@ -26,7 +30,7 @@ export async function logUserAction(
   ipAddress: string,
   deviceInfo: string,
   geoLocation: string,
-  additionalInfo?: Record<string, any>
+  additionalInfo?: Record<string, any>,
 ) {
   await db.insert(userActions).values({
     userId,
@@ -36,9 +40,9 @@ export async function logUserAction(
     deviceInfo,
     geoLocation,
     additionalInfo: additionalInfo ? JSON.stringify(additionalInfo) : null,
-  })
+  });
 
-  revalidatePath('/admin/logs')
+  revalidatePath("/admin/logs");
 }
 
 export async function logContentInteraction(
@@ -49,7 +53,7 @@ export async function logContentInteraction(
   operatingSystem: string,
   country: string,
   isNewVisitor: boolean,
-  additionalInfo?: Record<string, any>
+  additionalInfo?: Record<string, any>,
 ) {
   await db.insert(contentInteractions).values({
     userId,
@@ -61,9 +65,9 @@ export async function logContentInteraction(
     country,
     isNewVisitor: isNewVisitor ? 1 : 0,
     additionalInfo: additionalInfo ? JSON.stringify(additionalInfo) : null,
-  })
+  });
 
-  revalidatePath('/admin/logs')
+  revalidatePath("/admin/logs");
 }
 
 export async function logSystemPerformance(
@@ -73,7 +77,7 @@ export async function logSystemPerformance(
   url?: string,
   queryInfo?: string,
   errorMessage?: string,
-  stackTrace?: string
+  stackTrace?: string,
 ) {
   await db.insert(systemPerformance).values({
     eventType,
@@ -84,9 +88,9 @@ export async function logSystemPerformance(
     queryInfo: queryInfo || null,
     errorMessage: errorMessage || null,
     stackTrace: stackTrace || null,
-  })
+  });
 
-  revalidatePath('/admin/logs')
+  revalidatePath("/admin/logs");
 }
 ```
 
@@ -95,54 +99,60 @@ export async function logSystemPerformance(
 Create a new file `src/middleware.ts`:
 
 ```typescript
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { logContentInteraction } from '@/app/actions/logging'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { logContentInteraction } from "@/app/actions/logging";
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+  const response = NextResponse.next();
 
   // Extract relevant information from the request
-  const url = request.url
-  const userAgent = request.headers.get('user-agent') || ''
-  const country = request.geo?.country || 'Unknown'
-  const ip = request.ip || 'Unknown'
+  const url = request.url;
+  const userAgent = request.headers.get("user-agent") || "";
+  const country = request.geo?.country || "Unknown";
+  const ip = request.ip || "Unknown";
 
   // Determine device type and OS (simplified version)
-  const deviceType = userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
-  const operatingSystem = userAgent.includes('Windows') ? 'Windows' : 
-                          userAgent.includes('Mac') ? 'MacOS' : 
-                          userAgent.includes('Linux') ? 'Linux' : 'Unknown'
+  const deviceType = userAgent.includes("Mobile") ? "Mobile" : "Desktop";
+  const operatingSystem = userAgent.includes("Windows")
+    ? "Windows"
+    : userAgent.includes("Mac")
+      ? "MacOS"
+      : userAgent.includes("Linux")
+        ? "Linux"
+        : "Unknown";
 
   // Check if the user has a session (you may need to adjust this based on your auth setup)
-  const userId = request.cookies.get('userId')?.value || null
+  const userId = request.cookies.get("userId")?.value || null;
 
   // Determine if it's a new visitor (simplified version)
-  const isNewVisitor = !request.cookies.get('returning_visitor')
+  const isNewVisitor = !request.cookies.get("returning_visitor");
 
   // Log the page view
   await logContentInteraction(
     userId,
-    'page_view',
+    "page_view",
     url,
     deviceType,
     operatingSystem,
     country,
     isNewVisitor,
-    { ip }
-  )
+    { ip },
+  );
 
   // Set a cookie to mark the user as a returning visitor
   if (isNewVisitor) {
-    response.cookies.set('returning_visitor', 'true', { maxAge: 60 * 60 * 24 * 365 }) // 1 year
+    response.cookies.set("returning_visitor", "true", {
+      maxAge: 60 * 60 * 24 * 365,
+    }); // 1 year
   }
 
-  return response
+  return response;
 }
 
 export const config = {
-  matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)',
-}
+  matcher: "/((?!api|_next/static|_next/image|favicon.ico).*)",
+};
 ```
 
 ## Step 3: Create a Custom Error Boundary
@@ -191,19 +201,19 @@ export default function ErrorBoundary({
 ## Next Steps
 
 <Cards>
-  <Card 
-    title="Client-Side Integration" 
+  <Card
+    title="Client-Side Integration"
     href="/docs/activity-logs/client-integration"
-    description="Integrate logging into your React components" 
+    description="Integrate logging into your React components"
   />
-  <Card 
-    title="Admin Dashboard" 
+  <Card
+    title="Admin Dashboard"
     href="/docs/activity-logs/admin-dashboard"
-    description="Build an admin dashboard to view and analyze logs" 
+    description="Build an admin dashboard to view and analyze logs"
   />
-  <Card 
-    title="Performance Optimization" 
+  <Card
+    title="Performance Optimization"
     href="/docs/activity-logs/performance-optimization"
-    description="Optimize the logging system for better performance" 
+    description="Optimize the logging system for better performance"
   />
 </Cards>

@@ -14,9 +14,14 @@ This document outlines the implementation of core tracking functions for our cus
 ### Function: recordSiteVisit
 
 ```typescript
-import { db } from '@/server/db';
-import { siteVisits } from './schemas';
-import { getVisitorId, isUniqueVisit, getDeviceInfo, getGeoData } from './utils';
+import { db } from "@/server/db";
+import { siteVisits } from "./schemas";
+import {
+  getVisitorId,
+  isUniqueVisit,
+  getDeviceInfo,
+  getGeoData,
+} from "./utils";
 
 export async function recordSiteVisit(url: string) {
   const visitorId = getVisitorId();
@@ -43,9 +48,9 @@ export async function recordSiteVisit(url: string) {
 ### Function: startUserSession
 
 ```typescript
-import { db } from '@/server/db';
-import { userSessions } from './schemas';
-import { getVisitorId, isOrganicVisit } from './utils';
+import { db } from "@/server/db";
+import { userSessions } from "./schemas";
+import { getVisitorId, isOrganicVisit } from "./utils";
 
 export async function startUserSession(entryPage: string) {
   const visitorId = getVisitorId();
@@ -92,10 +97,14 @@ export async function endUserSession(exitPage: string) {
 ### Function: recordUserAction
 
 ```typescript
-import { db } from '@/server/db';
-import { authenticatedUserActions, userAnalytics } from './schemas';
+import { db } from "@/server/db";
+import { authenticatedUserActions, userAnalytics } from "./schemas";
 
-export async function recordUserAction(userId: string, actionType: string, details?: string) {
+export async function recordUserAction(
+  userId: string,
+  actionType: string,
+  details?: string,
+) {
   await db.insert(authenticatedUserActions).values({
     userId,
     actionType,
@@ -125,7 +134,7 @@ export async function recordUserRegistration(userId: string) {
     totalLogins: 0,
   });
 
-  await recordUserAction(userId, 'REGISTRATION');
+  await recordUserAction(userId, "REGISTRATION");
 }
 ```
 
@@ -140,7 +149,7 @@ export async function recordUserLogin(userId: string) {
     })
     .where(eq(userAnalytics.userId, userId));
 
-  await recordUserAction(userId, 'LOGIN');
+  await recordUserAction(userId, "LOGIN");
 }
 ```
 
@@ -149,27 +158,35 @@ export async function recordUserLogin(userId: string) {
 ### Function: logUserError
 
 ```typescript
-export async function logUserError(userId: string, errorContext: string, errorDetails: string) {
-  await recordUserAction(userId, 'ERROR', JSON.stringify({ context: errorContext, details: errorDetails }));
+export async function logUserError(
+  userId: string,
+  errorContext: string,
+  errorDetails: string,
+) {
+  await recordUserAction(
+    userId,
+    "ERROR",
+    JSON.stringify({ context: errorContext, details: errorDetails }),
+  );
 }
 ```
 
 ## Next Steps
 
 <Cards>
-  <Card 
-    title="Integration Guide" 
+  <Card
+    title="Integration Guide"
     href="/docs/analytics/integration-guide"
-    description="Guide for integrating tracking functions into the application" 
+    description="Guide for integrating tracking functions into the application"
   />
-  <Card 
-    title="Testing Strategy" 
+  <Card
+    title="Testing Strategy"
     href="/docs/analytics/testing-strategy"
-    description="Comprehensive testing plan for analytics tracking" 
+    description="Comprehensive testing plan for analytics tracking"
   />
-  <Card 
-    title="Performance Optimization" 
+  <Card
+    title="Performance Optimization"
     href="/docs/analytics/performance-optimization"
-    description="Strategies for optimizing tracking function performance" 
+    description="Strategies for optimizing tracking function performance"
   />
 </Cards>

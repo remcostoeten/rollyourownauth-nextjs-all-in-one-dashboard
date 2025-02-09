@@ -1,9 +1,5 @@
 {
   "title": "Database",
   "icon": "DatabaseIcon",
-  "pages": [
-    "architecture",
-    "schema",
-    "setup"
-  ]
-} 
+  "pages": ["architecture", "schema", "setup"]
+}

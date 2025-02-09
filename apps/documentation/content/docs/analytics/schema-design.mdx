@@ -14,60 +14,63 @@ This document outlines the data schema design for our custom analytics system. W
 ### Site Visits
 
 ```typescript
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-export const siteVisits = sqliteTable('site_visits', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  timestamp: integer('timestamp').notNull(),
-  url: text('url').notNull(),
-  visitorId: text('visitor_id').notNull(),
-  isUnique: integer('is_unique').notNull(),
-  deviceType: text('device_type'),
-  os: text('os'),
-  language: text('language'),
-  country: text('country'),
-  referrer: text('referrer'),
+export const siteVisits = sqliteTable("site_visits", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  timestamp: integer("timestamp").notNull(),
+  url: text("url").notNull(),
+  visitorId: text("visitor_id").notNull(),
+  isUnique: integer("is_unique").notNull(),
+  deviceType: text("device_type"),
+  os: text("os"),
+  language: text("language"),
+  country: text("country"),
+  referrer: text("referrer"),
 });
 ```
 
 ### User Sessions
 
 ```typescript
-export const userSessions = sqliteTable('user_sessions', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  visitorId: text('visitor_id').notNull(),
-  startTime: integer('start_time').notNull(),
-  endTime: integer('end_time'),
-  duration: integer('duration'),
-  entryPage: text('entry_page').notNull(),
-  exitPage: text('exit_page'),
-  isOrganic: integer('is_organic').notNull(),
-  referralSource: text('referral_source'),
+export const userSessions = sqliteTable("user_sessions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  visitorId: text("visitor_id").notNull(),
+  startTime: integer("start_time").notNull(),
+  endTime: integer("end_time"),
+  duration: integer("duration"),
+  entryPage: text("entry_page").notNull(),
+  exitPage: text("exit_page"),
+  isOrganic: integer("is_organic").notNull(),
+  referralSource: text("referral_source"),
 });
 ```
 
 ### Authenticated User Actions
 
 ```typescript
-export const authenticatedUserActions = sqliteTable('authenticated_user_actions', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  userId: text('user_id').notNull(),
-  actionType: text('action_type').notNull(),
-  timestamp: integer('timestamp').notNull(),
-  details: text('details'),
-});
+export const authenticatedUserActions = sqliteTable(
+  "authenticated_user_actions",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    userId: text("user_id").notNull(),
+    actionType: text("action_type").notNull(),
+    timestamp: integer("timestamp").notNull(),
+    details: text("details"),
+  },
+);
 ```
 
 ### User Analytics
 
 ```typescript
-export const userAnalytics = sqliteTable('user_analytics', {
-  userId: text('user_id').primaryKey(),
-  totalVisits: integer('total_visits').notNull(),
-  averageVisitDuration: integer('average_visit_duration'),
-  lastVisitTimestamp: integer('last_visit_timestamp'),
-  registrationDate: integer('registration_date').notNull(),
-  totalLogins: integer('total_logins').notNull(),
+export const userAnalytics = sqliteTable("user_analytics", {
+  userId: text("user_id").primaryKey(),
+  totalVisits: integer("total_visits").notNull(),
+  averageVisitDuration: integer("average_visit_duration"),
+  lastVisitTimestamp: integer("last_visit_timestamp"),
+  registrationDate: integer("registration_date").notNull(),
+  totalLogins: integer("total_logins").notNull(),
 });
 ```
 
@@ -81,37 +84,49 @@ export const userAnalytics = sqliteTable('user_analytics', {
 To optimize query performance, we'll create the following indexes:
 
 ```typescript
-import { index } from 'drizzle-orm/sqlite-core';
+import { index } from "drizzle-orm/sqlite-core";
 
 // Indexes for siteVisits
-export const siteVisitsTimestampIndex = index('site_visits_timestamp_idx').on(siteVisits.timestamp);
-export const siteVisitsVisitorIdIndex = index('site_visits_visitor_id_idx').on(siteVisits.visitorId);
+export const siteVisitsTimestampIndex = index("site_visits_timestamp_idx").on(
+  siteVisits.timestamp,
+);
+export const siteVisitsVisitorIdIndex = index("site_visits_visitor_id_idx").on(
+  siteVisits.visitorId,
+);
 
 // Indexes for userSessions
-export const userSessionsVisitorIdIndex = index('user_sessions_visitor_id_idx').on(userSessions.visitorId);
-export const userSessionsStartTimeIndex = index('user_sessions_start_time_idx').on(userSessions.startTime);
+export const userSessionsVisitorIdIndex = index(
+  "user_sessions_visitor_id_idx",
+).on(userSessions.visitorId);
+export const userSessionsStartTimeIndex = index(
+  "user_sessions_start_time_idx",
+).on(userSessions.startTime);
 
 // Indexes for authenticatedUserActions
-export const authenticatedUserActionsUserIdIndex = index('authenticated_user_actions_user_id_idx').on(authenticatedUserActions.userId);
-export const authenticatedUserActionsTimestampIndex = index('authenticated_user_actions_timestamp_idx').on(authenticatedUserActions.timestamp);
+export const authenticatedUserActionsUserIdIndex = index(
+  "authenticated_user_actions_user_id_idx",
+).on(authenticatedUserActions.userId);
+export const authenticatedUserActionsTimestampIndex = index(
+  "authenticated_user_actions_timestamp_idx",
+).on(authenticatedUserActions.timestamp);
 ```
 
 ## Next Steps
 
 <Cards>
-  <Card 
-    title="Tracking Implementation" 
+  <Card
+    title="Tracking Implementation"
     href="/docs/analytics/tracking-implementation"
-    description="Implementing core tracking functions based on the schema" 
+    description="Implementing core tracking functions based on the schema"
   />
-  <Card 
-    title="Query Optimization" 
+  <Card
+    title="Query Optimization"
     href="/docs/analytics/query-optimization"
-    description="Optimizing database queries for analytics data retrieval" 
+    description="Optimizing database queries for analytics data retrieval"
   />
-  <Card 
-    title="Data Migration" 
+  <Card
+    title="Data Migration"
     href="/docs/analytics/data-migration"
-    description="Strategies for migrating existing data to the new schema" 
+    description="Strategies for migrating existing data to the new schema"
   />
 </Cards>

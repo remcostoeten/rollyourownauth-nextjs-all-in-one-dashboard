@@ -1,5 +1,5 @@
 import { mockUser, type MockUser } from 'config'
-import { create } from 'zustand';
+import { create } from 'zustand'
 // Drizzle ORM Imports (Example for SQLite)
 // import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 // import { drizzle } from 'drizzle-orm/libsql';
@@ -7,11 +7,11 @@ import { create } from 'zustand';
 // import { eq } from 'drizzle-orm'; // Import eq for WHERE clause
 
 interface MockUserState {
-  currentUser: MockUser | null;
-  setCurrentUser: (user: MockUser | null) => void;
-  loginWithEmail: (email: string) => MockUser | null;
-  loginWithId: (id: string) => MockUser | null;
-  logout: () => void;
+	currentUser: MockUser | null
+	setCurrentUser: (user: MockUser | null) => void
+	loginWithEmail: (email: string) => MockUser | null
+	loginWithId: (id: string) => MockUser | null
+	logout: () => void
 }
 
 // Drizzle Schema (Example)
@@ -27,67 +27,69 @@ interface MockUserState {
 // const db = drizzle(client);
 
 async function getMockUserByEmail(email: string): Promise<MockUser | null> {
-  // Drizzle Implementation (Example)
-  // try {
-  //   const result = await db.select().from(users).where(eq(users.email, email)).get();
-  //   if (result) {
-  //     return {
-  //       id: result.id,
-  //       name: result.name,
-  //       email: result.email,
-  //       avatar: result.avatar || '',
-  //     };
-  //   }
-  //   return null; // Explicitly return null if no user is found
-  // } catch (error) {
-  //   console.error("Database error:", error);
-  //   return null; // Handle errors gracefully
-  // }
+	// Drizzle Implementation (Example)
+	// try {
+	//   const result = await db.select().from(users).where(eq(users.email, email)).get();
+	//   if (result) {
+	//     return {
+	//       id: result.id,
+	//       name: result.name,
+	//       email: result.email,
+	//       avatar: result.avatar || '',
+	//     };
+	//   }
+	//   return null; // Explicitly return null if no user is found
+	// } catch (error) {
+	//   console.error("Database error:", error);
+	//   return null; // Handle errors gracefully
+	// }
 
-  // Mock Implementation (Replace with Drizzle)
-  // Since email is not used, suppress the eslint warning
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const unusedEmail = email;
-  return mockUser;
+	// Mock Implementation (Replace with Drizzle)
+	// Since email is not used, suppress the eslint warning
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const unusedEmail = email
+	return mockUser
 }
 
 async function getMockUser(id: string): Promise<MockUser | null> {
-  // Drizzle Implementation (Example)
-  // try {
-  //   const result = await db.select().from(users).where(eq(users.id, id)).get();
-  //   if (result) {
-  //     return {
-  //       id: result.id,
-  //       name: result.name,
-  //       email: result.email,
-  //       avatar: result.avatar || '',
-  //     };
-  //   }
-  //   return null; // Explicitly return null if no user is found
-  // } catch (error) {
-  //   console.error("Database error:", error);
-  //   return null; // Handle errors gracefully
-  // }
+	// Drizzle Implementation (Example)
+	// try {
+	//   const result = await db.select().from(users).where(eq(users.id, id)).get();
+	//   if (result) {
+	//     return {
+	//       id: result.id,
+	//       name: result.name,
+	//       email: result.email,
+	//       avatar: result.avatar || '',
+	//     };
+	//   }
+	//   return null; // Explicitly return null if no user is found
+	// } catch (error) {
+	//   console.error("Database error:", error);
+	//   return null; // Handle errors gracefully
+	// }
 
-  // Mock Implementation (Replace with Drizzle)
-  // Since id is not used, suppress the eslint warning
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const unusedId = id;
-  return defaultMockUser;
+	// Mock Implementation (Replace with Drizzle)
+	// Since id is not used, suppress the eslint warning
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const unusedId = id
+	return defaultMockUser
 }
 
-export const useMockUser = create<MockUserState>((set: (arg0: { currentUser: unknown; }) => void) => ({
-  currentUser: defaultMockUser,
-  setCurrentUser: (user: MockUser | null) => set({ currentUser: user }),
-  loginWithEmail: async (email: string) => {
-    const user = await getMockUserByEmail(email);
-    set({ currentUser: user });
-    return user;
-  },
-  loginWithId: async (id: string) => {
-    const user = await getMockUser(id);
-    set({ currentUser: user });
-    return user;
-  },
-  logout: () => set({ currentUser: null }),
-}));
+export const useMockUser = create<MockUserState>(
+	(set: (arg0: { currentUser: unknown }) => void) => ({
+		currentUser: defaultMockUser,
+		setCurrentUser: (user: MockUser | null) => set({ currentUser: user }),
+		loginWithEmail: async (email: string) => {
+			const user = await getMockUserByEmail(email)
+			set({ currentUser: user })
+			return user
+		},
+		loginWithId: async (id: string) => {
+			const user = await getMockUser(id)
+			set({ currentUser: user })
+			return user
+		},
+		logout: () => set({ currentUser: null })
+	})
+)

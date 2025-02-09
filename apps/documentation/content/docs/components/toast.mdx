@@ -24,11 +24,7 @@ export default function MyComponent() {
     });
   };
 
-  return (
-    <button onClick={showSuccessToast}>
-      Show Success Toast
-    </button>
-  );
+  return <button onClick={showSuccessToast}>Show Success Toast</button>;
 }
 
 // Wrap your app with ToastProvider
@@ -76,30 +72,31 @@ function ToastDemo() {
 
 ### Toast Provider Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+| Prop       | Type        | Default     | Description             |
+| ---------- | ----------- | ----------- | ----------------------- |
 | `children` | `ReactNode` | `undefined` | The application content |
 
 ### Toast Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'regular' \| 'pending' \| 'error' \| 'success' \| 'warning'` | `'regular'` | The visual style variant |
-| `message` | `string` | `undefined` | The toast message content |
-| `duration` | `number` | `5000` | Duration in milliseconds before auto-closing |
-| `position` | `'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right'` | `'bottom-right'` | Toast position |
-| `isDraggable` | `boolean` | `true` | Whether the toast can be dragged to dismiss |
-| `showCloseButton` | `boolean` | `true` | Whether to show the close button |
-| `animateIn` | `'fade' \| 'slide'` | `'fade'` | Animation style |
-| `style` | `CSSProperties` | `undefined` | Custom styles |
-| `actionButton` | `{ label: string; onClick: () => void }` | `undefined` | Optional action button |
-| `onClose` | `() => void` | `undefined` | Callback when toast closes |
-| `onReset` | `() => void` | `undefined` | Callback for reset action |
-| `onSave` | `() => void` | `undefined` | Callback for save action |
+| Prop              | Type                                                                                              | Default          | Description                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------- |
+| `variant`         | `'regular' \| 'pending' \| 'error' \| 'success' \| 'warning'`                                     | `'regular'`      | The visual style variant                     |
+| `message`         | `string`                                                                                          | `undefined`      | The toast message content                    |
+| `duration`        | `number`                                                                                          | `5000`           | Duration in milliseconds before auto-closing |
+| `position`        | `'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right'` | `'bottom-right'` | Toast position                               |
+| `isDraggable`     | `boolean`                                                                                         | `true`           | Whether the toast can be dragged to dismiss  |
+| `showCloseButton` | `boolean`                                                                                         | `true`           | Whether to show the close button             |
+| `animateIn`       | `'fade' \| 'slide'`                                                                               | `'fade'`         | Animation style                              |
+| `style`           | `CSSProperties`                                                                                   | `undefined`      | Custom styles                                |
+| `actionButton`    | `{ label: string; onClick: () => void }`                                                          | `undefined`      | Optional action button                       |
+| `onClose`         | `() => void`                                                                                      | `undefined`      | Callback when toast closes                   |
+| `onReset`         | `() => void`                                                                                      | `undefined`      | Callback for reset action                    |
+| `onSave`          | `() => void`                                                                                      | `undefined`      | Callback for save action                     |
 
 ## Variants
 
 ### Regular Toast
+
 ```tsx
 addToast({
   variant: "regular",
@@ -109,6 +106,7 @@ addToast({
 ```
 
 ### Success Toast
+
 ```tsx
 addToast({
   variant: "success",
@@ -118,6 +116,7 @@ addToast({
 ```
 
 ### Error Toast
+
 ```tsx
 addToast({
   variant: "error",
@@ -131,6 +130,7 @@ addToast({
 ```
 
 ### Warning Toast
+
 ```tsx
 addToast({
   variant: "warning",
@@ -140,6 +140,7 @@ addToast({
 ```
 
 ### Pending Toast
+
 ```tsx
 addToast({
   variant: "pending",
@@ -151,6 +152,7 @@ addToast({
 ## Common Patterns
 
 ### Toast Sequences
+
 ```tsx
 // Show a loading toast followed by success/error
 const saveChanges = async () => {
@@ -182,6 +184,7 @@ const saveChanges = async () => {
 ```
 
 ### Custom Styling
+
 ```tsx
 addToast({
   variant: "regular",
@@ -197,6 +200,7 @@ addToast({
 ## Implementation Details
 
 ### Context Provider
+
 ```tsx
 // components/custom/toast/state/toast-context.tsx
 import { createContext, useContext, useState } from "react";
@@ -204,8 +208,8 @@ import type { ToastContextType, ToastProps } from "../types";
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ 
-  children 
+export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
 }) => {
   const [toasts, setToasts] = useState<(ToastProps & { id: string })[]>([]);
 
@@ -222,7 +226,11 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
     <ToastContext.Provider value={{ addToast, removeToast }}>
       {children}
       {toasts.map((toast) => (
-        <Toast key={toast.id} {...toast} onClose={() => removeToast(toast.id)} />
+        <Toast
+          key={toast.id}
+          {...toast}
+          onClose={() => removeToast(toast.id)}
+        />
       ))}
     </ToastContext.Provider>
   );
@@ -238,6 +246,7 @@ export const useToast = () => {
 ```
 
 ### Toast Component
+
 ```tsx
 // components/custom/toast/components/toast.tsx
 import { motion, AnimatePresence } from "framer-motion";
@@ -264,6 +273,7 @@ export const Toast: React.FC<ToastProps> = ({
 ## Accessibility
 
 The Toast component:
+
 - Uses appropriate ARIA roles and attributes
 - Supports keyboard interaction
 - Respects reduced motion preferences
@@ -274,16 +284,19 @@ The Toast component:
 ## Best Practices
 
 1. **Duration**
+
    - Use shorter durations (2-3s) for success messages
    - Use longer durations (4-5s) for error messages
    - Use no timeout (duration: 0) for messages requiring action
 
 2. **Position**
+
    - Use bottom positions for most notifications
    - Use top positions for critical errors
    - Be consistent with positioning across your app
 
 3. **Message Content**
+
    - Keep messages concise and clear
    - Include specific details when relevant
    - Use appropriate variant for the message type
@@ -291,4 +304,4 @@ The Toast component:
 4. **Actions**
    - Include action buttons for recoverable errors
    - Make action labels clear and specific
-   - Ensure actions are easily accessible 
+   - Ensure actions are easily accessible

@@ -13,13 +13,13 @@ Our project uses a monorepo structure to manage multiple applications and shared
 
 ```text
 ryoa-mono/
-├── apps/                      
+├── apps/
 │   ├── rollyourownauth+aio/  # Main auth application
 │   ├── documentation/        # Documentation site
 │   ├── ryoa-landing/        # Landing page with animations
 │   └── simple-task/         # Simple task application
 │
-├── packages/                
+├── packages/
 │   ├── ui/                  # Shared UI components
 │   ├── config/             # Base configurations
 │   ├── configuration/      # Extended configurations
@@ -37,12 +37,12 @@ Contains reusable UI components built with Shadcn/UI and custom components:
 
 ```typescript
 // Shadcn components (using ui alias)
-import { Button, Card } from 'ui';
+import { Button, Card } from "ui";
 
 // Custom components
-import { AnimatedButton } from '@/components/custom/AnimatedButton';
-import { Modal } from '@/components/custom/Modal';
-import { Toast } from '@/components/custom/Toast';
+import { AnimatedButton } from "@/components/custom/AnimatedButton";
+import { Modal } from "@/components/custom/Modal";
+import { Toast } from "@/components/custom/Toast";
 ```
 
 ### Styling System
@@ -109,9 +109,15 @@ src/styles/
 }
 
 @keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 ```
 
@@ -142,6 +148,7 @@ pnpm dev --filter documentation
 ## Development Workflow
 
 1. **Running Applications**
+
    ```bash
    # Start all applications
    pnpm dev
@@ -151,6 +158,7 @@ pnpm dev --filter documentation
    ```
 
 2. **Building**
+
    ```bash
    # Build all packages and applications
    pnpm build
@@ -160,6 +168,7 @@ pnpm dev --filter documentation
    ```
 
 3. **Database Management**
+
    ```bash
    # Interactive CLI for database management
    pnpm db
@@ -173,6 +182,7 @@ pnpm dev --filter documentation
 ## Package Dependencies
 
 ### Main Application Dependencies
+
 ```json
 {
   "dependencies": {
@@ -196,6 +206,7 @@ pnpm dev --filter documentation
 ```
 
 ### Documentation Site Dependencies
+
 ```json
 {
   "dependencies": {
@@ -237,11 +248,13 @@ src/
 ## Best Practices
 
 1. **Feature Organization**
+
    - Keep features modular in the `modules` directory
    - Co-locate related code (components, hooks, state)
    - Use shared components from `shared/components`
 
 2. **Database Management**
+
    - Use the interactive CLI for database operations
    - Follow migration-based schema changes
    - Backup database before major changes
@@ -254,19 +267,19 @@ src/
 ## Related Topics
 
 <Cards>
-  <Card 
-    title="Project Setup" 
+  <Card
+    title="Project Setup"
     href="/docs/getting-started/setup"
-    description="Learn how to set up the project locally" 
+    description="Learn how to set up the project locally"
   />
-  <Card 
-    title="UI Components" 
+  <Card
+    title="UI Components"
     href="/docs/components/overview"
-    description="Explore our shared UI components" 
+    description="Explore our shared UI components"
   />
-  <Card 
-    title="Database Management" 
+  <Card
+    title="Database Management"
     href="/docs/database/overview"
-    description="Learn about our database tools and CLI" 
+    description="Learn about our database tools and CLI"
   />
-</Cards> 
+</Cards>{" "}

@@ -29,7 +29,7 @@ import type { DropResult } from 'react-beautiful-dnd'
 import { useListsStore } from '../../quick-task/state/lists'
 import Image from 'next/image'
 import { mockUser } from 'config'
-	type NavItem = {
+type NavItem = {
 	id: string
 	icon: React.ElementType
 	label: string
@@ -119,7 +119,7 @@ export function Sidebar({
 	const [searchQuery, setSearchQuery] = useState('')
 	const searchResults = useSearch(searchQuery)
 
-	const { lists} = useListsStore()
+	const { lists } = useListsStore()
 	const user = mockUser
 
 	useEffect(() => {
@@ -318,15 +318,15 @@ export function Sidebar({
 			<div className="border-t border-dashed p-4 space-y-3">
 				<div className="flex items-center gap-3 p-2 rounded-lg bg-secondary/30">
 					<Image
-					width={32}
-					height={32}
+						width={32}
+						height={32}
 						src={user?.profile.avatar || '/placeholder.svg'}
 						className="w-8 h-8 object-cover rounded-full ring-1 ring-border"
 						alt={user?.profile.firstName}
 					/>
 					<div className="flex-1 min-w-0">
 						<p className="text-sm font-medium text-foreground truncate">
-									{user?.profile.lastName}
+							{user?.profile.lastName}
 						</p>
 						<p className="text-xs text-muted-foreground truncate">
 							{user?.email}

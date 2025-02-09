@@ -41,6 +41,6 @@ export function useSlashCommands() {
 		setIsFocused,
 		commands,
 		registerCommand,
-		unregisterCommand,
+		unregisterCommand
 	}
 }
