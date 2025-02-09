@@ -1,47 +1,51 @@
+'use client'
+
 import { useEffect } from 'react'
-import { useSettingsStore } from '../store/settings'
 
-type Settings = {
-	shortcuts: Record<string, string>
-}
-
-type ShortcutKey = keyof Settings['shortcuts']
+type KeyboardShortcut = string | string[]
 
 export function useKeyboardShortcut(
-	shortcutKey: ShortcutKey,
+	shortcut: KeyboardShortcut,
 	callback: () => void
 ) {
-	const shortcut = useSettingsStore((state) => state.shortcuts[shortcutKey])
-
 	useEffect(() => {
-		if (!shortcut) return
+		const shortcuts = Array.isArray(shortcut) ? shortcut : [shortcut]
 
-		const keys = shortcut.split('+').map((k) => k.toLowerCase())
+		const handleKeyDown = (event: KeyboardEvent) => {
+			const { key, ctrlKey, altKey, shiftKey, metaKey } = event
 
-		const handleKeyDown = (e: KeyboardEvent) => {
-			const pressedKey = e.key.toLowerCase()
-			const modifiers = {
-				ctrl: e.ctrlKey,
-				meta: e.metaKey,
-				alt: e.altKey,
-				shift: e.shiftKey
-			}
+			const isShortcutPressed = shortcuts.some((sc) => {
+				const keys = sc.toLowerCase().split('+')
+				const modifiers = {
+					ctrl: keys.includes('ctrl'),
+					alt: keys.includes('alt'),
+					shift: keys.includes('shift'),
+					meta: keys.includes('meta')
+				}
 
-			const allKeysMatch = keys?.every((k: string) => {
-				if (k === 'ctrl' || k === 'control') return modifiers.ctrl
-				if (k === 'meta' || k === 'command') return modifiers.meta
-				if (k === 'alt') return modifiers.alt
-				if (k === 'shift') return modifiers.shift
-				return k === pressedKey
+				const mainKey = keys.find(
+					(k) => !['ctrl', 'alt', 'shift', 'meta'].includes(k)
+				)
+
+				return (
+					key.toLowerCase() === mainKey &&
+					ctrlKey === modifiers.ctrl &&
+					altKey === modifiers.alt &&
+					shiftKey === modifiers.shift &&
+					metaKey === modifiers.meta
+				)
 			})
 
-			if (allKeysMatch) {
-				e.preventDefault()
+			if (isShortcutPressed) {
+				event.preventDefault()
 				callback()
 			}
 		}
 
 		window.addEventListener('keydown', handleKeyDown)
-		return () => window.removeEventListener('keydown', handleKeyDown)
+
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown)
+		}
 	}, [shortcut, callback])
 }

@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  border-style: dashed;
-  border-spacing: 5px;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -62,5 +57,15 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+input:focus {
+  outline: none !important;
+  border: none !important;
+}
+
+input:focus-visible {
+  outline: none !important;
+  border: none !important;
 }
 

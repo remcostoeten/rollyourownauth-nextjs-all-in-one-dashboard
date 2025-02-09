@@ -612,7 +612,7 @@ const SidebarMenuButton = React.forwardRef<
 	}
 )
 SidebarMenuButton.displayName = 'SidebarMenuButton'
-	
+
 const SidebarMenuAction = React.forwardRef<
 	HTMLButtonElement,
 	React.ComponentProps<'button'> & {

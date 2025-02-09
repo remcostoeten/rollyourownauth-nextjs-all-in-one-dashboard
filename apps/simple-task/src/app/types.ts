@@ -1,6 +1,5 @@
 export interface Task {
-  id: string
-  title: string
-  subtasks?: Task[]
+	id: string
+	title: string
+	subtasks?: Task[]
 }
-

@@ -1,25 +1,41 @@
-'use client'
-
 import * as React from 'react'
 import { Drawer as DrawerPrimitive } from 'vaul'
-
 import { cn } from '@/src/shared/helpers/cn'
 
 const Drawer = ({
 	shouldScaleBackground = true,
+	onOpenChange,
+	open,
 	...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
-	<DrawerPrimitive.Root
-		shouldScaleBackground={shouldScaleBackground}
-		{...props}
-	/>
-)
+}: React.ComponentProps<typeof DrawerPrimitive.Root> & {
+	onOpenChange?: (open: boolean) => void
+	open?: boolean
+}) => {
+	React.useEffect(() => {
+		const handleEscape = (e: KeyboardEvent) => {
+			if (e.key === 'Escape' && open && onOpenChange) {
+				onOpenChange(false)
+			}
+		}
+
+		window.addEventListener('keydown', handleEscape)
+		return () => window.removeEventListener('keydown', handleEscape)
+	}, [open, onOpenChange])
+
+	return (
+		<DrawerPrimitive.Root
+			shouldScaleBackground={shouldScaleBackground}
+			onOpenChange={onOpenChange}
+			open={open}
+			{...props}
+		/>
+	)
+}
 Drawer.displayName = 'Drawer'
 
+// Rest of the components remain the same
 const DrawerTrigger = DrawerPrimitive.Trigger
-
 const DrawerPortal = DrawerPrimitive.Portal
-
 const DrawerClose = DrawerPrimitive.Close
 
 const DrawerOverlay = React.forwardRef<

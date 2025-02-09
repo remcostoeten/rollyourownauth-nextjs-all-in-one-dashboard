@@ -222,3 +222,5 @@ export function TaskDetail({ taskId, onClose }: TaskDetailProps) {
 		</AnimatePresence>
 	)
 }
+
+export default TaskDetail
