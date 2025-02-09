@@ -1,21 +1,47 @@
-import React from 'react'
-import { cn } from '../../helpers/cn'
+import { motion, AnimationControls, TargetAndTransition, VariantLabels, Variants, Transition } from 'framer-motion'
+import { cn } from 'helpers'
+import { Tooltip, TooltipTrigger, TooltipContent } from './tooltip'
 
-export default function Kbd({
-	children,
-	className
-}: {
-	children: React.ReactNode
-	className?: string
-}) {
-	return (
-		<kbd
-			className={cn(
-				'pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-sans text-[11px] opacity-100 sm:flex',
-				className
-			)}
-		>
-			{children}
-		</kbd>
-	)
+type KbdProps = {
+  children: React.ReactNode
+  className?: string
+  animate?: AnimationControls | TargetAndTransition | VariantLabels | boolean
+  framerMotion?: boolean
+  variants?: Variants
+  transition?: Transition
+}
+
+export function Kbd({ children, variants, transition, className, animate, framerMotion }: KbdProps) {
+  const kbdClassNames = cn(
+    'inline-flex items-center justify-center',
+    'rounded border border-border bg-muted px-1.5 font-[10px]',
+    'font-mono font-medium text-muted-foreground',
+    'h-5 min-w-[20px]',
+    'relative overflow-hidden', // Required for the shimmer effect
+    'hover:bg-shimmer', // Add a class for hover effect
+    className
+  )
+
+  const kbd = framerMotion ? (
+    <motion.kbd className={kbdClassNames} animate={animate} variants={variants} transition={transition}>
+      {children}
+      <div className="shimmer"></div>
+    </motion.kbd>
+  ) : (
+    <kbd className={kbdClassNames}>
+      {children}
+      <div className="shimmer"></div> {/* Shimmer effect element */}
+    </kbd>
+  )
+
+  return (
+    <Tooltip delayDuration={0}>
+      <TooltipTrigger asChild>
+        <div>{kbd}</div>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p className="text-xs">Keyboard shortcut</p>
+      </TooltipContent>
+    </Tooltip>
+  )
 }
