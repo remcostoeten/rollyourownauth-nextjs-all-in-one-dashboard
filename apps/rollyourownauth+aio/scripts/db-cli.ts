@@ -5,10 +5,10 @@ import { resolve } from 'path';
 // Load environment variables from .env file
 config({ path: resolve(__dirname, '../.env') });
 
-import { db, closeDb } from '../src/server/db';
+import { closeDb } from '../src/server/db';
 
 async function main() {
-  try {
+  try { 
     // Test database connection
     console.log('Testing database connection...');
     console.log('Database URL:', process.env.DATABASE_URL);
