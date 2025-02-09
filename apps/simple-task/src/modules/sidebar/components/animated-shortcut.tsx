@@ -18,7 +18,7 @@ export function AnimatedShortcut({
   const shortcut = useSettingsStore((state) => state.shortcuts[shortcutKey])
 
   return (
-    <Kbd className={className}>
+    <kbd className={className}>
       <AnimatePresence mode="wait">
         {isFocused ? (
           <motion.span
@@ -42,6 +42,6 @@ export function AnimatedShortcut({
           </motion.span>
         )}
       </AnimatePresence>
-    </Kbd>
+    </kbd>
   )
 } 

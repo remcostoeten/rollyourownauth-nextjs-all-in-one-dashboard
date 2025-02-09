@@ -1,10 +1,8 @@
-import { Plus, List, Layout, FileText, Copy } from 'lucide-react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Button} from 'ui'
+import { Plus, ListIcon } from 'lucide-react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Button, Input } from 'ui'
 import { cn } from 'helpers'
-import { useKeyboardShortcut } from '../../quick-task/hooks/use-keyboard-shortcut'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
-import Kbd from '@/src/shared/components/ui/kbd'
+import { useState, useRef } from 'react'
+import { useListsStore } from '../../quick-task/state/lists'
 
 interface CreateNewDropdownProps {
   className?: string
@@ -12,24 +10,35 @@ interface CreateNewDropdownProps {
 
 export function CreateNewDropdown({ className }: CreateNewDropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
-  
-  useKeyboardShortcut('alt+n', (e) => {
-    e.preventDefault()
-    setIsOpen(true)
-  })
+  const [isCreatingList, setIsCreatingList] = useState(false)
+  const [newListName, setNewListName] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+  const { addList } = useListsStore()
+
+  const handleCreateList = () => {
+    if (newListName.trim()) {
+      const newList = {
+        id: crypto.randomUUID(),
+        name: newListName.trim(),
+        tasks: []
+      }
+      addList(newList)
+      setNewListName('')
+      setIsCreatingList(false)
+      setIsOpen(false)
+    }
+  }
 
   const createOptions = [
     {
-      label: 'New Task',
-      icon: FileText,
+      label: 'New List',
+      icon: ListIcon,
       onClick: () => {
-        console.log('Create task')
-        setIsOpen(false)
+        setIsCreatingList(true)
+        setTimeout(() => inputRef.current?.focus(), 0)
       },
-      description: 'Add a new task to the current list',
-      shortcut: 'Alt+N'
+      description: 'Create a new list to organize tasks'
     },
-    // ... other options
   ]
 
   return (
@@ -37,7 +46,8 @@ export function CreateNewDropdown({ className }: CreateNewDropdownProps) {
       <DropdownMenuTrigger asChild>
         <Button
           className={cn(
-            'w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors relative',
+            'w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors',
+            'focus:ring-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-accent/20',
             className
           )}
         >
@@ -45,54 +55,55 @@ export function CreateNewDropdown({ className }: CreateNewDropdownProps) {
             <Plus className="w-4 h-4 text-accent-foreground" />
           </div>
           <span className="text-sm">Create new</span>
-          <Kbd className="absolute right-2 text-muted-foreground">
-            <AnimatePresence mode="wait">
-              {isOpen ? (
-                <motion.span
-                  key="enter"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Enter
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="shortcut"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Alt+N
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </Kbd>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[220px]">
-        {createOptions.map((option) => (
-          <DropdownMenuItem
-            key={option.label}
-            onClick={option.onClick}
-            className="flex flex-col items-start py-2 px-3 cursor-pointer"
-          >
-            <div className="flex items-center gap-2 w-full">
-              <option.icon className="w-4 h-4" />
-              <span>{option.label}</span>
-              {option.shortcut && (
-                <Kbd className="ml-auto text-xs bg-muted px-1.5 py-0.5 rounded">
-                  {option.shortcut}
-                </Kbd>
+        {isCreatingList ? (
+          <div className="p-2">
+            <Input
+              ref={inputRef}
+              value={newListName}
+              onChange={(e) => setNewListName(e.target.value)}
+              placeholder="List name..."
+              className={cn(
+                "w-full bg-transparent",
+                "focus:ring-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-accent/20",
+                "border-none"
               )}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleCreateList()
+                } else if (e.key === 'Escape') {
+                  setIsCreatingList(false)
+                  setNewListName('')
+                }
+              }}
+            />
+            <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
+              <span>Press Enter to create</span>
+              <span>Esc to cancel</span>
             </div>
-            <span className="text-xs text-muted-foreground mt-1">
-              {option.description}
-            </span>
-          </DropdownMenuItem>
-        ))}
+          </div>
+        ) : (
+          createOptions.map((option) => (
+            <DropdownMenuItem
+              key={option.label}
+              onClick={option.onClick}
+              className={cn(
+                "flex flex-col items-start py-2 px-3 cursor-pointer",
+                "focus:ring-0 focus:outline-none focus-visible:ring-1 focus-visible:ring-accent/20"
+              )}
+            >
+              <div className="flex items-center gap-2 w-full">
+                <option.icon className="w-4 h-4" />
+                <span>{option.label}</span>
+              </div>
+              <span className="text-xs text-muted-foreground mt-1">
+                {option.description}
+              </span>
+            </DropdownMenuItem>
+          ))
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

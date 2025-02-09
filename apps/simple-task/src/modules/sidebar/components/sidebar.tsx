@@ -1,9 +1,9 @@
-'use client'
+	'use client'
 
 import type React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Search, Pin, PinOff } from 'lucide-react'
+import { Search, Pin, PinOff, PencilIcon, TrashIcon } from 'lucide-react'
 import {
 	InboxIcon,
 	TodayIcon,
@@ -27,15 +27,11 @@ import { useSearch } from '../../quick-task/hooks/use-search'
 import { SearchResults } from './search-results'
 import type { DropResult } from 'react-beautiful-dnd'
 import { useListsStore } from '../../quick-task/state/lists'
-import { useMockUserContext } from '../../../../../../src/shared/providers/mock-user-provider'
-
-	type NavItem = {
-	id: string
-	icon: React.ElementType
-	label: string
-	color?: string
-	isHidden?: boolean
-}
+import { mockUser } from 'config'
+import type { NavItem, NavItemProps, SidebarProps } from '../types'
+import { Kbd } from 'ui'
+import type { DraggableProvidedDragHandleProps } from 'react-beautiful-dnd'
+import Image from 'next/image'
 
 const initialNavItems: NavItem[] = [
 	{ id: 'inbox', icon: InboxIcon, label: 'Inbox' },
@@ -45,24 +41,25 @@ const initialNavItems: NavItem[] = [
 	{ id: 'lists', icon: ListsIcon, label: 'Lists' }
 ]
 
-interface SidebarProps {
-	isVisible: boolean
-	isLocked: boolean
-	onToggleLock: () => void
-	activeItem: string
-	onItemClick: (id: string) => void
+interface NavItemComponentProps extends NavItemProps {
+	dragHandleProps?: DraggableProvidedDragHandleProps;
 }
 
-interface NavItemProps {
-	item: NavItem
-	isActive: boolean
-	onClick: () => void
-}
-
-const NavItemComponent = ({ item, isActive, onClick }: NavItemProps) => {
+const NavItemComponent = ({ 
+	item, 
+	isActive, 
+	onClick, 
+	onEdit, 
+	onDelete,
+	dragHandleProps 
+}: NavItemComponentProps) => {
 	const [hovering, setHovering] = useState(false)
-	const buttonRef = useRef<HTMLButtonElement>(null)
+	const [isEditing, setIsEditing] = useState(false)
+	const [editValue, setEditValue] = useState(item.label)
+	const buttonRef = useRef<HTMLDivElement>(null)
+	const inputRef = useRef<HTMLInputElement>(null)
 	const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+	const [isDeleting, setIsDeleting] = useState(false)
 
 	const handleMouseMove = (e: React.MouseEvent) => {
 		if (buttonRef.current) {
@@ -74,37 +71,147 @@ const NavItemComponent = ({ item, isActive, onClick }: NavItemProps) => {
 		}
 	}
 
+	const handleEditClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		e.stopPropagation()
+		setIsEditing(true)
+		setTimeout(() => inputRef.current?.focus(), 0)
+	}
+
+	const handleEditSubmit = () => {
+		if (editValue.trim() !== item.label) {
+			onEdit({ ...item, label: editValue.trim() })
+		}
+		setIsEditing(false)
+	}
+
+	const handleDeleteClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+		e.stopPropagation()
+		setIsDeleting(true)
+		await new Promise(resolve => setTimeout(resolve, 300))
+		onDelete(item.id)
+	}
+
+	const handleKeyboardEdit = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault()
+			setIsEditing(true)
+			setTimeout(() => inputRef.current?.focus(), 0)
+		}
+	}
+
+	const handleKeyboardDelete = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault()
+			setIsDeleting(true)
+			setTimeout(async () => {
+				await new Promise(resolve => setTimeout(resolve, 300))
+				onDelete(item.id)
+			}, 0)
+		}
+	}
+
 	return (
-		<motion.button
-			ref={buttonRef}
-			className={cn(
-				'relative flex items-center gap-3 w-full rounded-sm px-3 py-1.5 text-sm transition-colors overflow-hidden',
-				isActive
-					? 'text-foreground bg-primary/5'
-					: 'text-muted-foreground hover:text-foreground'
-			)}
-			style={{ color: item.color }}
-			onClick={onClick}
-			onMouseMove={handleMouseMove}
+		<motion.div
+			className="group relative"
 			onHoverStart={() => setHovering(true)}
 			onHoverEnd={() => setHovering(false)}
+			initial={{ opacity: 1, height: "auto" }}
+			animate={{ 
+				opacity: isDeleting ? 0 : 1,
+				height: isDeleting ? 0 : "auto",
+				scale: isDeleting ? 0.8 : 1
+			}}
+			transition={{ duration: 0.3 }}
 		>
-			<item.icon />
-			<span>{item.label}</span>
-			{hovering && (
-				<motion.div
-					className="absolute inset-0 rounded-sm pointer-events-none"
-					initial={{ opacity: 0 }}
-					animate={{
-						opacity: 0.05
-					}}
-					style={{
-						background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, var(--primary) 0%, transparent 100%)`
-					}}
-					transition={{ duration: 0.15, ease: 'easeOut' }}
-				/>
-			)}
-		</motion.button>
+			<div
+				role="button"
+				tabIndex={0}
+				ref={buttonRef}
+				{...dragHandleProps}
+				className={cn(
+					'relative flex items-center w-full rounded-sm px-3 py-1.5 text-sm transition-colors overflow-hidden cursor-pointer',
+					isActive
+						? 'text-foreground bg-primary/5'
+						: 'text-muted-foreground hover:text-foreground'
+				)}
+				style={{ color: item.color }}
+				onClick={onClick}
+				onMouseMove={handleMouseMove}
+				onKeyDown={handleKeyboardEdit}
+			>
+				<div className="flex items-center gap-3 flex-1">
+					<item.icon />
+					{isEditing ? (
+						<div className="flex-1 flex items-center gap-2">
+							<input
+								ref={inputRef}
+								type="text"
+								value={editValue}
+								onChange={(e) => setEditValue(e.target.value)}
+								onBlur={handleEditSubmit}
+								onKeyDown={(e) => {
+									if (e.key === 'Enter') handleEditSubmit()
+									if (e.key === 'Escape') {
+										setEditValue(item.label)
+										setIsEditing(false)
+										inputRef.current?.blur()
+									}
+								}}
+								onClick={(e) => e.stopPropagation()}
+								className={cn(
+									"bg-transparent border-none outline-none focus:ring-0 focus:outline-none rounded px-1 w-full",
+									"text-foreground placeholder:text-muted-foreground",
+									!isEditing && "cursor-default caret-transparent"
+								)}
+							/>
+							<Kbd>enter ↵</Kbd>
+						</div>
+					) : (
+						<span className="cursor-default">{item.label}</span>
+					)}
+				</div>
+				
+				{/* Action buttons - absolutely positioned */}
+				<div 
+					className={cn(
+						"absolute right-2 flex items-center gap-1 transition-opacity duration-200",
+						hovering && !isEditing ? "opacity-100" : "opacity-0 pointer-events-none"
+					)}
+				>
+					<div
+						role="button"
+						tabIndex={0}
+						className="h-6 w-6 flex items-center justify-center rounded-sm hover:bg-primary/10 transition-colors cursor-pointer"
+						onClick={handleEditClick}
+						onKeyDown={handleKeyboardEdit}
+					>
+						<PencilIcon className="h-3 w-3" />
+					</div>
+					<div
+						role="button"
+						tabIndex={0}
+						className="h-6 w-6 flex items-center justify-center rounded-sm hover:bg-primary/10 transition-colors cursor-pointer"
+						onClick={handleDeleteClick}
+						onKeyDown={handleKeyboardDelete}
+					>
+						<TrashIcon className="h-3 w-3" />
+					</div>
+				</div>
+
+				{/* Hover effect - absolutely positioned */}
+				{hovering && !isEditing && (
+					<div
+						className={cn(
+							"absolute inset-0 rounded-sm pointer-events-none transition-opacity duration-300 ease-in-out",
+							hovering && !isEditing ? "opacity-5" : "opacity-0"
+						)}
+						style={{
+							background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, var(--primary) 0%, transparent 100%)`
+						}}
+					/>
+				)}
+			</div>
+		</motion.div>
 	)
 }
 
@@ -116,12 +223,10 @@ export function Sidebar({
 	onItemClick
 }: SidebarProps) {
 	const [navItems, setNavItems] = useState(initialNavItems)
-	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 	const [searchQuery, setSearchQuery] = useState('')
 	const searchResults = useSearch(searchQuery)
-
-	const { lists} = useListsStore()
-	const { user } = useMockUserContext()
+	const { lists } = useListsStore()
+	const user = mockUser
 
 	useEffect(() => {
 		const handleEscape = (e: KeyboardEvent) => {
@@ -134,222 +239,36 @@ export function Sidebar({
 		return () => window.removeEventListener('keydown', handleEscape)
 	}, [isVisible, isLocked, onToggleLock])
 
-
-
 	const onDragEnd = (result: DropResult) => {
 		if (!result.destination) return
 
 		const items = Array.from(navItems)
-		const [reorderedItem] = items.splice(result.source.index, 1)
-		items.splice(result.destination.index, 0, reorderedItem)
+		const [removed] = items.splice(result.source.index, 1)
+		items.splice(result.destination.index, 0, removed)
 
 		setNavItems(items)
 	}
 
-
-
-
-	const handleSearchSelect = (result: {
-		type: 'task' | 'list'
-		id: string
-	}) => {
-		if (result.type === 'list') {
-			onItemClick(result.id)
-		} else {
-			// Handle task selection - you might want to navigate to the task's list and highlight it
-			const task = lists
-				.flatMap((list) => list.tasks)
-				.find((task) => task.id === result.id)
-			if (task) {
-				onItemClick(task.id)
-			}
-		}
-		setSearchQuery('')
-	}
-
 	return (
-		<div
-			className={cn(
-				'w-60 flex flex-col h-screen bg-background/50 backdrop-blur-sm transition-all duration-300 ease-in-out border-r border-dashed',
-				'absolute top-0 left-0 origin-left',
-				isVisible
-					? 'translate-x-0 opacity-100'
-					: '-translate-x-full opacity-0'
-			)}
-		>
-			{/* Header Section */}
-			<div className="p-4 border-b border-dashed">
-				<div className="flex items-center justify-between mb-4">
-					<h2 className="text-lg font-semibold text-foreground">
-						Quick Tasks
-					</h2>
-					<TooltipProvider delayDuration={0}>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button
-									variant="ghost"
-									size="icon"
-									onClick={onToggleLock}
-									className={cn(
-										'h-8 w-8',
-										isLocked
-											? 'text-primary'
-											: 'text-muted-foreground'
-									)}
-								>
-									{isLocked ? (
-										<Pin className="h-4 w-4" />
-									) : (
-										<PinOff className="h-4 w-4" />
-									)}
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side="right" align="center">
-								<p>
-									{isLocked ? 'Unpin sidebar' : 'Pin sidebar'}
-								</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</div>
-				<div className="relative">
-					<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-					<input
-						type="text"
-						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
-						placeholder="Search tasks, lists..."
-						className="w-full bg-background/50 border border-border rounded-md pl-9 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-					/>
-				</div>
-			</div>
-
-			{/* Search Results */}
-			{searchQuery.trim() && (
-				<div className="flex-1 overflow-auto">
-					<SearchResults
-						results={searchResults}
-						query={searchQuery}
-						onSelect={handleSearchSelect}
-					/>
-				</div>
-			)}
-
-			{/* Navigation Section - Only show when not searching */}
-			{!searchQuery.trim() && (
-				<div className="flex-1 overflow-auto py-4">
-					<div className="px-3 mb-2">
-						<h3 className="text-xs font-medium text-muted-foreground mb-2 px-3">
-							QUICK ACCESS
-						</h3>
-						<nav className="space-y-1">
-							<DragDropContext onDragEnd={onDragEnd}>
-								<Droppable
-									droppableId="sidebar-list"
-									isDropDisabled={false}
-									isCombineEnabled={false}
-									ignoreContainerClipping={false}
-								>
-									{(provided) => (
-										<div
-											{...provided.droppableProps}
-											ref={provided.innerRef}
-										>
-											{navItems
-												.filter(
-													(item) => !item.isHidden
-												)
-												.map((item, index) => (
-													<Draggable
-														key={item.id}
-														draggableId={item.id}
-														index={index}
-													>
-														{(provided) => (
-															<div
-																ref={
-																	provided.innerRef
-																}
-																{...provided.draggableProps}
-																{...provided.dragHandleProps}
-																className="relative group"
-															>
-																<NavItemComponent
-																	item={item}
-																	isActive={
-																		item.id ===
-																		activeItem
-																	}
-																	onClick={() =>
-																		onItemClick(
-																			item.id
-																		)
-																	}
-																/>
-															</div>
-														)}
-													</Draggable>
-												))}
-											{provided.placeholder}
-										</div>
-									)}
-								</Droppable>
-							</DragDropContext>
-						</nav>
-					</div>
-
-					<div className="px-3 mb-2">
-						<h3 className="text-xs font-medium text-muted-foreground mb-2 px-3">
-							RECENT LISTS
-						</h3>
-						<nav className="space-y-1">
-							{lists.slice(0, 3).map((list) => (
-								<button
-									key={list.id}
-									onClick={() => onItemClick(list.id)}
-									className={cn(
-										'flex items-center w-full rounded-sm px-3 py-1.5 text-sm transition-colors group relative overflow-hidden',
-										list.id === activeItem
-											? 'text-foreground bg-primary/5'
-											: 'text-muted-foreground hover:text-foreground hover:bg-primary/5'
-									)}
-								>
-									<ListsIcon className="w-4 h-4 mr-3" />
-									<span className="truncate">
-										{list.title}
-									</span>
-								</button>
-							))}
-						</nav>
-					</div>
-				</div>
-			)}
-
-			{/* Footer Section */}
-			<div className="border-t border-dashed p-4 space-y-3">
-				<div className="flex items-center gap-3 p-2 rounded-lg bg-secondary/30">
-					<img
-						src={user?.avatar || '/placeholder.svg'}
-						className="w-8 h-8 rounded-full ring-1 ring-border"
-						alt={user?.name}
-					/>
-					<div className="flex-1 min-w-0">
-						<p className="text-sm font-medium text-foreground truncate">
-							{user?.name}
-						</p>
-						<p className="text-xs text-muted-foreground truncate">
-							{user?.email}
-						</p>
-					</div>
-					<div className="flex items-center gap-1">
-						<SettingsMenu />
-						<ThemeSwitcher />
-					</div>
-				</div>
-
-b
-				<CreateNewDropdown />
-			</div>
+		<div className="flex flex-col gap-2">
+			<DragDropContext onDragEnd={onDragEnd}>
+				<Droppable droppableId="navItems">
+					{(provided) => (
+						<div
+							ref={provided.innerRef}
+							{...provided.droppableProps}
+							className="flex flex-col gap-2"
+						
+							>
+							{navItems.map((item, index) => (
+								<Draggable key={item.id} draggableId={item.id} index={index}>	
+								</Draggable>
+								))}
+								{provided.placeholder}
+						</div>
+					)}
+				</Droppable>
+			</DragDropContext>
 		</div>
 	)
 }
