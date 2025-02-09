@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "index",
+    "---Getting Started---",
+    "architecture/monorepo",
+    "---Components---",
+    "components/overview",
+    "components/button",
+    "components/modal",
+    "components/toast",
+    "---Core Features---",
+    "analytics",
+    "database",
+    "---"
+  ]
+} 

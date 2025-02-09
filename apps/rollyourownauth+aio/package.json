@@ -1,5 +1,7 @@
 {
   "name": "ryoa",
+  "author": "Remco Stoetenp",
+  "description": "A app to showcase how to roll your own auth with a comprehensive dashboard loaded with features.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,32 +11,39 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db": "tsx ./scripts/db-cli.ts"
+    "db": "tsx ./scripts/db-cli.ts",
+    "db:generate": "drizzle-kit generate:sqlite",
+    "db:push": "drizzle-kit push:sqlite",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
     "@neondatabase/serverless": "^0.10.4",
+    "@t3-oss/env-nextjs": "^0.12.0",
+    "better-sqlite3": "^9.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.39.2",
     "enquirer": "^2.4.1",
     "lucide-react": "^0.474.0",
-    "next": "15.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "next": "14.1.0",
+    "react": "^18",
+    "react-dom": "^18",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@prisma/client": "^6.3.1",
+    "@types/better-sqlite3": "^7.6.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.30.4",
     "eslint": "^9",
     "eslint-config-next": "15.1.0",
     "postcss": "^8",
     "prettier": "^3.4.2",
-    "prisma": "^6.3.1",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.19.2",
     "typescript": "^5"

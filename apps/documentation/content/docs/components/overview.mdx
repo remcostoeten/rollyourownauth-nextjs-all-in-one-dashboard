@@ -1,0 +1,85 @@
+---
+title: "Custom Components"
+description: "Overview of our custom-built React components"
+---
+
+# Custom Components
+
+Our application features a set of custom-built React components designed with modularity, accessibility, and performance in mind. While we utilize some components from Shadcn/UI, we've developed several custom components to meet our specific needs.
+
+## Component Library Structure
+
+```text
+src/shared/components/
+├── ui/                      # Base UI components (from shadcn)
+│   ├── button.tsx
+│   ├── dialog.tsx
+│   └── ...
+│
+├── custom/                  # Custom components
+│   ├── AnimatedButton/     
+│   │   ├── index.tsx      # Component implementation
+│   │   ├── types.ts       # TypeScript types
+│   │   └── styles.ts      # Component styles
+│   │
+│   ├── Modal/
+│   │   ├── index.tsx
+│   │   ├── types.ts
+│   │   └── styles.ts
+│   │
+│   └── ...
+```
+
+## Available Components
+
+Here's a list of our custom components with links to their detailed documentation:
+
+<Cards>
+  <Card 
+    title="Animated Button" 
+    href="/docs/components/button"
+    description="A customizable button component with built-in animations" 
+  />
+  <Card 
+    title="Modal" 
+    href="/docs/components/modal"
+    description="A flexible modal component with customizable transitions" 
+  />
+  <Card 
+    title="Toast" 
+    href="/docs/components/toast"
+    description="A versatile toast notification system with multiple variants and animations" 
+  />
+</Cards>
+
+## Usage Guidelines
+
+1. **Importing Components**
+   ```typescript
+   // Import custom components using the alias
+   import { AnimatedButton, Modal } from '@/components/custom';
+   ```
+
+2. **Styling**
+   - All components support custom className props for styling overrides
+   - Use Tailwind CSS for custom styles
+   - Components are built with dark mode support
+
+3. **TypeScript**
+   - All components are fully typed
+   - Props interfaces are exported for reuse
+
+4. **Accessibility**
+   - Components follow WAI-ARIA guidelines
+   - Keyboard navigation support
+   - Screen reader friendly
+
+## Contributing
+
+When creating new custom components:
+
+1. Follow the established directory structure
+2. Include comprehensive TypeScript types
+3. Add proper documentation with examples
+4. Include accessibility considerations
+5. Add unit tests for the component 

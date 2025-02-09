@@ -1,0 +1,209 @@
+---
+title: "Implementing Server Actions for Activity Logging"
+description: "Create server actions for logging user activities in Next.js 15"
+---
+
+# Implementing Server Actions for Activity Logging
+
+## Overview
+
+In this section, we'll implement server actions to handle activity logging. These actions will be responsible for processing and storing log entries in our database.
+
+## Step 1: Create Server Actions
+
+Create a new file `src/app/actions/logging.ts`:
+
+```typescript
+'use server'
+
+import { db } from '@/db'
+import { userActions, contentInteractions, systemPerformance } from '@/db/schema'
+import { revalidatePath } from 'next/cache'
+
+export async function logUserAction(
+  userId: string,
+  actionType: string,
+  ipAddress: string,
+  deviceInfo: string,
+  geoLocation: string,
+  additionalInfo?: Record<string, any>
+) {
+  await db.insert(userActions).values({
+    userId,
+    actionType,
+    timestamp: Date.now(),
+    ipAddress,
+    deviceInfo,
+    geoLocation,
+    additionalInfo: additionalInfo ? JSON.stringify(additionalInfo) : null,
+  })
+
+  revalidatePath('/admin/logs')
+}
+
+export async function logContentInteraction(
+  userId: string | null,
+  interactionType: string,
+  url: string,
+  deviceType: string,
+  operatingSystem: string,
+  country: string,
+  isNewVisitor: boolean,
+  additionalInfo?: Record<string, any>
+) {
+  await db.insert(contentInteractions).values({
+    userId,
+    interactionType,
+    timestamp: Date.now(),
+    url,
+    deviceType,
+    operatingSystem,
+    country,
+    isNewVisitor: isNewVisitor ? 1 : 0,
+    additionalInfo: additionalInfo ? JSON.stringify(additionalInfo) : null,
+  })
+
+  revalidatePath('/admin/logs')
+}
+
+export async function logSystemPerformance(
+  eventType: string,
+  duration: number,
+  statusCode?: number,
+  url?: string,
+  queryInfo?: string,
+  errorMessage?: string,
+  stackTrace?: string
+) {
+  await db.insert(systemPerformance).values({
+    eventType,
+    timestamp: Date.now(),
+    duration,
+    statusCode: statusCode || null,
+    url: url || null,
+    queryInfo: queryInfo || null,
+    errorMessage: errorMessage || null,
+    stackTrace: stackTrace || null,
+  })
+
+  revalidatePath('/admin/logs')
+}
+```
+
+## Step 2: Implement Middleware for Automatic Logging
+
+Create a new file `src/middleware.ts`:
+
+```typescript
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { logContentInteraction } from '@/app/actions/logging'
+
+export async function middleware(request: NextRequest) {
+  const response = NextResponse.next()
+
+  // Extract relevant information from the request
+  const url = request.url
+  const userAgent = request.headers.get('user-agent') || ''
+  const country = request.geo?.country || 'Unknown'
+  const ip = request.ip || 'Unknown'
+
+  // Determine device type and OS (simplified version)
+  const deviceType = userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
+  const operatingSystem = userAgent.includes('Windows') ? 'Windows' : 
+                          userAgent.includes('Mac') ? 'MacOS' : 
+                          userAgent.includes('Linux') ? 'Linux' : 'Unknown'
+
+  // Check if the user has a session (you may need to adjust this based on your auth setup)
+  const userId = request.cookies.get('userId')?.value || null
+
+  // Determine if it's a new visitor (simplified version)
+  const isNewVisitor = !request.cookies.get('returning_visitor')
+
+  // Log the page view
+  await logContentInteraction(
+    userId,
+    'page_view',
+    url,
+    deviceType,
+    operatingSystem,
+    country,
+    isNewVisitor,
+    { ip }
+  )
+
+  // Set a cookie to mark the user as a returning visitor
+  if (isNewVisitor) {
+    response.cookies.set('returning_visitor', 'true', { maxAge: 60 * 60 * 24 * 365 }) // 1 year
+  }
+
+  return response
+}
+
+export const config = {
+  matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+}
+```
+
+## Step 3: Create a Custom Error Boundary
+
+Create a new file `src/app/error.tsx`:
+
+```typescript
+'use client'
+
+import { useEffect } from 'react'
+import { logSystemPerformance } from './actions/logging'
+
+export default function ErrorBoundary({
+  error,
+  reset,
+}: {
+  error: Error
+  reset: () => void
+}) {
+  useEffect(() => {
+    logSystemPerformance(
+      'error',
+      0,
+      500,
+      window.location.href,
+      undefined,
+      error.message,
+      error.stack
+    )
+  }, [error])
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h2 className="text-2xl font-bold mb-4">Something went wrong!</h2>
+      <button
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        onClick={() => reset()}
+      >
+        Try again
+      </button>
+    </div>
+  )
+}
+```
+
+## Next Steps
+
+<Cards>
+  <Card 
+    title="Client-Side Integration" 
+    href="/docs/activity-logs/client-integration"
+    description="Integrate logging into your React components" 
+  />
+  <Card 
+    title="Admin Dashboard" 
+    href="/docs/activity-logs/admin-dashboard"
+    description="Build an admin dashboard to view and analyze logs" 
+  />
+  <Card 
+    title="Performance Optimization" 
+    href="/docs/activity-logs/performance-optimization"
+    description="Optimize the logging system for better performance" 
+  />
+</Cards>

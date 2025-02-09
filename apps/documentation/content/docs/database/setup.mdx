@@ -1,0 +1,90 @@
+---
+title: Database Setup
+description: Setting up the database layer with Drizzle ORM and SQLite
+---
+
+## Installation
+
+First, install the required dependencies:
+
+```bash
+# Core dependencies
+pnpm add drizzle-orm better-sqlite3 zod
+
+# Development dependencies
+pnpm add -D drizzle-kit @types/better-sqlite3
+```
+
+## Configuration
+
+### Database Client
+
+```typescript
+// src/server/db/client.ts
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
+import * as schema from "./schemas";
+
+const sqlite = new Database(env.DATABASE_URL);
+export const db = drizzle(sqlite, { schema });
+```
+
+### Drizzle Config
+
+```typescript
+// drizzle.config.ts
+import type { Config } from "drizzle-kit";
+
+export default {
+  schema: "./src/server/db/schemas/index.ts",
+  out: "./src/server/db/migrations",
+  driver: "better-sqlite",
+  dbCredentials: {
+    url: env.DATABASE_URL,
+  },
+} satisfies Config;
+```
+
+### Environment Setup
+
+```bash
+# .env
+DATABASE_URL="sqlite:./local.db"
+
+# .env.example
+DATABASE_URL="sqlite:./local.db"
+```
+
+## Available Commands
+
+Add these scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "db:generate": "drizzle-kit generate:sqlite",
+    "db:push": "drizzle-kit push:sqlite",
+    "db:studio": "drizzle-kit studio"
+  }
+}
+```
+
+## Next Steps
+
+<Cards>
+  <Card 
+    title="Database Architecture" 
+    href="/database/architecture"
+    description="Learn about our database architecture and design principles" 
+  />
+  <Card 
+    title="Database Schema" 
+    href="/database/schema"
+    description="Explore our database schema and models" 
+  />
+  <Card 
+    title="Database Operations" 
+    href="/database/operations"
+    description="Learn how to perform database operations" 
+  />
+</Cards> 

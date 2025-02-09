@@ -1,0 +1,84 @@
+---
+title: "Analytics Features Overview"
+description: "Comprehensive list of custom analytics features for our application"
+---
+
+# Analytics Features Overview
+
+## Core Features
+
+### 1. Site Visit Tracking
+- Track total site visits
+- Track total individual page visits
+- Differentiate between unique visitors and recurring visitors
+
+### 2. Visitor Metrics
+- Capture timestamps
+- Collect geodata
+- Identify device type (mobile or desktop)
+- Record operating system
+- Log user language
+
+### 3. Session Information
+- Track session duration
+- Identify entry pages
+- Determine if visit is organic or from a referral source
+- If referral, log the source
+
+### 4. Exit Analysis
+- Record exit pages
+- For premature exits during page loads, log what was loading
+
+### 5. Authenticated User Tracking
+- Log all steps for authenticated users
+- Record registration actions
+- Track login actions and frequency
+- Log average visit duration for authenticated users
+- Store last visit timestamp/date
+- Log errors encountered by users, including location/context
+
+## Implementation Guidelines
+
+- No API routes
+- Use mutations and queries only
+- Co-locate all code in a modules directory
+- Server-side rendering (SSR) focus using Next.js
+- Minimize client-side hooks where possible
+
+## File Naming Convention
+
+Use kebab-case for filenames. Examples:
+- `site-visit-tracker.ts`
+- `user-session-logger.ts`
+- `authenticated-user-analytics.ts`
+
+## Documentation
+
+Use JSDoc for important business logic, including @author and @description. Example:
+
+```typescript
+/**
+ * @author [Your Name]
+ * @description Records a site visit with associated metadata
+ */
+```
+
+## Next Steps
+
+<Cards>
+  <Card 
+    title="Implementation Roadmap" 
+    href="/docs/analytics/roadmap"
+    description="Step-by-step plan for implementing analytics features" 
+  />
+  <Card 
+    title="Data Schema Design" 
+    href="/docs/analytics/schema-design"
+    description="Designing data schemas for analytics tracking" 
+  />
+  <Card 
+    title="Analytics Dashboard" 
+    href="/docs/analytics/dashboard"
+    description="Building the analytics dashboard page" 
+  />
+</Cards>

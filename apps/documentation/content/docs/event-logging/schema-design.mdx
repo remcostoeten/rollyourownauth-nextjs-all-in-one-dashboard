@@ -1,0 +1,103 @@
+---
+title: "Activity Logs Data Schema Design"
+description: "Designing data schemas for activity logging"
+---
+
+# Activity Logs Data Schema Design
+
+## Overview
+
+This document outlines the data schema design for our activity logging system. We'll be using Drizzle ORM with SQLite to define and manage our database schema.
+
+## Schema Definitions
+
+### User Actions
+
+```typescript
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+
+export const userActions = sqliteTable('user_actions', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: text('user_id').notNull(),
+  actionType: text('action_type').notNull(), // 'register', 'login', 'failed_login', 'update_profile'
+  timestamp: integer('timestamp').notNull(),
+  ipAddress: text('ip_address'),
+  deviceInfo: text('device_info'),
+  geoLocation: text('geo_location'),
+  duration: integer('duration'), // For login duration
+  additionalInfo: text('additional_info'), // JSON string for extra data
+});
+```
+
+### Content Interactions
+
+```typescript
+export const contentInteractions = sqliteTable('content_interactions', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: text('user_id'),
+  interactionType: text('interaction_type').notNull(), // 'page_view', 'button_click', 'form_submit', 'create_task'
+  timestamp: integer('timestamp').notNull(),
+  url: text('url'),
+  deviceType: text('device_type'),
+  operatingSystem: text('operating_system'),
+  country: text('country'),
+  isNewVisitor: integer('is_new_visitor'),
+  additionalInfo: text('additional_info'), // JSON string for extra data
+});
+```
+
+### System Performance
+
+```typescript
+export const systemPerformance = sqliteTable('system_performance', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  eventType: text('event_type').notNull(), // 'page_load', 'db_query', 'error'
+  timestamp: integer('timestamp').notNull(),
+  duration: integer('duration'), // For page load times or query execution times
+  statusCode: integer('status_code'), // For error logs
+  url: text('url'),
+  queryInfo: text('query_info'), // For database queries
+  errorMessage: text('error_message'),
+  stackTrace: text('stack_trace'),
+});
+```
+
+## Indexes
+
+To optimize query performance, we'll create the following indexes:
+
+```typescript
+import { index } from 'drizzle-orm/sqlite-core';
+
+// Indexes for userActions
+export const userActionsUserIdIndex = index('user_actions_user_id_idx').on(userActions.userId);
+export const userActionsTimestampIndex = index('user_actions_timestamp_idx').on(userActions.timestamp);
+
+// Indexes for contentInteractions
+export const contentInteractionsUserIdIndex = index('content_interactions_user_id_idx').on(contentInteractions.userId);
+export const contentInteractionsTimestampIndex = index('content_interactions_timestamp_idx').on(contentInteractions.timestamp);
+
+// Indexes for systemPerformance
+export const systemPerformanceEventTypeIndex = index('system_performance_event_type_idx').on(systemPerformance.eventType);
+export const systemPerformanceTimestampIndex = index('system_performance_timestamp_idx').on(systemPerformance.timestamp);
+```
+
+## Next Steps
+
+<Cards>
+  <Card 
+    title="Logging Implementation" 
+    href="/docs/activity-logs/logging-implementation"
+    description="Implementing core logging functions based on the schema" 
+  />
+  <Card 
+    title="Query Optimization" 
+    href="/docs/activity-logs/query-optimization"
+    description="Optimizing database queries for log data retrieval" 
+  />
+  <Card 
+    title="Data Migration" 
+    href="/docs/activity-logs/data-migration"
+    description="Strategies for migrating existing log data to the new schema" 
+  />
+</Cards>
