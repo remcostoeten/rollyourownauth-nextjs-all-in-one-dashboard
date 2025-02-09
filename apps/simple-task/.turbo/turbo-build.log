@@ -1,0 +1,13 @@
+
+
+> simple-task@0.1.0 build /home/remcostoeten/PROPAH/ryoa-mono-docs/apps/simple-task
+> next build
+
+   [1m[38;2;173;127;168m▲ Next.js 15.1.6[39m[22m
+   - Environments: .env
+   - Experiments (use with caution):
+     · webpackBuildWorker
+     · parallelServerCompiles
+     · parallelServerBuildTraces
+
+ [37m[1m [22m[39m Creating an optimized production build ...
