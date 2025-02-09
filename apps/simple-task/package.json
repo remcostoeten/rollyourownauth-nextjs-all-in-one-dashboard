@@ -53,6 +53,7 @@
     "immer": "latest",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
+    "motion": "^12.4.1",
     "next": "15.1.6",
     "next-themes": "latest",
     "path": "latest",

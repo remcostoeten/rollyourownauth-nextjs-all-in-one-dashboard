@@ -1,9 +1,8 @@
 import { ThemeProvider } from '@/src/components/theme-provider'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
-import type React from 'react' // Added import for React
-import { MockUserProvider } from '../../../../src/shared/providers/mock-user-provider'
+import '../styles/app.css'
+import { TooltipProvider } from '@radix-ui/react-tooltip'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,7 +19,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body className={inter.className}>
-				<MockUserProvider>
+				<TooltipProvider>
 					<ThemeProvider
 						attribute="class"
 						defaultTheme="system"
@@ -28,7 +27,7 @@ export default function RootLayout({
 					>
 						{children}
 					</ThemeProvider>
-				</MockUserProvider>
+				</TooltipProvider>
 			</body>
 		</html>
 	)

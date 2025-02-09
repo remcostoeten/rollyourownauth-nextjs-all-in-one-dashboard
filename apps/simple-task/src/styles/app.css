@@ -1,3 +1,5 @@
+@import './components/kbd-shimmer.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

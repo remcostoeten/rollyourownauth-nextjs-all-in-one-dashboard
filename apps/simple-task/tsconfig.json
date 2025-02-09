@@ -28,10 +28,11 @@
       "@/src/*": ["./src/*"],
       "@/lib/*": ["./lib/*"],
       "db": ["./src/server/db/index.ts"],
-      "ui": ["./src/shared/components/ui/index.ts"]
+      "ui": ["./src/shared/components/ui/index.ts"],
+      "config": ["../../packages/configuration/index.ts"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../packages/configuration/mock-user/index.ts"],
   "exclude": ["node_modules"]
 }
 

@@ -13,7 +13,7 @@ In this section, we'll integrate our logging system into React components, focus
 
 Create a new file `src/hooks/useLogger.ts`:
 
-$$$typescript
+```typescript
 'use client'
 
 import { useCallback } from 'react'
@@ -54,7 +54,7 @@ export function useLogger() {
 
   return { logAction, logInteraction }
 }
-$$$
+```
 
 ## Step 2: Integrate Logging into Components
 
@@ -62,7 +62,7 @@ Here's an example of how to use the `useLogger` hook in a component:
 
 Create a new file `src/components/LoggedButton.tsx`:
 
-$$$typescript
+```typescript
 'use client'
 
 import { useLogger } from '@/hooks/useLogger'
@@ -90,13 +90,13 @@ export function LoggedButton({ children, onClick, className = '' }: LoggedButton
     </button>
   )
 }
-$$$
+```
 
 ## Step 3: Use the LoggedButton Component
 
 Update `src/app/page.tsx` to use the LoggedButton:
 
-$$$typescript
+```typescript
 import { LoggedButton } from '@/components/LoggedButton'
 
 export default function Home() {
@@ -109,13 +109,13 @@ export default function Home() {
     </main>
   )
 }
-$$$
+```
 
 ## Step 4: Log Form Submissions
 
 Create a new file `src/components/LoggedForm.tsx`:
 
-$$$typescript
+```typescript
 'use client'
 
 import { useLogger } from '@/hooks/useLogger'
@@ -150,11 +150,11 @@ export function LoggedForm() {
     </form>
   )
 }
-$$$
+```
 
 Update `src/app/page.tsx` to include the LoggedForm:
 
-$$$typescript
+```typescript
 import { LoggedButton } from '@/components/LoggedButton'
 import { LoggedForm } from '@/components/LoggedForm'
 
@@ -169,7 +169,7 @@ export default function Home() {
     </main>
   )
 }
-$$$
+```
 
 ## Next Steps
 
