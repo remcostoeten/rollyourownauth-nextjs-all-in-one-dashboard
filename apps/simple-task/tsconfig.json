@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "noImplicitAny": false,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "helpers": ["./src/shared/helpers/index.ts"],
+      "@/*": ["./*"],
+      "@shared/*": ["./src/shared/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/src/*": ["./src/*"],
+      "@/lib/*": ["./lib/*"],
+      "db": ["./src/server/db/index.ts"],
+      "ui": ["./src/shared/components/ui/index.ts"],
+      "config": ["../../packages/configuration/index.ts"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../packages/configuration/mock-user/index.ts"],
+  "exclude": ["node_modules"]
+}
+

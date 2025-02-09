@@ -1,0 +1,108 @@
+---
+title: "Swap SQLite for PostgreSQL"
+description: "Learn how to swap SQLite for PostgreSQL in your project"
+---
+
+## Usage Guide
+
+### Switching Databases
+
+1. Switch to PostgreSQL:
+
+```bash
+pnpm db:env use-postgres
+```
+
+2. Switch to SQLite:
+
+```bash
+pnpm db:env use-sqlite
+```
+
+### Development Workflow
+
+1. **Initial Setup**
+
+```bash
+# Start with SQLite for development
+pnpm db:env use-sqlite
+
+# Generate initial migration
+pnpm db:generate
+
+# Push changes to database
+pnpm db:migrate
+```
+
+2. **Making Schema Changes**
+
+```bash
+# Update your schema files
+# Generate new migration
+pnpm db:generate
+
+# Push changes to current database
+pnpm db:migrate
+```
+
+3. **Testing PostgreSQL Compatibility**
+
+```bash
+# Switch to PostgreSQL
+pnpm db:env use-postgres
+
+# Push changes to verify compatibility
+pnpm db:migrate
+```
+
+## Important Considerations
+
+### 1. Type Differences
+
+- SQLite has limited types compared to PostgreSQL
+- Use the most compatible types across both databases
+- Avoid PostgreSQL-specific features when possible
+
+### 2. Migration Handling
+
+- Always test migrations on both databases
+- Keep migrations reversible
+- Use the database-agnostic schema helpers
+
+### 3. Feature Compatibility
+
+- JSON support differs between SQLite and PostgreSQL
+- Full-text search capabilities vary
+- Consider these limitations in feature design
+
+### 4. Performance Implications
+
+- SQLite: Better for single-user scenarios
+- PostgreSQL: Better for concurrent access
+- Test performance characteristics in both environments
+
+### 5. Deployment Considerations
+
+- Ensure CI/CD pipeline supports both databases
+- Use environment variables for configuration
+- Document database-specific deployment steps
+
+## Next Steps
+
+<Cards>
+  <Card
+    title="Database Schema Design"
+    href="/docs/database/schema-design"
+    description="Learn about designing database-agnostic schemas"
+  />
+  <Card
+    title="Migration Strategies"
+    href="/docs/database/migrations"
+    description="Best practices for handling database migrations"
+  />
+  <Card
+    title="Production Deployment"
+    href="/docs/database/deployment"
+    description="Guide for deploying with different databases"
+  />
+</Cards>

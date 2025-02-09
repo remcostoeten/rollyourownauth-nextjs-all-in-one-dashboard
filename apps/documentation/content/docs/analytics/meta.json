@@ -1,0 +1,11 @@
+{
+  "title": "Analytics",
+  "icon": "ChartBarIcon",
+  "pages": [
+    "analytics",
+    "implementation-roadmap",
+    "schema-design",
+    "dashboard",
+    "tracking"
+  ]
+}
