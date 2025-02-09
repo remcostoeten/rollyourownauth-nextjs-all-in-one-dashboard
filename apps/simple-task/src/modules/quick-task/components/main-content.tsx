@@ -2,13 +2,13 @@
 
 import { useState, useEffect, Suspense, lazy } from "react"
 import type { Task } from "@/types/task"
-import { cn } from "helpers"
+import { cn } from "helpers" 
 import { taskService } from "../services/task-service"
 import { Loader2 } from "lucide-react"
-import { SearchInput } from "./search-input"
+import { Search } from "./search-input"
 import { TaskList } from "./task-list"
-import { AddTask } from "../../slash/components/add-task"
-import { useListsStore } from '../state/lists'
+import { useListsStore } from "../state/lists"
+import { AddTask } from "../../task-management/components/add-task"
 const TaskDetail = lazy(() => import("./task-detail"))
 
 interface MainContentProps {
@@ -72,7 +72,7 @@ export function MainContent({ activeItem, onTaskSelect, sidebarVisible = true }:
     addList({
       id: crypto.randomUUID(),
       name,
-      tasks: []
+      tasks: [],
     })
   }
 
@@ -93,7 +93,7 @@ export function MainContent({ activeItem, onTaskSelect, sidebarVisible = true }:
 
       <div className="px-8 flex-1 overflow-auto flex flex-wrap flex-col bcontent-between">
         <div className="flex items-center gap-2 mb-4">
-          <SearchInput onSearch={handleSearch} />
+          <Search onSearch={handleSearch} />
         </div>
 
         <TaskList
@@ -124,3 +124,4 @@ export function MainContent({ activeItem, onTaskSelect, sidebarVisible = true }:
 }
 
 export default MainContent
+

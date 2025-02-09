@@ -1,10 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/src/shared/components/ui/dialog'
-import { Button } from '@/src/shared/components/ui/button'
-import { Input } from '@/src/shared/components/ui/input'
-import { Label } from '@/src/shared/components/ui/label'
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, Button,Label,Input } from 'ui'
 import { ListPlus } from 'lucide-react'
 
 interface NewListDialogProps {

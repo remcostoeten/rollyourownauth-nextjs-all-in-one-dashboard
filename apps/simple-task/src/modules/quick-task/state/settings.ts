@@ -14,7 +14,7 @@ export const useSettingsStore = create<Settings>()(
 	persist(
 		(set) => ({
 			shortcuts: {
-				newTask: 'Alt+N'
+				newTask: 'alt+n'
 			},
 			setShortcut: (key, value) =>
 				set((state) => ({

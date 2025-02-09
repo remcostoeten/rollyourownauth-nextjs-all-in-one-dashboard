@@ -2,7 +2,6 @@
 
 import { create } from "zustand"
 import { v4 as uuidv4 } from "uuid"
-import type { Task } from "../types/task"
 
 export interface List {
 	id: string
