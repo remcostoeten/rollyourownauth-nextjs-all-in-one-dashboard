@@ -1,0 +1,102 @@
+---
+title: "Setup Drizzle and SQLite"
+description: "Showcasing you how to setup Drizzle and SQLite. Which isn't hard but can be a bit confusing. 
+---
+
+# Setup Drizzle and SQLite
+
+We'll start off with SQLite locally, lateron we'll figure out a way to easily switch to a cloud provider like Turso. Postgresql will also follow.
+
+Start of by installing a couple of dependencies:
+
+```bash
+echo "Installing drizzle and drizzle-kit" && 
+pnpm install drizzle-orm drizzle-kit -D && 
+echo "Installing sqlite" && 
+pnpm i better-sqlite3 libsql/client -D && 
+echo "Installing types" && 
+pnpm i @types/better-sqlite3 -D && 
+echo "Installing env" && 
+pnpm i @t3-oss/env-nextjs -D && 
+echo "Installing zod" && 
+pnpm i zod -D
+```
+
+## Setup env
+
+```bash
+touch src/server/env.ts
+```
+
+```ts
+import { createEnv } from "@t3-oss/env-next";
+
+export const env = createEnv({
+  server: {
+    DATABASE_URL: z.string().url(),
+#  // any additional, jWT will follow for example
+  },
+});
+```
+tsconfig.json alias
+```json
+path: {
+  "env": ["./src/server/env.ts"]
+}   
+```
+## Setup Drizzle
+
+```bash
+// cd root
+touch drizzle.config.ts
+```
+
+```ts
+import type { Config } from 'drizzle-kit';
+import { env } from 'env;
+
+export default {
+  schema: './src/server/db/schema/index.ts',
+  out: './src/server/db/migrations',
+  dialect: 'sqlite',
+  dbCredentials: {
+    url: env.DATABASE_URL.replace('file:', ''),
+  },
+  verbose: true,
+  strict: true,
+} satisfies Config; 
+```
+- Point to schema entry point. Mine will sit over at `./src/server/db/schema/index.ts`
+- Point to migrations folder. Mine will sit over at `./src/server/db/migrations`
+- Dialect is sqlite
+- Import env and call our db. SQLite is file based, so we need to remove the `file:` prefix. 
+
+## Schema
+
+```bash
+touch src/server/db/schema/index.ts
+```
+Create a schema file to test if our setup is working.
+
+```ts
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const test = sqliteTable("test", {
+  id: text("id").primaryKey(),z
+  name: text("name"),
+});
+```
+Now we should be able to generate our first migration.
+
+```bash
+npx drizzle-kit generate
+// old versions of drizzle-kit required generate:sqlite.
+```
+
+
+
+
+
+
+
+## Quick Navigation
