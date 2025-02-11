@@ -1,13 +1,8 @@
-import type { Config } from 'drizzle-kit'
-import { env } from './src/server/env'
+import type { Config } from 'drizzle-kit';
+import baseConfig from '../../shared/db/drizzle.config';
 
 export default {
-	schema: './src/server/db/schema.ts',
-	out: './src/server/db/migrations',
-	dialect: 'sqlite',
-	dbCredentials: {
-		url: env.DATABASE_URL.replace('file:', '')
-	},
-	verbose: true,
-	strict: true
-} satisfies Config
+  ...baseConfig,
+  // Override only what's needed
+  out: './src/server/db/migrations',
+} satisfies Config;

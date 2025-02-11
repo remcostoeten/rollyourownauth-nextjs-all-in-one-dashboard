@@ -74,7 +74,8 @@
 		"vaul": "^0.9.6",
 		"zod": "^3.24.1",
 		"zustand": "latest",
-		"@repo/env": "*"
+		"@repo/env": "*",
+		"@repo/db": "*"
 	},
 	"devDependencies": {
 		"@types/node": "^20",
