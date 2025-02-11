@@ -5,7 +5,15 @@
 			{
 				"name": "next"
 			}
-		]
+		],
+		"paths": {
+			"@/*": ["./src/*"],
+			"ui": ["../../shared/components/ui"],
+			"env": ["../../shared/config/env"],
+			"config": ["../../shared/config"],
+			"helpers": ["../../shared/helpers"],
+			"db": ["../../shared/db"]
+		}
 	},
 	"include": [
 		"next-env.d.ts",

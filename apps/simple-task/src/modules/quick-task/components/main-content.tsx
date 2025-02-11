@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useEffect, Suspense, lazy } from 'react'
-import type { Task } from '@/types/task'
-import { cn } from 'helpers'
+import type { Task } from '../../../types/task'
+import { cn } from '../../../shared/helpers/cn'
 import { taskService } from '../services/task-service'
 import { Loader2 } from 'lucide-react'
 import { Search } from './search-input'
 import { TaskList } from './task-list'
 import { useListsStore } from '../state/lists'
-import { AddTask } from '@/src/modules/task-management/components/add-task'
+import { AddTask } from '../../task-management/components/add-task'
 const TaskDetail = lazy(() => import('./task-detail'))
 
 interface MainContentProps {
