@@ -1,7 +1,8 @@
-import { EmptyState } from '@/src/shared/components/common'
-import type { Task } from '../types/task'
+import { EmptyState } from '../../../shared/components/common'
+import type { Task } from '../models/z.task'
 import { TaskItem } from './task-item'
 import { FileText, Link, Files } from 'lucide-react'
+
 interface TaskListProps {
 	tasks: Task[]
 	onToggle: (task: Task) => void

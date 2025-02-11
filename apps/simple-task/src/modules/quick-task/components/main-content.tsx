@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, Suspense, lazy } from 'react'
-import type { Task } from '../../../types/task'
-import { cn } from '../../../shared/helpers/cn'
+import type { Task } from '../models/z.task'
+import { cn } from 'helpers'
 import { taskService } from '../services/task-service'
 import { Loader2 } from 'lucide-react'
 import { Search } from './search-input'

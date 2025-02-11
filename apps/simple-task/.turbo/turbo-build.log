@@ -12,43 +12,6 @@
  [37m[1m [22m[39m Creating an optimized production build ...
 Failed to compile.
 
-./src/modules/quick-task/components/main-content.tsx
-Module not found: Can't resolve '@/src/modules/task-management/components/add-task'
-
-https://nextjs.org/docs/messages/module-not-found
-
-Import trace for requested module:
-./src/modules/quick-task/index.ts
-./src/views/home/index.tsx
-
-./src/modules/quick-task/components/task-item.tsx
-Module not found: Can't resolve '@/src/shared/components/ui/checkbox'
-
-https://nextjs.org/docs/messages/module-not-found
-
-Import trace for requested module:
-./src/modules/quick-task/index.ts
-./src/views/home/index.tsx
-
-./src/modules/quick-task/components/task-item.tsx
-Module not found: Can't resolve '@/src/shared/helpers/cn'
-
-https://nextjs.org/docs/messages/module-not-found
-
-Import trace for requested module:
-./src/modules/quick-task/index.ts
-./src/views/home/index.tsx
-
-./src/modules/quick-task/components/task-list.tsx
-Module not found: Can't resolve '@/src/shared/components/common'
-
-https://nextjs.org/docs/messages/module-not-found
-
-Import trace for requested module:
-./src/modules/quick-task/components/main-content.tsx
-./src/modules/quick-task/index.ts
-./src/views/home/index.tsx
-
 ./src/modules/sidebar/components/search-results.tsx
 Module not found: Can't resolve '@/src/shared/helpers/cn'
 
@@ -56,6 +19,45 @@ https://nextjs.org/docs/messages/module-not-found
 
 Import trace for requested module:
 ./src/modules/sidebar/components/sidebar.tsx
+./src/modules/quick-task/index.ts
+./src/views/home/index.tsx
+
+./src/modules/sidebar/components/search-results.tsx
+Module not found: Can't resolve '@/src/components/icons'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/modules/sidebar/components/sidebar.tsx
+./src/modules/quick-task/index.ts
+./src/views/home/index.tsx
+
+./src/modules/sidebar/components/settings-menu.tsx
+Module not found: Can't resolve '@/src/modules/sidebar/components/shortcut-recorder'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/modules/sidebar/components/sidebar.tsx
+./src/modules/quick-task/index.ts
+./src/views/home/index.tsx
+
+./src/modules/sidebar/components/settings-menu.tsx
+Module not found: Can't resolve '@/src/shared/components/ui/button'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./src/modules/sidebar/components/sidebar.tsx
+./src/modules/quick-task/index.ts
+./src/views/home/index.tsx
+
+./src/modules/sidebar/components/sidebar.tsx
+Module not found: Can't resolve '@/src/components/icons'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
 ./src/modules/quick-task/index.ts
 ./src/views/home/index.tsx
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { v4 as uuidv4 } from 'uuid'
-import type { Task } from '@/types/task'
+import type { Task } from '../models/z.task'
 
 // Private tasks state
 const tasks: Task[] = []

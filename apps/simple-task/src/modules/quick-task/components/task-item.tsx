@@ -1,14 +1,14 @@
 'use client'
 import { MoreHorizontal } from 'lucide-react'
-import type { Task } from '../types/task'
-import { Checkbox } from '@/src/shared/components/ui/checkbox'
-import { cn } from '@/src/shared/helpers/cn'
+import type { Task, Subtask } from '../models/z.task'
+import { Checkbox } from 'ui'
+import { cn } from 'helpers'
 
 interface TaskItemProps {
-	task: Task
+	task: Task | Subtask
 	level?: number
-	onToggle?: (task: Task) => void
-	onSelect?: (task: Task) => void
+	onToggle?: (task: Task | Subtask) => void
+	onSelect?: (task: Task | Subtask) => void
 }
 
 export function TaskItem({
@@ -17,6 +17,10 @@ export function TaskItem({
 	onToggle,
 	onSelect
 }: TaskItemProps) {
+	const isFullTask = (t: Task | Subtask): t is Task => {
+		return 'createdAt' in t;
+	}
+
 	return (
 		<div className="group">
 			<div
@@ -34,12 +38,12 @@ export function TaskItem({
 				<span className="flex-1 text-sm text-foreground">
 					{task.title}
 				</span>
-				{task.dueDate && (
+				{isFullTask(task) && task.dueDate && (
 					<span className="text-xs text-muted-foreground">
 						{task.dueDate}
 					</span>
 				)}
-				{task.labels && task.labels.length > 0 && (
+				{isFullTask(task) && task.labels && task.labels.length > 0 && (
 					<span className="text-xs text-muted-foreground">
 						{task.labels.join(', ')}
 					</span>
@@ -51,7 +55,7 @@ export function TaskItem({
 					<MoreHorizontal className="w-4 h-4 text-muted-foreground" />
 				</button>
 			</div>
-			{task.subtasks?.map((subtask) => (
+			{isFullTask(task) && task.subtasks?.map((subtask) => (
 				<TaskItem
 					key={subtask.id}
 					task={subtask}
