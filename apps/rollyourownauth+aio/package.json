@@ -47,5 +47,6 @@
 		"tailwindcss": "^3.4.1",
 		"tsx": "^4.19.2",
 		"typescript": "^5"
-	}
+	},
+	"prettier": "../../shared/config/prettier/.prettierrc"
 }

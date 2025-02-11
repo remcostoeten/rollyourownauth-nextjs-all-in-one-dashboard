@@ -89,5 +89,6 @@
 	},
 	"pnpm": {
 		"overrides": {}
-	}
+	},
+	"prettier": "../../shared/config/prettier/.prettierrc"
 }
