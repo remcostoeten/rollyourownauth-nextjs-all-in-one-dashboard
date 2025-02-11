@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@repo/env": ["packages/env/src"]
+    }
+  }
+}

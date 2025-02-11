@@ -5,12 +5,13 @@ export const siteConfig: SiteConfig = {
     short: "RYOA",
   },
   shortName: "RYOA",
-  
+
   url: "https://docs.rollyourownauth.remcostoeten.com ",
-  docsUrl: "https://docs.rollyourownauth.remcostoeten.com", 
-  description: "A custom-rolled authentication solution with JWT, sessions, and modular architecture",
+  docsUrl: "https://docs.rollyourownauth.remcostoeten.com",
+  description:
+    "A custom-rolled authentication solution with JWT, sessions, and modular architecture",
   githubUrl: "https://github.com/remcostoeten/ryoa-mono-docs",
-  
+
   author: {
     name: "Remco Stoeten",
     url: "https://remcostoeten.com",
@@ -20,11 +21,11 @@ export const siteConfig: SiteConfig = {
   // Open Graph / Social
   // ogImage: "https://rollyourownauth.dev/og.png",
   // twitter: {
-    
+
   //   card: "summary_large_image",
   //   creator: "@remcostoeten",
   // },
-  
+
   // Project metadata
   version: "0.1.0",
   license: "MIT",
@@ -32,15 +33,16 @@ export const siteConfig: SiteConfig = {
     type: "git",
     url: "https://github.com/remcostoeten/ryoa-mono-docs.git",
   },
-  
+
   // Documentation settings
   docs: {
     title: "RollYourOwnAuth Documentation",
-    description: "Learn how to implement custom authentication in your Next.js applications",
-    repository: "https://github.com/remcostoeten/rollyourownauth/tree/main/apps/documentation",
+    description:
+      "Learn how to implement custom authentication in your Next.js applications",
+    repository:
+      "https://github.com/remcostoeten/rollyourownauth/tree/main/apps/documentation",
   },
 } as const;
-
 
 export type SiteConfig = {
   name: {

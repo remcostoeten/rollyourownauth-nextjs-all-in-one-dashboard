@@ -3,16 +3,15 @@
 ### Consists of
 
 - RYOA - rollyourownauth.
-A very scalable, good practice, feature and non-standard nextjs application dashboard for personal use built also to showcase custom rolling auth and best practices.
+  A very scalable, good practice, feature and non-standard nextjs application dashboard for personal use built also to showcase custom rolling auth and best practices.
 
 - Docs
-A MDX powered documentation site for the project. Planning and guiding all (interesting) features/models/concepts of the project.
+  A MDX powered documentation site for the project. Planning and guiding all (interesting) features/models/concepts of the project.
 
 - Feature X/Y/Z For All-in-One Dashboard
-Behind the custom rolled auth sits my all-in-one dashboard. It's a work in progress and I'm not sure what it will be yet.
+  Behind the custom rolled auth sits my all-in-one dashboard. It's a work in progress and I'm not sure what it will be yet.
 
-- As this is a monorepo and I try to built in an agnostic way, I often build features in separate apps and then move them to the core if they are generally useful.  I often work on multiple projects at once. I do some doc work, get sidetracked and start working on a new feature, then move it to the core and back to a side project. This way I do keep all the "potentials" in one place. 
-
+- As this is a monorepo and I try to built in an agnostic way, I often build features in separate apps and then move them to the core if they are generally useful. I often work on multiple projects at once. I do some doc work, get sidetracked and start working on a new feature, then move it to the core and back to a side project. This way I do keep all the "potentials" in one place.
 
 # RYOA (Roll Your Own Auth)
 
@@ -46,7 +45,7 @@ A modern authentication system built with Next.js, Prisma, and TypeScript, featu
 - Shared components
 - Feature flags
 - SOLID principles
-...
+  ...
 
 ## Quick Start
 
@@ -76,6 +75,7 @@ pnpm db
 ```
 
 Available commands:
+
 - Initialize database
 - Switch providers (SQLite/Neon/Turso)
 - Generate/push schema
@@ -83,7 +83,9 @@ Available commands:
 - Test connections
 
 ## Project Structure
+
 To be expanded...
+
 ```
 src/
 ├── app/                   # Next.js app router
@@ -102,7 +104,7 @@ src/
 TO be expanded
 ADMIN_EMAIL=
 DATABASE_URL=
-``` 
+```
 
 ## Feature flags
 

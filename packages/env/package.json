@@ -1,0 +1,11 @@
+{
+  "name": "@repo/env",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@t3-oss/env-nextjs": "^0.7.1",
+    "zod": "^3.22.4"
+  }
+}

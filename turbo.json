@@ -12,15 +12,11 @@
     },
     "format": {
       "cache": false,
-      "inputs": [
-        "**/*.{ts,tsx,md,json,yaml,css}"
-      ]
+      "inputs": ["**/*.{ts,tsx,md,json,yaml,css}"]
     },
     "format:check": {
       "cache": false,
-      "inputs": [
-        "**/*.{ts,tsx,md,json,yaml,css}"
-      ]
+      "inputs": ["**/*.{ts,tsx,md,json,yaml,css}"]
     },
     "check-types": {
       "dependsOn": ["^check-types"]

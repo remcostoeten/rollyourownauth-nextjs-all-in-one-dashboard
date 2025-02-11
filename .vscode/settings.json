@@ -1,7 +1,21 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
+  "todo-tree.highlights.defaultHighlight": {
+    "icon": "alert",
+    "type": "text",
+    "foreground": "#FF0000",
+    "background": "#FFFFFF",
+    "opacity": 50,
+    "iconColour": "#0000FF"
+  },
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "check",
+      "type": "line"
+    },
+    "FIXME": {
+      "foreground": "#000000",
+      "iconColour": "#FFFF00",
+      "gutterIcon": true
     }
-  ]
+  }
 }
