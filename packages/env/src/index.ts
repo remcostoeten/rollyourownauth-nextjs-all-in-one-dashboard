@@ -5,16 +5,20 @@ export const createAppEnv = () =>
   createEnv({
     server: {
       DATABASE_URL: z.string().min(1).default("file:local.db"),
-      JWT_SECRET: z.string().min(1),
+      NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+      JWT_SECRET: z.string().min(1).optional(),
     },
-    // Add any client-side env variables here if needed
     client: {
-      // Example: PUBLIC_API_URL: z.string().min(1),
+      // Add client-side environment variables here if needed
     },
-    // If you're using Next.js 13.4.4+, you only need to destructure client variables
-    experimental__runtimeEnv: {
-      // Example: PUBLIC_API_URL: process.env.PUBLIC_API_URL,
+    runtimeEnv: {
+      DATABASE_URL: process.env.DATABASE_URL,
+      NODE_ENV: process.env.NODE_ENV,
+      JWT_SECRET: process.env.JWT_SECRET,
     },
+    skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
+    emptyStringAsUndefined: true,
   });
 
+export const env = createAppEnv();
 export type Env = ReturnType<typeof createAppEnv>;
