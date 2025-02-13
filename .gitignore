@@ -25,5 +25,31 @@ yarn-error.log*
 
 # Turborepo
 /.turbo
+**/.turbo
+**/.turbo/**
+**/turbo-build.log
 
-*.next*
+# Build artifacts
+.next
+build
+dist
+
+# Environment files
+.env*
+!.env.example
+
+# IDE
+.vscode
+.idea
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Misc
+.DS_Store
+*.pem
+Thumbs.db

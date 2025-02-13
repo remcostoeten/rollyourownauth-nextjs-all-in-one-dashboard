@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import Database from 'better-sqlite3'
 import * as schema from './schema'
-import { env } from '../env'
+import { env } from '@repo/env'
 
 // Initialize SQLite database
 const sqlite = new Database(env.DATABASE_URL.replace('file:', ''))
@@ -10,7 +10,9 @@ const sqlite = new Database(env.DATABASE_URL.replace('file:', ''))
 export const db = drizzle(sqlite, { schema })
 
 // Export close method
-export const closeDb = () => sqlite.close()
+export const closeDb = (): void => {
+  sqlite.close()
+}
 
 // Export schema for use in other files
 export { schema }

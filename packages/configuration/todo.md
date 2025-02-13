@@ -9,4 +9,4 @@ Merge all seperate config folders into here.
 - [ ] prettier
 - [ ] typescript
 - [ ] tailwind
-- [ ] ui 
+- [ ] ui

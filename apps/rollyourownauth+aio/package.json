@@ -14,7 +14,9 @@
 		"db": "tsx ./scripts/db-cli.ts",
 		"db:generate": "drizzle-kit generate",
 		"db:push": "drizzle-kit push",
-		"db:studio": "drizzle-kit studio --port 3333"
+		"db:studio": "drizzle-kit studio --port 3333",
+		"generate:secret": "node -e \"const crypto = require('crypto'); const readline = require('readline'); const { execSync } = require('child_process'); const secret = crypto.randomBytes(32).toString('hex'); console.log('Generated JWT Secret:', secret); const rl = readline.createInterface({ input: process.stdin, output: process.stdout }); rl.question('Do you want to copy this secret to clipboard? (Y/n) ', (answer) => { if (answer.toLowerCase() === 'y' || answer === '') { try { const copyCommand = process.platform === 'win32' ? 'clip' : 'pbcopy'; execSync(`echo ${secret} | ${copyCommand}`); console.log('Secret copied to clipboard!'); } catch (error) { console.error('Failed to copy to clipboard:', error.message); } } rl.close(); });\"",
+		"/* ============================ */": " ⚠️ Use 'generate:secret' for a JWT secret! Long due to error handling & clipboard support. See docs/utilities/jwt.mdx. "
 	},
 	"dependencies": {
 		"@libsql/client": "^0.14.0",

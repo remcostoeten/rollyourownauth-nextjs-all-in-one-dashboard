@@ -15,7 +15,7 @@ const themes = [
   { name: "ocean-dark", label: "Ocean Dark", isDark: true },
   { name: "purple", label: "Purple", isDark: false },
   { name: "purple-dark", label: "Purple Dark", isDark: true },
-];
+] as const;
 
 const THEME_KEY = "docs-theme-preference";
 
@@ -40,24 +40,29 @@ export default function ThemeSwitcher() {
     });
     // Add current theme
     const newTheme = themes[currentTheme];
-    document.documentElement.classList.add(`theme-${newTheme.name}`);
-    // Set dark mode
-    document.documentElement.dataset.theme = newTheme.isDark ? "dark" : "light";
-    // Save theme preference
-    localStorage.setItem(THEME_KEY, newTheme.name);
+    if (newTheme) {
+      document.documentElement.classList.add(`theme-${newTheme.name}`);
+      // Set dark mode
+      document.documentElement.dataset.theme = newTheme.isDark ? "dark" : "light";
+      // Save theme preference
+      localStorage.setItem(THEME_KEY, newTheme.name);
+    }
   }, [currentTheme]);
 
   const cycleTheme = () => {
     setCurrentTheme((prev) => (prev + 1) % themes.length);
   };
 
+  const theme = themes[currentTheme];
+  if (!theme) return null;
+
   return (
     <button
       onClick={cycleTheme}
       className="w-full flex items-center justify-between px-4 py-2 text-sm hover:bg-fd-muted/10 transition-colors"
-      title={`Current theme: ${themes[currentTheme].label}. Click to change.`}
+      title={`Current theme: ${theme.label}. Click to change.`}
     >
-      <span>Theme: {themes[currentTheme].label}</span>
+      <span>Theme: {theme.label}</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="20"

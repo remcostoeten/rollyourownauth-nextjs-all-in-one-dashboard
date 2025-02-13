@@ -1,0 +1,64 @@
+/// @author Remco Stoeten
+// @description This serves as a conceptual modeling blueprint for an upcoming financial module.
+
+/// @note as this is `.prisma` we can't use `env.ts` to validate the database url. We have to tweak the `.env.ts` file to work with prisma. See `src/server/env.ts` for more information for regular implementation with `drizzle` for example. And then `src/server/env.prisma.ts` to see the prisma implementation.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url         = "file:./dev.db"
+/// url      = env("DATABASE_URL") // requirs to import src/server/env.ts.
+}   
+model UserSettngs {
+    userId String @id
+    currency String
+}
+
+model Category {
+    createdAt DateTime @default(now())
+    name String
+    userId String
+    icon String
+    type String @default("income")
+
+@@unique([name,userId,type])
+}
+
+model Transaction {
+    id  String @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    amount Float
+    description String
+    date DateTime
+    userId String
+    type String @default("income")
+
+    category String
+    categoryIcon String
+}
+
+model MonthlyHistory {
+    userId String
+    day Int
+    month Int
+    year Int
+    income Float
+    expense Float
+
+    @@id([day,month,year,userId])
+}
+
+model YearlyHistory {
+    userId String
+    month Int
+    year Int
+    income Float
+    expense Float
+
+    @@id([month,year,userId])
+}
