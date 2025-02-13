@@ -1,30 +1,33 @@
-import { source } from "@/lib/source";
-import {
-  DocsPage,
-  DocsBody,
-  DocsDescription,
-  DocsTitle,
-} from "fumadocs-ui/page";
+import { source } from "../../../lib/source";
+import { DocsPage, DocsBody } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import defaultMdxComponents from "fumadocs-ui/mdx";
+import type { Metadata } from "next";
 
-export default async function Page(props: {
+export const metadata: Metadata = {
+  title: "Documentation",
+  description: "Documentation for the project",
+};
+
+interface PageProps {
   params: Promise<{ slug?: string[] }>;
-}) {
-  const params = await props.params;
-  const page = source.getPage(params.slug);
-  if (!page) notFound();
+}
 
-  const MDX = page.data.body;
+export default async function Page({ params }: PageProps) {
+  const resolvedParams = await params;
+  const page = source.getPage(resolvedParams.slug);
+
+  if (!page) {
+    notFound();
+  }
+
+  // Add console.log to inspect the page object structure
+  console.log('Page object:', JSON.stringify(page, null, 2));
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      {page.data.description && (
-        <DocsDescription>{page.data.description}</DocsDescription>
-      )}
+    <DocsPage>
       <DocsBody>
-        <MDX components={{ ...defaultMdxComponents }} />
+        {/* Temporarily comment out MDX rendering until we figure out the correct structure */}
+        <div>Loading...</div>
       </DocsBody>
     </DocsPage>
   );
@@ -32,17 +35,4 @@ export default async function Page(props: {
 
 export async function generateStaticParams() {
   return source.generateParams();
-}
-
-export async function generateMetadata(props: {
-  params: Promise<{ slug?: string[] }>;
-}) {
-  const params = await props.params;
-  const page = source.getPage(params.slug);
-  if (!page) notFound();
-
-  return {
-    title: page.data.title,
-    description: page.data.description,
-  };
 }
