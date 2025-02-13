@@ -47,7 +47,7 @@
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"cmdk": "latest",
-		"date-fns": "4.1.0",
+		"date-fns": "^2.30.0",
 		"drizzle-orm": "^0.39.2",
 		"embla-carousel-react": "8.5.1",
 		"framer-motion": "latest",
@@ -74,7 +74,7 @@
 		"vaul": "^0.9.6",
 		"zod": "^3.24.1",
 		"zustand": "latest",
-		"@repo/env": "*"
+		"@repo/env": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "^20",
@@ -86,8 +86,5 @@
 		"postcss": "^8",
 		"tailwindcss": "^3.4.17",
 		"typescript": "^5"
-	},
-	"pnpm": {
-		"overrides": {}
 	}
 }
