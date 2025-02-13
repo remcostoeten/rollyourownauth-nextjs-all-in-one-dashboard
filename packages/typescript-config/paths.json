@@ -3,20 +3,29 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@repo/env": ["../../packages/env/src"],
-      "@repo/ui/*": ["../../packages/ui/src/*"],
-      "@repo/helpers/*": ["../../packages/helpers/src/*"],
-      "@repo/configuration/*": ["../../packages/configuration/src/*"],
-      "@components/*": ["./src/components/*"],
-      "@lib/*": ["./src/lib/*"],
+      "@/*": ["./src/*", "./*"],
+      "@/.source": ["./.source"],
+      "@repo/env": ["./packages/env/src"],
+      "@repo/ui/*": ["./packages/ui/src/*"],
+      "@repo/helpers/*": ["./packages/helpers/src/*"],
+      "@repo/configuration/*": ["./packages/configuration/src/*"],
+      "@components/*": ["./src/components/*", "./components/*"],
+      "@lib/*": ["./src/lib/*", "./lib/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@utils/*": ["./src/utils/*"],
       "@styles/*": ["./src/styles/*"],
       "@types/*": ["./src/types/*"],
       "@api/*": ["./src/api/*"],
       "@constants/*": ["./src/constants/*"],
-      "@features/*": ["./src/features/*"]
+      "@features/*": ["./src/features/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@server/*": ["./src/server/*"],
+      "db": ["./src/server/db/index.ts"],
+      "ui": ["./src/shared/components/ui/index.ts"],
+      "env": ["./src/server/env.ts"],
+      "types": ["./src/core/types/index.ts"],
+      "helpers": ["./src/shared/helpers/index.ts"],
+      "config": ["./packages/configuration/index.ts"]
     }
   }
 } 
