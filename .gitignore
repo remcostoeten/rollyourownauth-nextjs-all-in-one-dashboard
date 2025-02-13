@@ -25,12 +25,9 @@ yarn-error.log*
 
 # Turborepo
 /.turbo
-
-*.next*
-
-# Turbo
-.turbo
 **/.turbo
+**/.turbo/**
+**/turbo-build.log
 
 # Build artifacts
 .next
