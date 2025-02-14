@@ -1,7 +1,9 @@
-import { EmptyState } from '@/src/shared/components/common'
-import type { Task } from '../types/task'
+import { AnimatePresence, motion } from 'framer-motion'
+import { EmptyState } from '@/shared/components/common'
+import type { Task } from '@/modules/quick-task/models/z.task'
 import { TaskItem } from './task-item'
 import { FileText, Link, Files } from 'lucide-react'
+
 interface TaskListProps {
 	tasks: Task[]
 	onToggle: (task: Task) => void
@@ -32,15 +34,21 @@ export function TaskList({ tasks, onToggle, onSelect }: TaskListProps) {
 	}
 
 	return (
-		<div className="space-y-1">
-			{tasks.map((task) => (
-				<TaskItem
-					key={task.id}
-					task={task}
-					onToggle={onToggle}
-					onSelect={() => onSelect(task.id)}
-				/>
-			))}
-		</div>
+		<AnimatePresence>
+			<motion.div
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				className="space-y-1"
+			>
+				{tasks.map((task) => (
+					<TaskItem
+						key={task.id}
+						task={task}
+						onToggle={onToggle}
+						onSelect={onSelect}
+					/>
+				))}
+			</motion.div>
+		</AnimatePresence>
 	)
 }

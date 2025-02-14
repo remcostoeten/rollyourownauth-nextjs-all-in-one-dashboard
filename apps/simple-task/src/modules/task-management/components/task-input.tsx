@@ -4,8 +4,7 @@ import type React from 'react'
 import { useRef, useEffect } from 'react'
 import { Plus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Kbd } from 'ui'
-import { TextEffect } from '@/src/shared/components/effects'
+import { Kbd } from '@/shared/components/ui/kbd'
 
 interface TaskInputProps {
 	value: string
@@ -55,11 +54,9 @@ export function TaskInput({
 							transition={{ duration: 0.15 }}
 							className="absolute inset-0 flex items-center pointer-events-none text-muted-foreground"
 						>
-							<TextEffect preset="fade" per="word">
-								Create task
-							</TextEffect>
+							<span>Create task</span>
 							<span className="mx-1">(</span>
-							<Kbd framerMotion>/</Kbd>
+							<Kbd>{shortcutKey}</Kbd>
 							<span className="mx-1">for menu)</span>
 						</motion.div>
 					)}
@@ -71,14 +68,7 @@ export function TaskInput({
 							transition={{ duration: 0.15 }}
 							className="absolute inset-0 flex items-center pointer-events-none text-muted-foreground"
 						>
-							<TextEffect
-								preset="fade"
-								per="char"
-								speedReveal={0.5}
-								speedSegment={0.5}
-							>
-								...
-							</TextEffect>
+							...
 						</motion.div>
 					)}
 				</AnimatePresence>

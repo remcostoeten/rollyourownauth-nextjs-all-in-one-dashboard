@@ -1,4 +1,4 @@
-import { mockUser, type MockUser } from 'config'
+import { mockUser, type MockUser } from '@repo/configuration/mock-user'
 import { create } from 'zustand'
 // Drizzle ORM Imports (Example for SQLite)
 // import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';

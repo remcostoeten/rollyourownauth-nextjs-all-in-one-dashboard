@@ -6,7 +6,10 @@ const nextConfig = {
     webpack: (config) => {
         config.resolve.alias = {
             ...config.resolve.alias,
-            '@repo/env': path.resolve(__dirname, '../../packages/env/src/index.ts'),
+            '@repo/env': path.resolve(__dirname, '../../packages/env'),
+            '@repo/ui': path.resolve(__dirname, '../../packages/ui'),
+            '@repo/helpers': path.resolve(__dirname, '../../packages/helpers'),
+            '@repo/configuration': path.resolve(__dirname, '../../packages/configuration'),
         }
         return config
     }

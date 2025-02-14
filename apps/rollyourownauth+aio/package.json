@@ -32,7 +32,11 @@
 		"react-dom": "^18",
 		"tailwind-merge": "^3.0.1",
 		"tailwindcss-animate": "^1.0.7",
-		"zod": "^3.24.1"
+		"zod": "^3.24.1",
+		"@repo/env": "workspace:*",
+		"@repo/ui": "workspace:*",
+		"@repo/helpers": "workspace:*",
+		"@repo/configuration": "workspace:*"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",

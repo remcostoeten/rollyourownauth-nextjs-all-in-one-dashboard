@@ -1,5 +1,5 @@
 {
-  "name": "@repo/env",
+  "name": "@repo/styles",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",
@@ -11,9 +11,9 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20.11.24",
-    "typescript": "^5.3.3"
-  },
-  "dependencies": {
-    "zod": "^3.22.4"
+    "typescript": "^5.3.3",
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.31",
+    "tailwindcss-animate": "^1.0.7"
   }
-}
+} 

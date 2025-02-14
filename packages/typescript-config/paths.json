@@ -20,7 +20,8 @@
       "@repo/env": ["../../packages/env/src"],
       "@repo/ui/*": ["../../packages/ui/src/*"],
       "@repo/helpers/*": ["../../packages/helpers/src/*"],
-      "@repo/configuration/*": ["../../packages/configuration/src/*"]
+      "@repo/configuration/*": ["../../packages/configuration/src/*"],
+      "@repo/styles/*": ["../../packages/styles/src/*"]
     }
   }
 } 

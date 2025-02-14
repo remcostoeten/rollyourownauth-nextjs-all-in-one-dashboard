@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev ",
+		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
@@ -55,7 +55,7 @@
 		"input-otp": "1.4.1",
 		"lucide-react": "^0.454.0",
 		"motion": "^12.4.1",
-		"next": "15.1.6",
+		"next": "^14.1.0",
 		"next-themes": "latest",
 		"path": "latest",
 		"react": "^18.2.0",
@@ -74,10 +74,13 @@
 		"vaul": "^0.9.6",
 		"zod": "^3.24.1",
 		"zustand": "latest",
-		"@repo/env": "workspace:*"
+		"@repo/env": "workspace:*",
+		"@repo/ui": "workspace:*",
+		"@repo/helpers": "workspace:*",
+		"@repo/configuration": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/node": "^20",
+		"@types/node": "^20.11.24",
 		"@types/react": "^18.2.0",
 		"@types/react-dom": "^18.2.0",
 		"drizzle-kit": "^0.30.4",
@@ -85,6 +88,6 @@
 		"eslint-config-next": "15.1.6",
 		"postcss": "^8",
 		"tailwindcss": "^3.4.17",
-		"typescript": "^5"
+		"typescript": "^5.3.3"
 	}
 }

@@ -4,8 +4,8 @@ import * as React from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { DayPicker } from 'react-day-picker'
 
-import { cn } from '@/src/shared/helpers/cn'
-import { buttonVariants } from '@/src/shared/components/ui/button'
+import { cn } from '@/shared/helpers/cn'
+import { buttonVariants } from '@/shared/components/ui/button'
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 

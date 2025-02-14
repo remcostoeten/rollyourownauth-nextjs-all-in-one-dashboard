@@ -1,5 +1,5 @@
 import { Calendar, Inbox, List, Star, Clock } from 'lucide-react'
-import { cn } from '@/src/shared/helpers/cn'
+import { cn } from '@/shared/helpers/cn'
 
 const navItems = [
 	{ icon: Inbox, label: 'Inbox', active: true },

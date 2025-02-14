@@ -5,10 +5,10 @@ import { ListTodo, Calendar, Flag, AlertCircle, ListPlus } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TaskInput } from './task-input'
 import { SlashMenu, type SlashMenuItem } from './slash-menu'
-import { useKeyboardShortcut } from '@/src/modules/quick-task'
-import { NewListDialog } from '@/src/modules/quick-task/components/new-list-dialog'
-import { useSettingsStore } from '@/src/modules/quick-task/state/settings'
-import { useSlashCommands } from '@/src/shared/hooks/use-slash-commands'
+import { useKeyboardShortcut } from '@/modules/quick-task'
+import { NewListDialog } from '@/modules/quick-task/components/new-list-dialog'
+import { useSettingsStore } from '@/modules/quick-task/state/settings'
+import { useSlashCommands } from '@/shared/hooks/use-slash-commands'
 
 interface AddTaskProps {
 	onAddTask: (title: string, type?: string) => void

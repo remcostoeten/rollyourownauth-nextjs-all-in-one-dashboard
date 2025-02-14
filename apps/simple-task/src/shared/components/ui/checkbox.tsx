@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Circle, Check } from 'lucide-react'
-import { cn } from '@/src/shared/helpers/cn'
+import { cn } from '@/shared/helpers/cn'
 
 interface CheckboxProps extends React.HTMLAttributes<HTMLButtonElement> {
 	checked?: boolean

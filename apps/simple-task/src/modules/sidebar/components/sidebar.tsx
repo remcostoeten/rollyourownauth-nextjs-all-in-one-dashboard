@@ -28,7 +28,7 @@ import { SearchResults } from './search-results'
 import type { DropResult } from 'react-beautiful-dnd'
 import { useListsStore } from '../../quick-task/state/lists'
 import Image from 'next/image'
-import { mockUser } from 'config'
+import { mockUser } from '@repo/configuration/mock-user'
 type NavItem = {
 	id: string
 	icon: React.ElementType
@@ -138,9 +138,10 @@ export function Sidebar({
 
 		const items = Array.from(navItems)
 		const [reorderedItem] = items.splice(result.source.index, 1)
-		items.splice(result.destination.index, 0, reorderedItem)
-
-		setNavItems(items)
+		if (reorderedItem && result.destination) {
+			items.splice(result.destination.index, 0, reorderedItem)
+			setNavItems(items)
+		}
 	}
 
 	const handleSearchSelect = (result: {
@@ -158,6 +159,12 @@ export function Sidebar({
 			}
 		}
 		setSearchQuery('')
+	}
+
+	const handleItemClick = (item: NavItem) => {
+		if (item) {
+			onItemClick(item.id)
+		}
 	}
 
 	return (
@@ -222,6 +229,7 @@ export function Sidebar({
 						results={searchResults}
 						query={searchQuery}
 						onSelect={handleSearchSelect}
+						isVisible={true}
 					/>
 				</div>
 			)}
@@ -271,8 +279,8 @@ export function Sidebar({
 																		activeItem
 																	}
 																	onClick={() =>
-																		onItemClick(
-																			item.id
+																		handleItemClick(
+																			item
 																		)
 																	}
 																/>
