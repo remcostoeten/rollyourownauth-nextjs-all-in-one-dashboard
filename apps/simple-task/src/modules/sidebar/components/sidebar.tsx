@@ -10,7 +10,7 @@ import {
 	TasksIcon,
 	UpdatesIcon,
 	ListsIcon
-} from '@/src/components/icons'
+} from '@/components/icons'
 import { cn } from 'helpers'
 import {
 	Button,
@@ -19,7 +19,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger
 } from 'ui'
-import { ThemeSwitcher } from '@/src/components/theme-switcher'
+import { ThemeSwitcher } from '@/components/theme-switcher'
 import { SettingsMenu } from './settings-menu'
 import { motion } from 'framer-motion'
 import { CreateNewDropdown } from './create-new-dropdown'

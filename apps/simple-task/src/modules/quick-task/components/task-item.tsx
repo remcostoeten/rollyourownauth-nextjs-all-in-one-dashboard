@@ -1,14 +1,14 @@
 'use client'
 import { MoreHorizontal } from 'lucide-react'
-import type { Task } from '../types/task'
-import { Checkbox } from '@/src/shared/components/ui/checkbox'
-import { cn } from '@/src/shared/helpers/cn'
+import type { Task } from '@/modules/quick-task/models/z.task'
+import { Checkbox } from '@/shared/components/ui/checkbox'
+import { cn } from '@/shared/helpers'
 
 interface TaskItemProps {
 	task: Task
 	level?: number
-	onToggle?: (task: Task) => void
-	onSelect?: (task: Task) => void
+	onToggle: (task: Task) => void
+	onSelect: (taskId: string) => void
 }
 
 export function TaskItem({
@@ -45,7 +45,7 @@ export function TaskItem({
 					</span>
 				)}
 				<button
-					onClick={() => onSelect?.(task)}
+					onClick={() => onSelect?.(task.id)}
 					className="p-1 opacity-0 group-hover:opacity-100 hover:bg-primary/20 rounded transition-all"
 				>
 					<MoreHorizontal className="w-4 h-4 text-muted-foreground" />

@@ -1,53 +1,48 @@
 'use client'
 
 import { useState, useEffect, Suspense, lazy } from 'react'
-import type { Task } from '@/types/task'
-import { cn } from 'helpers'
-import { taskService } from '../services/task-service'
+import type { Task } from '@/modules/quick-task/models/z.task'
+import { cn } from '@/shared/helpers'
+import { taskService } from '@/modules/quick-task/services/task-service'
 import { Loader2 } from 'lucide-react'
 import { Search } from './search-input'
 import { TaskList } from './task-list'
-import { useListsStore } from '../state/lists'
-import { AddTask } from '@/src/modules/task-management/components/add-task'
+import { useListsStore } from '@/modules/quick-task/state/lists'
+import { AddTask } from '@/modules/task-management/components/add-task'
+
 const TaskDetail = lazy(() => import('./task-detail'))
 
 interface MainContentProps {
 	activeItem: string
-	onTaskSelect: (task: Task | null) => void
-	sidebarVisible?: boolean
+	onTaskSelect: (task: Task) => void
 }
 
-export function MainContent({
-	activeItem,
-	onTaskSelect,
-	sidebarVisible = true
-}: MainContentProps) {
+export function MainContent({ activeItem, onTaskSelect }: MainContentProps) {
 	const [tasks, setTasks] = useState<Task[]>([])
-	const [filteredTasks, setFilteredTasks] = useState<Task[]>([])
-	const [isLoading, setIsLoading] = useState(true)
-	const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
-	const { addList } = useListsStore()
+	const [loading, setLoading] = useState(true)
+	const [searchQuery, setSearchQuery] = useState('')
 
 	useEffect(() => {
+		const loadTasks = async () => {
+			setLoading(true)
+			try {
+				const fetchedTasks = await taskService.getTasks()
+				setTasks(fetchedTasks)
+			} catch (error) {
+				console.error('Failed to load tasks:', error)
+			} finally {
+				setLoading(false)
+			}
+		}
+
 		loadTasks()
 	}, [])
 
-	useEffect(() => {
-		setFilteredTasks(tasks)
-	}, [tasks])
+	const filteredTasks = tasks.filter((task) =>
+		task.title.toLowerCase().includes(searchQuery.toLowerCase())
+	)
 
-	async function loadTasks() {
-		try {
-			const fetchedTasks = await taskService.getTasks()
-			setTasks(fetchedTasks)
-		} catch (error) {
-			console.error('Failed to load tasks:', error)
-		} finally {
-			setIsLoading(false)
-		}
-	}
-
-	async function handleAddTask(title: string, type?: string) {
+	const handleAddTask = async (title: string) => {
 		try {
 			const newTask = await taskService.createTask({ title })
 			setTasks((prev) => [...prev, newTask])
@@ -56,83 +51,41 @@ export function MainContent({
 		}
 	}
 
-	async function handleToggleTask(task: Task) {
+	const handleTaskSelect = (taskId: string) => {
+		const task = tasks.find(t => t.id === taskId)
+		if (task) {
+			onTaskSelect(task)
+		}
+	}
+
+	const handleToggleTask = async (task: Task) => {
 		try {
 			const updatedTask = await taskService.updateTask(task.id, {
 				completed: !task.completed
 			})
-			setTasks((prev) =>
-				prev.map((t) => (t.id === updatedTask.id ? updatedTask : t))
-			)
+			setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t))
 		} catch (error) {
-			console.error('Failed to update task:', error)
+			console.error('Failed to toggle task:', error)
 		}
 	}
 
-	function handleSearch(query: string) {
-		const lowercaseQuery = query.toLowerCase()
-		setFilteredTasks(
-			tasks.filter((task) =>
-				task.title.toLowerCase().includes(lowercaseQuery)
-			)
-		)
-	}
-
-	const handleCreateList = (name: string) => {
-		addList({
-			id: crypto.randomUUID(),
-			name,
-			tasks: []
-		})
-	}
-
-	if (isLoading) {
-		return <Loader2 className="animate-spin" />
-	}
-
 	return (
-		<div
-			className={cn(
-				'flex-1 flex flex-col bg-background pt-6 transition-all duration-300 ease-in-out',
-				sidebarVisible ? 'ml-20' : 'ml-0'
-			)}
-		>
-			<div className="px-8 py-6 flex items-center justify-between">
-				<h1 className="text-2xl font-semibold text-foreground capitalize">
-					{activeItem}
-				</h1>
+		<div className={cn('flex-1 p-4 space-y-4')}>
+			<div className="flex justify-between items-center">
+				<h1 className="text-2xl font-bold">{activeItem}</h1>
+				<AddTask onAddTask={handleAddTask} />
 			</div>
-
-			<div className="px-8 flex-1 overflow-auto flex flex-wrap flex-col bcontent-between">
-				<div className="flex items-center gap-2 mb-4">
-					<Search onSearch={handleSearch} />
+			<Search onSearch={setSearchQuery} />
+			{loading ? (
+				<div className="flex justify-center items-center h-32">
+					<Loader2 className="w-6 h-6 animate-spin" />
 				</div>
-
-				<TaskList
-					tasks={filteredTasks}
+			) : (
+				<TaskList 
+					tasks={filteredTasks} 
+					onSelect={handleTaskSelect}
 					onToggle={handleToggleTask}
-					onSelect={(taskId) => {
-						setSelectedTaskId(taskId)
-						onTaskSelect(tasks.find((t) => t.id === taskId) || null)
-					}}
 				/>
-
-				<AddTask
-					onAddTask={handleAddTask}
-					onCreateList={handleCreateList}
-				/>
-			</div>
-
-			{selectedTaskId && (
-				<Suspense fallback={<Loader2 className="animate-spin" />}>
-					<TaskDetail
-						taskId={selectedTaskId}
-						onClose={() => {
-							setSelectedTaskId(null)
-							onTaskSelect(null)
-						}}
-					/>
-				</Suspense>
 			)}
 		</div>
 	)

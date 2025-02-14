@@ -4,9 +4,9 @@ import type { Config } from 'drizzle-kit'
 export default {
 	schema: './src/server/db/schema.ts',
 	out: './src/server/db/migrations',
-	dialect: 'sqlite',
+	driver: 'better-sqlite',
 	dbCredentials: {
-		url: env.DATABASE_URL.replace('file:', ''),
+		url: env.DATABASE_URL
 	},
 	verbose: true,
 	strict: true,

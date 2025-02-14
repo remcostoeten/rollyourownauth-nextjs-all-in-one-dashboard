@@ -6,7 +6,17 @@
 				"name": "next"
 			}
 		],
-		"noImplicitAny": false
+		"noImplicitAny": false,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"],
+			"@/components/*": ["./src/components/*"],
+			"@/views/*": ["./src/views/*"],
+			"@/modules/*": ["./src/modules/*"],
+			"@/shared/*": ["./src/shared/*"],
+			"helpers": ["./src/shared/helpers/index.ts"],
+			"ui": ["./src/shared/components/ui/index.ts"]
+		}
 	},
 	"include": [
 		"next-env.d.ts",

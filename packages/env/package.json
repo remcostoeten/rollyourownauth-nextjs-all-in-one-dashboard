@@ -2,10 +2,26 @@
   "name": "@repo/env",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
   "dependencies": {
-    "@t3-oss/env-nextjs": "^0.7.1",
+    "@t3-oss/env-nextjs": "^0.7.3",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.17",
+    "typescript": "^5.3.3"
   }
 }

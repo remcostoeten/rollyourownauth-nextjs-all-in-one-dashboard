@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { FileTextIcon } from 'lucide-react'
-import { cn } from '@/src/shared/helpers/cn'
-import { ListsIcon } from '@/src/components/icons'
+import { cn } from '@/shared/helpers'
+import { ListsIcon } from '@/components/icons'
 
 interface SearchResult {
 	type: 'task' | 'list'
@@ -16,6 +16,7 @@ interface SearchResultsProps {
 	results: SearchResult[]
 	query: string
 	onSelect: (result: SearchResult) => void
+	isVisible: boolean
 }
 
 function highlightMatch(text: string, query: string) {
