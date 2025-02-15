@@ -1,0 +1,22 @@
+{
+  "name": "@monorepo/database",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@libsql/client": "^0.4.0-pre.7",
+    "drizzle-kit": "^0.30.4",
+    "drizzle-orm": "^0.39.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3"
+  },
+  "scripts": {
+    "generate": "drizzle-kit generate:sqlite",
+    "push": "drizzle-kit push",
+    "migrate": "tsx src/migrate.ts",
+    "studio": "drizzle-kit studio"
+  }
+}
