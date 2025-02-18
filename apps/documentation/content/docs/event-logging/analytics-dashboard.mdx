@@ -1,0 +1,421 @@
+---
+title: "Admin Dashboard for Activity Logs"
+description: "Build an admin dashboard to view and analyze activity logs in Next.js 15"
+---
+
+# Admin Dashboard for Activity Logs
+
+## Overview
+
+In this section, we'll create an admin dashboard to view and analyze the activity logs. We'll use server-side rendering for improved performance and SEO.
+
+## Step 1: Create the Admin Dashboard Page
+
+Create a new file `src/app/admin/logs/page.tsx`:
+
+```typescript
+import { Suspense } from 'react'
+import { UserActionLogs } from './components/UserActionLogs'
+import { ContentInteractionLogs } from './components/ContentInteractionLogs'
+import { SystemPerformanceLogs } from './components/SystemPerformanceLogs'
+
+export default function AdminDashboard() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Activity Logs Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Suspense fallback={<div>Loading user action logs...</div>}>
+          <UserActionLogs />
+        </Suspense>
+        <Suspense fallback={<div>Loading content interaction logs...</div>}>
+          <ContentInteractionLogs />
+        </Suspense>
+        <Suspense fallback={<div>Loading system performance logs...</div>}>
+          <SystemPerformanceLogs />
+        </Suspense>
+      </div>
+    </div>
+  )
+}
+```
+
+## Step 2: Implement Log Components
+
+Create a new file `src/app/admin/logs/components/UserActionLogs.tsx`:
+
+```typescript
+import { db } from '@/db'
+import { userActions } from '@/db/schema'
+import { desc } from 'drizzle-orm'
+
+async function getUserActionLogs() {
+  return db.select().from(userActions).orderBy(desc(userActions.timestamp)).limit(10)
+}
+
+export async function UserActionLogs() {
+  const logs = await getUserActionLogs()
+
+  return (
+    <div className="bg-white shadow rounded-lg p-6">
+      <h2 className="text-xl font-semibold mb-4">Recent User Actions</h2>
+      <ul className="space-y-4">
+        {logs.map((log) => (
+          <li key={log.id} className="border-b pb-2">
+            <p className="font-medium">{log.actionType}</p>
+            <p className="text-sm text-gray-600">User: {log.userId}</p>
+            <p className="text-sm text-gray-600">
+              {new Date(log.timestamp).toLocaleString()}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+```
+
+Create a new file `src/app/admin/logs/components/ContentInteractionLogs.tsx`:
+
+```typescript
+import { db } from '@/db'
+import { contentInteractions } from '@/db/schema'
+import { desc } from 'drizzle-orm'
+
+async function getContentInteractionLogs() {
+  return db.select().from(contentInteractions).orderBy(desc(contentInteractions.timestamp)).limit(10)
+}
+
+export async function ContentInteractionLogs() {
+  const logs = await getContentInteractionLogs()
+
+  return (
+    <div className="bg-white shadow rounded-lg p-6">
+      <h2 className="text-xl font-semibold mb-4">Recent Content Interactions</h2>
+      <ul className="space-y-4">
+        {logs.map((log) => (
+          <li key={log.id} className="border-b pb-2">
+            <p className="font-medium">{log.interactionType}</p>
+            <p className="text-sm text-gray-600">URL: {log.url}</p>
+            <p className="text-sm text-gray-600">
+              {new Date(log.timestamp).toLocaleString()}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+```
+
+Create a new file `src/app/admin/logs/components/SystemPerformanceLogs.tsx`:
+
+```typescript
+import { db } from '@/db'
+import { systemPerformance } from '@/db/schema'
+import { desc } from 'drizzle-orm'
+
+async function getSystemPerformanceLogs() {
+  return db.select().from(systemPerformance).orderBy(desc(systemPerformance.timestamp)).limit(10)
+}
+
+export async function SystemPerformanceLogs() {
+  const logs = await getSystemPerformanceLogs()
+
+  return (
+    <div className="bg-white shadow rounded-lg p-6">
+      <h2 className="text-xl font-semibold mb-4">Recent System Performance</h2>
+      <ul className="space-y-4">
+        {logs.map((log) => (
+          <li key={log.id} className="border-b pb-2">
+            <p className="font-medium">{log.eventType}</p>
+            <p className="text-sm text-gray-600">Duration: {log.duration}ms</p>
+            {log.statusCode && (
+              <p className="text-sm text-gray-600">Status: {log.statusCode}</p>
+            )}
+            <p className="text-sm text-gray-600">
+              {new Date(log.timestamp).toLocaleString()}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+```
+
+## Step 3: Implement Pagination
+
+Create a new file `src/app/admin/logs/components/Pagination.tsx`:
+
+```typescript
+'use client'
+
+import { useRouter, useSearchParams } from 'next/navigation'
+
+interface PaginationProps {
+  totalPages: number
+  currentPage: number
+}
+
+export function Pagination({ totalPages, currentPage }: PaginationProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('page', page.toString())
+    router.push(`/admin/logs?${params.toString()}`)
+  }
+
+  return (
+    <div className="flex justify-center space-x-2 mt-4">
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        <button
+          key={page}
+          onClick={() => handlePageChange(page)}
+          className={`px-3 py-1 rounded ${
+            currentPage === page
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+Update `src/app/admin/logs/page.tsx` to include pagination:
+
+```typescript
+import { Suspense } from 'react'
+import { UserActionLogs } from './components/UserActionLogs'
+import { ContentInteractionLogs } from './components/ContentInteractionLogs'
+import { SystemPerformanceLogs } from './components/SystemPerformanceLogs'
+import { Pagination } from './components/Pagination'
+import { db } from '@/db'
+import { userActions, contentInteractions, systemPerformance } from '@/db/schema'
+
+const ITEMS_PER_PAGE = 10
+
+async function getTotalPages() {
+  const [userActionCount, contentInteractionCount, systemPerformanceCount] = await Promise.all([
+    db.select({ count: sql`count(*)` }).from(userActions),
+    db.select({ count: sql`count(*)` }).from(contentInteractions),
+    db.select({ count: sql`count(*)` }).from(systemPerformance),
+  ])
+
+  const totalItems = Math.max(
+    userActionCount[0].count,
+    contentInteractionCount[0].count,
+    systemPerformanceCount[0].count
+  )
+
+  return Math.ceil(totalItems / ITEMS_PER_PAGE)
+}
+
+export default async function AdminDashboard({
+  searchParams,
+}: {
+  searchParams: { page?: string }
+}) {
+  const currentPage = Number(searchParams.page) || 1
+  const totalPages = await getTotalPages()
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Activity Logs Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Suspense fallback={<div>Loading user action logs...</div>}>
+          <UserActionLogs page={currentPage} />
+        </Suspense>
+        <Suspense fallback={<div>Loading content interaction logs...</div>}>
+          <ContentInteractionLogs page={currentPage} />
+        </Suspense>
+        <Suspense fallback={<div>Loading system performance logs...</div>}>
+          <SystemPerformanceLogs page={currentPage} />
+        </Suspense>
+      </div>
+      <Pagination totalPages={totalPages} currentPage={currentPage} />
+    </div>
+  )
+}
+```
+
+Update the log components to accept a `page` prop and use it for pagination:
+
+```typescript
+// Update this in UserActionLogs.tsx, ContentInteractionLogs.tsx, and SystemPerformanceLogs.tsx
+
+async function getUserActionLogs(page: number) {
+  const offset = (page - 1) * ITEMS_PER_PAGE;
+  return db
+    .select()
+    .from(userActions)
+    .orderBy(desc(userActions.timestamp))
+    .limit(ITEMS_PER_PAGE)
+    .offset(offset);
+}
+
+export async function UserActionLogs({ page }: { page: number }) {
+  const logs = await getUserActionLogs(page);
+
+  // ... rest of the component remains the same
+}
+```
+
+## Step 4: Implement Filtering
+
+Create a new file `src/app/admin/logs/components/LogFilter.tsx`:
+
+```typescript
+'use client'
+
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
+
+interface LogFilterProps {
+  options: string[]
+  paramName: string
+}
+
+export function LogFilter({ options, paramName }: LogFilterProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [selected, setSelected] = useState(searchParams.get(paramName) || '')
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams)
+    if (selected) {
+      params.set(paramName, selected)
+    } else {
+      params.delete(paramName)
+    }
+    router.push(`/admin/logs?${params.toString()}`)
+  }, [selected, router, searchParams, paramName])
+
+  return (
+    <select
+      value={selected}
+      onChange={(e) => setSelected(e.target.value)}
+      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+    >
+      <option value="">All</option>
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  )
+}
+```
+
+Update `src/app/admin/logs/page.tsx` to include filters:
+
+```typescript
+import { LogFilter } from './components/LogFilter'
+
+// ... other imports and functions
+
+export default async function AdminDashboard({
+  searchParams,
+}: {
+  searchParams: { page?: string; actionType?: string; interactionType?: string; eventType?: string }
+}) {
+  const currentPage = Number(searchParams.page) || 1
+  const totalPages = await getTotalPages()
+
+  const actionTypes = await db.select({ type: userActions.actionType }).from(userActions).groupBy(userActions.actionType)
+  const interactionTypes = await db.select({ type: contentInteractions.interactionType }).from(contentInteractions).groupBy(contentInteractions.interactionType)
+  const eventTypes = await db.select({ type: systemPerformance.eventType }).from(systemPerformance).groupBy(systemPerformance.eventType)
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">Activity Logs Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Action Type</label>
+          <LogFilter options={actionTypes.map(a => a.type)} paramName="actionType" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Interaction Type</label>
+          <LogFilter options={interactionTypes.map(i => i.type)} paramName="interactionType" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Event Type</label>
+          <LogFilter options={eventTypes.map(e => e.type)} paramName="eventType" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Suspense fallback={<div>Loading user action logs...</div>}>
+          <UserActionLogs page={currentPage} actionType={searchParams.actionType} />
+        </Suspense>
+        <Suspense fallback={<div>Loading content interaction logs...</div>}>
+          <ContentInteractionLogs page={currentPage} interactionType={searchParams.interactionType} />
+        </Suspense>
+        <Suspense fallback={<div>Loading system performance logs...</div>}>
+          <SystemPerformanceLogs page={currentPage} eventType={searchParams.eventType} />
+        </Suspense>
+      </div>
+      <Pagination totalPages={totalPages} currentPage={currentPage} />
+    </div>
+  )
+}
+```
+
+Update the log components to accept filter props:
+
+```typescript
+// Update this in UserActionLogs.tsx, ContentInteractionLogs.tsx, and SystemPerformanceLogs.tsx
+
+async function getUserActionLogs(page: number, actionType?: string) {
+  const offset = (page - 1) * ITEMS_PER_PAGE;
+  let query = db
+    .select()
+    .from(userActions)
+    .orderBy(desc(userActions.timestamp))
+    .limit(ITEMS_PER_PAGE)
+    .offset(offset);
+
+  if (actionType) {
+    query = query.where(eq(userActions.actionType, actionType));
+  }
+
+  return query;
+}
+
+export async function UserActionLogs({
+  page,
+  actionType,
+}: {
+  page: number;
+  actionType?: string;
+}) {
+  const logs = await getUserActionLogs(page, actionType);
+
+  // ... rest of the component remains the same
+}
+```
+
+## Next Steps
+
+<Cards>
+  <Card
+    title="Performance Optimization"
+    href="/docs/activity-logs/performance-optimization"
+    description="Optimize the logging system and admin dashboard for better performance"
+  />
+  <Card
+    title="Testing and Validation"
+    href="/docs/activity-logs/testing"
+    description="Implement tests for the logging system and admin dashboard"
+  />
+  <Card
+    title="Security Enhancements"
+    href="/docs/activity-logs/security"
+    description="Implement additional security measures for the logging system"
+  />
+</Cards>

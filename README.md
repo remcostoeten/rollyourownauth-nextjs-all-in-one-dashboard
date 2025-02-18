@@ -2,11 +2,17 @@
 
 ### Consists of
 
-- RYOA 
+- RYOA - rollyourownauth.
 A very scalable, good practice, feature and non-standard nextjs application dashboard for personal use built also to showcase custom rolling auth and best practices.
 
 - Docs
-A fumadocs application for aesthetic documentation as I will be doing a lot of planning and writing guides, sharing schemas and models and whatnot.
+A MDX powered documentation site for the project. Planning and guiding all (interesting) features/models/concepts of the project.
+
+- Feature X/Y/Z For All-in-One Dashboard
+Behind the custom rolled auth sits my all-in-one dashboard. It's a work in progress and I'm not sure what it will be yet.
+
+- As this is a monorepo and I try to built in an agnostic way, I often build features in separate apps and then move them to the core if they are generally useful.  I often work on multiple projects at once. I do some doc work, get sidetracked and start working on a new feature, then move it to the core and back to a side project. This way I do keep all the "potentials" in one place. 
+
 
 # RYOA (Roll Your Own Auth)
 
@@ -16,21 +22,31 @@ A modern authentication system built with Next.js, Prisma, and TypeScript, featu
 
 - 🔐 Custom authentication system with session management
 - 🗄️ Multi-provider database support:
-  - SQLite (local development)
+  - Local SQLite or PostgreSQL via Docker
   - Neon (PostgreSQL)
   - Turso (distributed SQLite)
-- 🛠️ Interactive CLI for database management
-- 🔑 OAuth support (GitHub, Google)
-- 👤 Comprehensive user management
+  - Whateveryouwish. Agnostic as possible.
+- 🛠️ Interactive CLI for database management (creation, stopping, removing and way more)
+- 🔑 OAuth support (GitHub, Google & extendable adapter pattern)
+- 👤 Comprehensive user management (roles, permissions, etc)
 - 🔒 Security-first approach with password hashing and session tracking
 
 ## Tech Stack
 
-- Next.js 14
-- Prisma ORM
+- Next.js 15
+- Drizzle ORM
 - TypeScript
-- TailwindCSS
 - SQLite/PostgreSQL
+- Jose (JWT)
+
+## Key architecture patterns
+
+- Strong separation of concerns
+- Document first
+- Shared components
+- Feature flags
+- SOLID principles
+...
 
 ## Quick Start
 
@@ -41,8 +57,11 @@ pnpm install
 # Initialize database
 pnpm db init
 
-# Generate Prisma client
-pnpm db generate
+# Generate Drizzle client
+pnpm gen
+
+# Push schema to database
+pnpm dbpush
 
 # Start development server
 pnpm dev

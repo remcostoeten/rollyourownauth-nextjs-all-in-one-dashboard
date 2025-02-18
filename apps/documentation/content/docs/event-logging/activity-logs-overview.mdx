@@ -1,0 +1,58 @@
+---
+title: "Activity Logs: Concept and Architecture Overview"
+description: "High-level overview of the activity logging system architecture"
+---
+
+# Activity Logs: Concept and Architecture Overview
+
+## System Goals
+
+1. Track user actions and content interactions
+2. Monitor system performance and errors
+3. Provide insights through an admin dashboard
+4. Ensure data privacy and GDPR compliance
+
+## Architecture Overview
+
+Our activity logging system will be built using the following technologies and practices:
+
+- Next.js 15 for the web application framework
+- React 19 for the user interface
+- Drizzle ORM with SQLite for data storage
+- Server Actions for handling log entries
+- Server-Side Rendering (SSR) for improved performance and SEO
+
+## Key Components
+
+1. **Logging Service**: A server-side service that handles log entry creation and storage.
+2. **Client-Side Logger**: A lightweight client-side module that sends log data to the server.
+3. **Admin Dashboard**: A server-rendered page for viewing and analyzing log data.
+4. **Database**: SQLite database managed by Drizzle ORM for storing log entries.
+
+## Data Flow
+
+1. User interacts with the application
+2. Client-side logger captures the interaction
+3. Log data is sent to the server via a Server Action
+4. Server Action processes and stores the log entry in the database
+5. Admin can view and analyze log data through the dashboard
+
+## Next Steps
+
+<Cards>
+  <Card
+    title="Setting Up the Project"
+    href="/docs/activity-logs/project-setup"
+    description="Step-by-step guide to set up the Next.js project with Drizzle ORM"
+  />
+  <Card
+    title="Database Schema Design"
+    href="/docs/activity-logs/schema-design"
+    description="Designing the database schema for activity logs"
+  />
+  <Card
+    title="Server Actions Implementation"
+    href="/docs/activity-logs/server-actions"
+    description="Implementing server actions for log processing"
+  />
+</Cards>

@@ -1,0 +1,291 @@
+---
+title: "Modal"
+description: "A flexible modal component with customizable transitions"
+---
+
+# Modal
+
+The `Modal` component is a customizable dialog that can be used to display content in an overlay. It's built with Framer Motion for smooth animations and follows accessibility best practices.
+
+## Usage
+
+```tsx
+import { Modal } from "@/components/custom";
+
+export default function MyComponent() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>Open Modal</button>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Example Modal"
+      >
+        <div className="p-4">
+          <h2>Modal Content</h2>
+          <p>This is an example modal with custom content.</p>
+        </div>
+      </Modal>
+    </>
+  );
+}
+```
+
+## Live Demo
+
+```tsx live
+function ModalDemo() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button
+        className="px-4 py-2 bg-primary text-white rounded-md"
+        onClick={() => setIsOpen(true)}
+      >
+        Open Modal
+      </button>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        title="Example Modal"
+        size="md"
+      >
+        <div className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Welcome!</h2>
+          <p className="text-gray-600 dark:text-gray-300">
+            This is an example of our custom modal component with animations.
+          </p>
+          <div className="mt-6 flex justify-end">
+            <button
+              className="px-4 py-2 bg-primary text-white rounded-md"
+              onClick={() => setIsOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
+  );
+}
+```
+
+## Props
+
+| Prop                  | Type                             | Default     | Description                                   |
+| --------------------- | -------------------------------- | ----------- | --------------------------------------------- |
+| `isOpen`              | `boolean`                        | `false`     | Controls the visibility of the modal          |
+| `onClose`             | `() => void`                     | `undefined` | Callback function when modal is closed        |
+| `title`               | `string`                         | `undefined` | The title shown in the modal header           |
+| `size`                | `'sm' \| 'md' \| 'lg' \| 'full'` | `'md'`      | The size of the modal                         |
+| `closeOnOverlayClick` | `boolean`                        | `true`      | Whether clicking the overlay closes the modal |
+| `showCloseButton`     | `boolean`                        | `true`      | Whether to show the close button              |
+| `className`           | `string`                         | `undefined` | Additional CSS classes for the modal          |
+| `overlayClassName`    | `string`                         | `undefined` | Additional CSS classes for the overlay        |
+| `children`            | `ReactNode`                      | `undefined` | The modal content                             |
+
+## Variants
+
+### Size Variants
+
+```tsx
+// Small Modal
+<Modal size="sm" {...props} />
+
+// Medium Modal (Default)
+<Modal size="md" {...props} />
+
+// Large Modal
+<Modal size="lg" {...props} />
+
+// Full Screen Modal
+<Modal size="full" {...props} />
+```
+
+### Custom Header
+
+```tsx
+<Modal
+  title="Custom Header"
+  headerClassName="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+  {...props}
+>
+  Content
+</Modal>
+```
+
+### Custom Transitions
+
+```tsx
+<Modal
+  animationVariant="slide" // or "fade", "scale"
+  {...props}
+>
+  Content
+</Modal>
+```
+
+## Accessibility
+
+The Modal component:
+
+- Traps focus within the modal when open
+- Supports closing with the Escape key
+- Uses proper ARIA attributes
+- Maintains proper focus management
+- Prevents scroll on the main content when open
+
+## Implementation Details
+
+```tsx
+// components/custom/Modal/types.ts
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  size?: "sm" | "md" | "lg" | "full";
+  closeOnOverlayClick?: boolean;
+  showCloseButton?: boolean;
+  className?: string;
+  overlayClassName?: string;
+  headerClassName?: string;
+  animationVariant?: "fade" | "scale" | "slide";
+  children: ReactNode;
+}
+
+// components/custom/Modal/index.tsx
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
+import { cn } from "@/lib/utils";
+import { ModalProps } from "./types";
+
+export const Modal = ({
+  isOpen,
+  onClose,
+  title,
+  size = "md",
+  closeOnOverlayClick = true,
+  showCloseButton = true,
+  className,
+  overlayClassName,
+  headerClassName,
+  animationVariant = "scale",
+  children,
+}: ModalProps) => {
+  const handleEscape = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    },
+    [onClose],
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, handleEscape]);
+
+  const variants = {
+    fade: {
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
+    },
+    scale: {
+      initial: { opacity: 0, scale: 0.95 },
+      animate: { opacity: 1, scale: 1 },
+      exit: { opacity: 0, scale: 0.95 },
+    },
+    slide: {
+      initial: { opacity: 0, y: 20 },
+      animate: { opacity: 1, y: 0 },
+      exit: { opacity: 0, y: 20 },
+    },
+  };
+
+  const sizeClasses = {
+    sm: "max-w-sm",
+    md: "max-w-md",
+    lg: "max-w-lg",
+    full: "max-w-full m-4",
+  };
+
+  if (!isOpen) return null;
+
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={cn(
+              "fixed inset-0 bg-black/50 backdrop-blur-sm",
+              overlayClassName,
+            )}
+            onClick={closeOnOverlayClick ? onClose : undefined}
+          />
+
+          <div className="min-h-full flex items-center justify-center p-4">
+            <motion.div
+              {...variants[animationVariant]}
+              className={cn(
+                "relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full",
+                sizeClasses[size],
+                className,
+              )}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {(title || showCloseButton) && (
+                <div
+                  className={cn(
+                    "flex items-center justify-between p-4 border-b",
+                    headerClassName,
+                  )}
+                >
+                  {title && <h2 className="text-lg font-semibold">{title}</h2>}
+                  {showCloseButton && (
+                    <button
+                      onClick={onClose}
+                      className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      <span className="sr-only">Close</span>
+                      <svg
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              )}
+              {children}
+            </motion.div>
+          </div>
+        </div>
+      )}
+    </AnimatePresence>,
+    document.body,
+  );
+};
+```

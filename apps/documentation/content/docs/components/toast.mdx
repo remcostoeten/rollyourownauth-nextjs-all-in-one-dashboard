@@ -1,0 +1,307 @@
+---
+title: "Toast"
+description: "A versatile toast notification system with multiple variants and animations"
+---
+
+# Toast
+
+The `Toast` component is a flexible notification system that supports multiple variants, animations, and positions. It's built with Framer Motion and includes features like drag-to-dismiss and customizable styling.
+
+## Usage
+
+```tsx
+import { ToastProvider, useToast } from "@/components/custom/toast";
+
+export default function MyComponent() {
+  const { addToast } = useToast();
+
+  const showSuccessToast = () => {
+    addToast({
+      variant: "success",
+      message: "Operation completed successfully!",
+      duration: 3000,
+      position: "bottom-right",
+    });
+  };
+
+  return <button onClick={showSuccessToast}>Show Success Toast</button>;
+}
+
+// Wrap your app with ToastProvider
+export default function App() {
+  return (
+    <ToastProvider>
+      <MyComponent />
+    </ToastProvider>
+  );
+}
+```
+
+## Live Demo
+
+```tsx live
+function ToastDemo() {
+  const { addToast } = useToast();
+  const [position, setPosition] = useState("bottom-right");
+  const [duration, setDuration] = useState(5000);
+  const [variant, setVariant] = useState("regular");
+
+  const showToast = () => {
+    addToast({
+      variant,
+      message: "This is a toast message",
+      duration,
+      position,
+    });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <button onClick={() => showToast("success")}>Success</button>
+        <button onClick={() => showToast("error")}>Error</button>
+        <button onClick={() => showToast("warning")}>Warning</button>
+        <button onClick={() => showToast("pending")}>Pending</button>
+      </div>
+    </div>
+  );
+}
+```
+
+## Props
+
+### Toast Provider Props
+
+| Prop       | Type        | Default     | Description             |
+| ---------- | ----------- | ----------- | ----------------------- |
+| `children` | `ReactNode` | `undefined` | The application content |
+
+### Toast Props
+
+| Prop              | Type                                                                                              | Default          | Description                                  |
+| ----------------- | ------------------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------- |
+| `variant`         | `'regular' \| 'pending' \| 'error' \| 'success' \| 'warning'`                                     | `'regular'`      | The visual style variant                     |
+| `message`         | `string`                                                                                          | `undefined`      | The toast message content                    |
+| `duration`        | `number`                                                                                          | `5000`           | Duration in milliseconds before auto-closing |
+| `position`        | `'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right'` | `'bottom-right'` | Toast position                               |
+| `isDraggable`     | `boolean`                                                                                         | `true`           | Whether the toast can be dragged to dismiss  |
+| `showCloseButton` | `boolean`                                                                                         | `true`           | Whether to show the close button             |
+| `animateIn`       | `'fade' \| 'slide'`                                                                               | `'fade'`         | Animation style                              |
+| `style`           | `CSSProperties`                                                                                   | `undefined`      | Custom styles                                |
+| `actionButton`    | `{ label: string; onClick: () => void }`                                                          | `undefined`      | Optional action button                       |
+| `onClose`         | `() => void`                                                                                      | `undefined`      | Callback when toast closes                   |
+| `onReset`         | `() => void`                                                                                      | `undefined`      | Callback for reset action                    |
+| `onSave`          | `() => void`                                                                                      | `undefined`      | Callback for save action                     |
+
+## Variants
+
+### Regular Toast
+
+```tsx
+addToast({
+  variant: "regular",
+  message: "Regular notification",
+  duration: 5000,
+});
+```
+
+### Success Toast
+
+```tsx
+addToast({
+  variant: "success",
+  message: "Operation completed successfully!",
+  duration: 3000,
+});
+```
+
+### Error Toast
+
+```tsx
+addToast({
+  variant: "error",
+  message: "An error occurred",
+  duration: 5000,
+  actionButton: {
+    label: "Retry",
+    onClick: () => console.log("Retrying..."),
+  },
+});
+```
+
+### Warning Toast
+
+```tsx
+addToast({
+  variant: "warning",
+  message: "Please save your changes",
+  duration: 5000,
+});
+```
+
+### Pending Toast
+
+```tsx
+addToast({
+  variant: "pending",
+  message: "Processing request...",
+  duration: 0, // Won't auto-close
+});
+```
+
+## Common Patterns
+
+### Toast Sequences
+
+```tsx
+// Show a loading toast followed by success/error
+const saveChanges = async () => {
+  addToast({
+    variant: "pending",
+    message: "Saving changes...",
+    duration: 1500,
+  });
+
+  try {
+    await saveData();
+    addToast({
+      variant: "success",
+      message: "Changes saved successfully!",
+      duration: 2000,
+    });
+  } catch (error) {
+    addToast({
+      variant: "error",
+      message: "Failed to save changes",
+      duration: 3000,
+      actionButton: {
+        label: "Retry",
+        onClick: saveChanges,
+      },
+    });
+  }
+};
+```
+
+### Custom Styling
+
+```tsx
+addToast({
+  variant: "regular",
+  message: "Custom styled toast",
+  style: {
+    backgroundColor: "#131316",
+    color: "#FFFFFF",
+    borderRadius: "99px",
+  },
+});
+```
+
+## Implementation Details
+
+### Context Provider
+
+```tsx
+// components/custom/toast/state/toast-context.tsx
+import { createContext, useContext, useState } from "react";
+import type { ToastContextType, ToastProps } from "../types";
+
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
+
+export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [toasts, setToasts] = useState<(ToastProps & { id: string })[]>([]);
+
+  const addToast = (toast: ToastProps) => {
+    const id = Math.random().toString(36).substr(2, 9);
+    setToasts((prev) => [...prev, { ...toast, id }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
+  return (
+    <ToastContext.Provider value={{ addToast, removeToast }}>
+      {children}
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          {...toast}
+          onClose={() => removeToast(toast.id)}
+        />
+      ))}
+    </ToastContext.Provider>
+  );
+};
+
+export const useToast = () => {
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error("useToast must be used within ToastProvider");
+  }
+  return context;
+};
+```
+
+### Toast Component
+
+```tsx
+// components/custom/toast/components/toast.tsx
+import { motion, AnimatePresence } from "framer-motion";
+import type { ToastProps } from "../types";
+import { getVariantStyles } from "../utils/variant-styles";
+
+export const Toast: React.FC<ToastProps> = ({
+  variant = "regular",
+  message,
+  duration = 5000,
+  position = "bottom-right",
+  isDraggable = true,
+  showCloseButton = true,
+  animateIn = "fade",
+  style,
+  onClose,
+  actionButton,
+  ...props
+}) => {
+  // Implementation details...
+};
+```
+
+## Accessibility
+
+The Toast component:
+
+- Uses appropriate ARIA roles and attributes
+- Supports keyboard interaction
+- Respects reduced motion preferences
+- Provides sufficient color contrast
+- Includes focus management
+- Times out appropriately for non-critical messages
+
+## Best Practices
+
+1. **Duration**
+
+   - Use shorter durations (2-3s) for success messages
+   - Use longer durations (4-5s) for error messages
+   - Use no timeout (duration: 0) for messages requiring action
+
+2. **Position**
+
+   - Use bottom positions for most notifications
+   - Use top positions for critical errors
+   - Be consistent with positioning across your app
+
+3. **Message Content**
+
+   - Keep messages concise and clear
+   - Include specific details when relevant
+   - Use appropriate variant for the message type
+
+4. **Actions**
+   - Include action buttons for recoverable errors
+   - Make action labels clear and specific
+   - Ensure actions are easily accessible

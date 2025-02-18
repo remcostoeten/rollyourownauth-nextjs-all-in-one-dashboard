@@ -1,5 +1,5 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
-
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import { siteConfig } from "../../../packages/configuration/site-config";
 /**
  * Shared layout configurations
  *
@@ -9,14 +9,13 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    // can be JSX too!
-    title: 'My App',
+    title: siteConfig.name.name,
   },
   links: [
     {
-      text: 'Documentation',
-      url: '/docs',
-      active: 'nested-url',
+      text: "Documentation",
+      url: "/docs",
+      active: "nested-url",
     },
   ],
 };

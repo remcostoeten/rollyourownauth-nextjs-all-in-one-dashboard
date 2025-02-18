@@ -1,5 +1,94 @@
-@import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
-@import 'fumadocs-ui/css/preset.css';
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
 
 @source '../node_modules/fumadocs-ui/dist/**/*.js';
+/* @import 'fumadocs-ui/css/ocean.css'; */
+/* @import 'fumadocs-ui/css/dusk.css';
+@import 'fumadocs-ui/css/vitepress.css';
+/* @import 'fumadocs-ui/css/purple.css';  */
+/* @import 'fumadocs-ui/css/catppuccin.css'; */
+@import "fumadocs-ui/css/black.css";
+
+/* Typography styles */
+code,
+pre {
+  font-family: var(--font-mono);
+  font-feature-settings: "liga" 0;
+  tab-size: 2;
+}
+
+/* Code block container */
+.code-block {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+/* Code block title */
+.code-block::before {
+  content: attr(data-title);
+  display: block;
+  padding: 0.5rem 1rem;
+  background-color: rgb(var(--fd-foreground) / 0.1);
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: rgb(var(--fd-foreground) / 0.8);
+  border: 1px solid rgb(var(--fd-foreground) / 0.1);
+  border-bottom: none;
+}
+
+/* Code block with title */
+.code-block pre {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+pre {
+  background-color: rgb(var(--fd-background));
+  border: 1px solid rgb(var(--fd-foreground) / 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+code {
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  background-color: rgb(var(--fd-foreground) / 0.1);
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+/* ASCII Tree Styles */
+pre.ascii-tree {
+  font-family: var(--font-mono);
+  line-height: 1.2;
+  white-space: pre;
+  background-color: transparent;
+  border: none;
+  color: rgb(var(--fd-foreground) / 0.9);
+}
+
+.ascii-tree code {
+  background: none;
+  font-size: 0.9em;
+  padding: 0;
+}
+
+/* Comments in ASCII tree */
+.ascii-tree .comment {
+  color: rgb(var(--fd-foreground) / 0.5);
+  margin-left: 1rem;
+}

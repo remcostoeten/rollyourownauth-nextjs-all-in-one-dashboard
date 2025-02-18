@@ -1,34 +1,36 @@
 # Auth Todo
 
-Self  rolled authentication
+Self rolled authentication
 
 ## Packages needed
 
-- [ ] bcrypt - for password hashing
-- [ ] jose - for encryption
-- [ ] @prisma/client - for database
-- [ ] zod - for validation
+-   [ ] bcrypt - for password hashing
+-   [ ] jose - for encryption
+-   [ ] @prisma/client - for database
+-   [ ] zod - for validation
 
 `pnpm install bcrypt @types/bcryptjs jose zod`
+
 ## schema
 
-Seperate the schemas following https://v0.dev/chat/prisma-schema-organization-CKL1dSLlryF 
+Seperate the schemas following https://v0.dev/chat/prisma-schema-organization-CKL1dSLlryF
 
 Update package.json with the scripts for seperation.
 
 Update tsconfig for alias
 
-- [ ] add user schema
-- [ ] add profile schema related to user
-- [ ] add sessions schema related to user
-- [ ] oAuth2 schema(?)
+-   [ ] add user schema
+-   [ ] add profile schema related to user
+-   [ ] add sessions schema related to user
+-   [ ] oAuth2 schema(?)
 
 ## Schema design
 
 `src/severver` or `src/modules/authentication/server/schemas`\
 
 `src/modules/authentication/server/schemas/user.prisma`
-```prisma
+
+````prisma
 enum UserRole {
   ADMIN
   USER
@@ -40,11 +42,11 @@ model User {
   email         String    @unique
   password      String
   role          UserRole  @default(USER)
-  
+
   // Security
   lastLoginAt   DateTime?
   failedLoginAttempts Int @default(0)
-  
+
   // Timestamps
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -65,16 +67,16 @@ model Profile {
   name            String?
   bio             String?
   profilePicture  String?
-  
+
   // Social links
   githubUrl       String?
   twitterUrl      String?
   websiteUrl      String?
-  
+
   // Timestamps
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  
+
   // Relations
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -84,35 +86,37 @@ model Profile {
 `src/modules/authentication/server/schemas/session.prisma`
 ```prisma
 
-```
-model Session {
-  id            String   @id @default(cuid())
-  userId        String
-  sessionToken  String   @unique
-  expiresAt     DateTime
-  
-  // Security tracking
-  ipAddress     String?
-  userAgent     String?
-  lastActiveAt  DateTime @default(now())
-  
-  // Timestamps
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  // Relations
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+````
 
-  @@index([userId])
-  @@map("sessions")
+model Session {
+id String @id @default(cuid())
+userId String
+sessionToken String @unique
+expiresAt DateTime
+
+// Security tracking
+ipAddress String?
+userAgent String?
+lastActiveAt DateTime @default(now())
+
+// Timestamps
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+
+// Relations
+user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+@@index([userId])
+@@map("sessions")
 }```
 
 ## Utillty functions
 
-- Hash pashword
-src/modules/authentication/utilities/hash-password.ts
+-   Hash pashword
+    src/modules/authentication/utilities/hash-password.ts
+
 ```ts
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'
 
 /**
  * Hashes a password using bcrypt.
@@ -121,14 +125,15 @@ import bcrypt from 'bcrypt';
  * @throws {Error} If hashing fails.
  */
 export function hashPassword(password: string): Promise<string> {
-  const saltRounds = 10;
-  return bcrypt.hash(password, saltRounds);
+	const saltRounds = 10
+	return bcrypt.hash(password, saltRounds)
 }
 ```
 
 `src/modules/authentication/utilities/verify-password.ts`
+
 ```ts
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'
 
 /**
  * Verifies a password against a hash.
@@ -138,13 +143,14 @@ import bcrypt from 'bcrypt';
  * @throws {Error} If verification fails.
  */
 export function verifyPassword(password: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(password, hash);
+	return bcrypt.compare(password, hash)
 }
 ```
 
 `src/modules/authentication/utilities/generate-session-token.ts`
+
 ```ts
-import { randomBytes } from 'crypto';
+import { randomBytes } from 'crypto'
 
 /**
  * Generates a random session token.
@@ -152,11 +158,12 @@ import { randomBytes } from 'crypto';
  * @returns {string} A hexadecimal string representation of the random bytes.
  */
 export function generateSessionToken(bytes: number = 32): string {
-  return randomBytes(bytes).toString('hex');
+	return randomBytes(bytes).toString('hex')
 }
 ```
 
 `src/modules/authentication/utilities/generate-session-exp`iry.ts`
+
 ```ts
 /**
  * Generates a session expiry date.
@@ -164,15 +171,16 @@ export function generateSessionToken(bytes: number = 32): string {
  * @returns {Date} The expiry date.
  */
 export function generateSessionExpiry(hours: number = 24): Date {
-  return new Date(Date.now() + hours * 60 * 60 * 1000);
+	return new Date(Date.now() + hours * 60 * 60 * 1000)
 }
 ```
 
 `src/modules/authentication/server/queries/generate-session.ts`
+
 ```ts
-import { db } from 'db';
-import { generateSessionToken } from './generate-session-token';
-import { generateSessionExpiry } from './generate-session-expiry';
+import { db } from 'db'
+import { generateSessionToken } from './generate-session-token'
+import { generateSessionExpiry } from './generate-session-expiry'
 
 /**
  * Creates a new session for a user.
@@ -182,21 +190,22 @@ import { generateSessionExpiry } from './generate-session-expiry';
  * @returns {Promise<Object>} A promise that resolves to the created session object.
  */
 export function createSession(userId: string, ipAddress?: string, userAgent?: string) {
-  return prisma.session.create({
-    data: {
-      userId,
-      sessionToken: generateSessionToken(),
-      expiresAt: generateSessionExpiry(),
-      ipAddress,
-      userAgent,
-    },
-  });
+	return prisma.session.create({
+		data: {
+			userId,
+			sessionToken: generateSessionToken(),
+			expiresAt: generateSessionExpiry(),
+			ipAddress,
+			userAgent,
+		},
+	})
 }
 ```
 
 `src/modules/authentication/server/mutation/invalidate-session.ts`
+
 ```ts
-import { prisma } from 'db';
+import { prisma } from 'db'
 
 /**
  * Invalidates a session by deleting it from the database.
@@ -204,17 +213,18 @@ import { prisma } from 'db';
  * @returns {Promise<Object>} A promise that resolves to the deleted session object.
  */
 export function invalidateSession(sessionToken: string) {
-  return prisma.session.delete({
-    where: {
-      sessionToken,
-    },
-  });
+	return prisma.session.delete({
+		where: {
+			sessionToken,
+		},
+	})
 }
 ```
 
 `src/modules/authentication/server/mutation/*/invalidate-session.ts`
+
 ```ts
-import { db } from 'db';
+import { db } from 'db'
 
 /**
  * Retrieves a valid session from the database.
@@ -222,21 +232,22 @@ import { db } from 'db';
  * @returns {Promise<Object|null>} A promise that resolves to the session object if found and valid, null otherwise.
  */
 export function getValidSession(sessionToken: string) {
-  return prisma.session.findUnique({
-    where: {
-      sessionToken,
-      expiresAt: {
-        gt: new Date(),
-      },
-    },
-    include: {
-      user: true,
-    },
-  });
+	return prisma.session.findUnique({
+		where: {
+			sessionToken,
+			expiresAt: {
+				gt: new Date(),
+			},
+		},
+		include: {
+			user: true,
+		},
+	})
 }
 ```
 
 `src/modules/authentication/server/queries`/get-valid-session.ts`
+
 ```ts
 import import { db } from 'db';
 
@@ -264,3 +275,4 @@ export function getValidSession(sessionToken: string) {
 
 
 
+```
