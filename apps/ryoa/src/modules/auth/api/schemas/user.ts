@@ -7,9 +7,9 @@ import { userProfiles } from "./user-profile"
 
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
-  email: text("email").notNull().unique(),
+  email: text("email").notNull(),
   passwordHash: text("password_hash"),
-  role: text("role").notNull().default("user"),
+  role: text("role", { enum: ["user", "admin"] }).notNull().default("user"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().default(sql`CURRENT_TIMESTAMP`),
 })

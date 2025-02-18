@@ -4,8 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createUser } from "../api/mutations/create-user"
-import { loginWithEmailPassword } from "../api/mutations/login-with-email-password"
+import { createUserAction } from "@/src/modules/auth/api/mutations/create-user"
 import { z } from "zod"
 
 const registerSchema = z
@@ -25,6 +24,7 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({})
   const [serverError, setServerError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const validateForm = () => {
@@ -47,17 +47,21 @@ export function RegisterForm() {
     if (!validateForm()) return
 
     try {
-      const user = await createUser({ email, password })
-      const { token, expiresAt } = await loginWithEmailPassword({ email, password })
-      document.cookie = `auth_token=${token}; expires=${new Date(expiresAt).toUTCString()}; path=/; HttpOnly; Secure; SameSite=Strict`
+      setIsLoading(true)
+      const result = await createUserAction({ email, password })
 
-      if (user.role === "admin") {
-        router.push("/dashboard/admin")
-      } else {
-        router.push("/dashboard")
+      if (!result.success) {
+        setServerError(result.error || "Registration failed")
+        return
       }
+
+      // Redirect based on user role
+      router.push(result.redirect)
+      router.refresh() // Refresh the page to update the session
     } catch (error) {
       setServerError("Registration failed. Please try again.")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -74,6 +78,7 @@ export function RegisterForm() {
           onChange={(e) => setEmail(e.target.value)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           required
+          disabled={isLoading}
         />
         {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
       </div>
@@ -88,6 +93,7 @@ export function RegisterForm() {
           onChange={(e) => setPassword(e.target.value)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           required
+          disabled={isLoading}
         />
         {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
       </div>
@@ -102,15 +108,17 @@ export function RegisterForm() {
           onChange={(e) => setConfirmPassword(e.target.value)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           required
+          disabled={isLoading}
         />
         {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
       </div>
       {serverError && <p className="text-sm text-red-600">{serverError}</p>}
       <button
         type="submit"
-        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+        disabled={isLoading}
       >
-        Register
+        {isLoading ? "Registering..." : "Register"}
       </button>
       <a
         href="/api/auth/github"

@@ -3,9 +3,10 @@ CREATE TABLE `oauth_connections` (
 	`user_id` text NOT NULL,
 	`provider` text NOT NULL,
 	`provider_user_id` text NOT NULL,
-	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`updated_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
+	`access_token` text,
+	`refresh_token` text,
+	`expires_at` integer,
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `sessions` (
@@ -13,7 +14,8 @@ CREATE TABLE `sessions` (
 	`user_id` text NOT NULL,
 	`expires_at` integer NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
+	`user_agent` text,
+	`ip_address` text
 );
 --> statement-breakpoint
 CREATE TABLE `user_profiles` (

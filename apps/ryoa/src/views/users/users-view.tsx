@@ -1,16 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use } from "react"
 
-export function UsersView() {
-  const [users, setUsers] = useState([])
+async function getUsers() {
+  const res = await fetch("/api/users", { cache: "no-store" })
+  if (!res.ok) throw new Error("Failed to fetch users")
+  return res.json()
+}
 
-  useEffect(() => {
-    fetch("/api/users")
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .catch(console.error)
-  }, [])
+type User = {
+  id: string
+  email: string
+  role: string
+}
 
+type UsersViewProps = {
+  users: User[]
+}
+
+export function UsersView({ users }: UsersViewProps) {
   return <div>{JSON.stringify(users, null, 2)}</div>
 } 
