@@ -1,0 +1,38 @@
+
+
+> my-v0-project@0.1.0 build /home/remcostoeten/PROPAH/ryoa-mono-docs/apps/ryoa
+> next build
+
+  [1m[38;2;173;127;168m▲ Next.js 14.2.16[39m[22m
+  - Experiments (use with caution):
+    · webpackBuildWorker
+    · parallelServerCompiles
+    · parallelServerBuildTraces
+
+ [37m[1m [22m[39m Creating an optimized production build ...
+Failed to compile.
+
+./src/app/api/users/route.ts
+Error: 
+  [31mx[0m You're importing a component that needs next/headers. That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/getting-started/
+  [31m|[0m react-essentials#server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/home/remcostoeten/PROPAH/ryoa-mono-docs/apps/ryoa/src/app/api/users/route.ts[0m:2:1]
+ [2m2[0m | import { db } from "../../../server/db"
+ [2m3[0m | import { users } from "../../../modules/auth/api/schemas/user"
+ [2m4[0m | import { verifyToken } from "../../../modules/auth/utils/jwt"
+ [2m5[0m | import { cookies } from "next/headers"
+   : [31;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m6[0m | 
+ [2m7[0m | export async function GET(request: Request) {
+ [2m8[0m |   const cookieStore = cookies()
+   `----
+
+Import trace for requested module:
+./src/app/api/users/route.ts
+./app/page.tsx
+
+
+> Build failed because of webpack errors
+[41m[30m ELIFECYCLE [39m[49m [31mCommand failed with exit code 1.[39m

@@ -1,5 +1,8 @@
 {
-  "name": "documentation",
+  "name": "ryoa-documentation",
+  "description": "A documentation site to document all features, but also plan future ideas and dump  my thoughts",
+  "author": "Remco Stoeten",
+  "license": "MIT",
   "version": "0.0.0",
   "private": true,
   "scripts": {
