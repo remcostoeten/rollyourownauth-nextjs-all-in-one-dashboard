@@ -1,0 +1,35 @@
+# AI Instructions for AuthApp Project
+
+This document provides guidelines for AI assistants working on the AuthApp project. Follow these instructions to maintain consistency and adhere to the project's architecture and best practices.
+
+## Project Architecture
+
+1. Modular Structure
+   - The project is organized into modules under `src/modules/`
+   - Each module (e.g., auth, dashboard) contains its own components, views, and API logic
+
+2. No API Routes
+   - Use Next.js server actions instead of traditional API routes
+   - Server actions should be placed in `src/modules/[module]/api/mutations/` or `src/modules/[module]/api/queries/`
+
+3. Database (Drizzle ORM with SQLite)
+   - Main schema is defined in `src/server/db/schema/index.ts`
+   - Module-specific schemas go in `src/modules/[module]/api/schemas/`
+   - Use Drizzle's migration tools for schema changes
+
+4. Authentication
+   - JWT-based authentication
+   - Session management using HTTP-only cookies
+   - Support for email/password and GitHub OAuth
+
+## Coding Standards
+
+1. Use TypeScript for all new code
+2. Follow the existing code style and formatting
+3. Use meaningful variable and function names
+4. Keep components and functions small and focused
+5. Use server actions for API functionality instead of API routes
+6. Implement proper error handling and input validation
+
+## File Structure
+

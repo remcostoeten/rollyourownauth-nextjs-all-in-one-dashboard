@@ -211,7 +211,7 @@ export function Sidebar({
 						</h3>
 						<nav className="space-y-1">
 							<DragDropContext onDragEnd={onDragEnd}>
-								<Droppable droppableId="sidebar-list">
+								<Droppable droppableId="sidebar-list" isDropDisabled={false}>
 									{(provided) => (
 										<div
 											{...provided.droppableProps}

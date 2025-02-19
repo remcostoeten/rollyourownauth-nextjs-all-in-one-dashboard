@@ -3,11 +3,13 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { loginWithEmailPassword } from "../api/mutations/login-with-email-password"
+import { useAuthStore } from "../state/use-auth-store"
 
 export function LoginForm() {
   const router = useRouter()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const setUser = useAuthStore((state) => state.setUser)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -26,6 +28,7 @@ export function LoginForm() {
         return
       }
 
+      setUser(result.user)
       router.push(result.redirect || "/dashboard")
     } catch (error) {
       setError("An unexpected error occurred")

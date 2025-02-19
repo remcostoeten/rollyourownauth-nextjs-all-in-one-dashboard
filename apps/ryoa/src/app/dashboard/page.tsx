@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { DashboardView } from "../../modules/dashboard/views/dashboard-view"
+import { DashboardView } from "@/src/views/dashboard"
 import { Navigation } from "../../components/navigation"
 
 export const metadata: Metadata = {
