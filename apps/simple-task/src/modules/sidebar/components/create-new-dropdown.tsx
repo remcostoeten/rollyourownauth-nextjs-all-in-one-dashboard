@@ -1,14 +1,15 @@
 "use client"
 
 import React, { useState, useRef, FormEvent, useEffect } from "react"
-import { Plus, Pencil, Trash2, Check, X } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
+import { Plus, Pencil, Trash2, Check, X, FolderPlus, ListTodo } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import data from "@emoji-mart/data"
 import Picker from "@emoji-mart/react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useListsStore, List } from "@/src/modules/quick-task/state/lists"
+import { Button } from "@/components/ui/button"
 
 function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
@@ -41,7 +42,7 @@ export function CreateNewDropdown({ className }: CreateNewDropdownProps) {
 	const [editedName, setEditedName] = useState("")
 	const inputRef = useRef<HTMLInputElement>(null)
 	
-	const { lists, addList, removeList, updateList } = useListsStore()
+	const { lists, addList, removeList, updateList, addCategory } = useListsStore()
 
 	useEffect(() => {
 		if (isOpen && inputRef.current && !editingList) {
@@ -117,169 +118,44 @@ export function CreateNewDropdown({ className }: CreateNewDropdownProps) {
 		}
 	}
 
+	const handleCreateCategory = () => {
+		addCategory({
+			id: crypto.randomUUID(),
+			name: 'New Category',
+			emoji: '📁'
+		})
+	}
+
 	return (
 		<DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
 			<DropdownMenuTrigger asChild>
-				<button 
-					className={cn(
-						"group w-full text-left px-3 py-1.5 text-sm bg-transparent rounded-sm",
-						"hover:bg-[#1C1C1C] focus:bg-[#1C1C1C]",
-						"transition-colors duration-150",
-						"focus:outline-none",
-						className
-					)}
+				<Button
+					variant="outline"
+					className="w-full justify-start gap-2 border-[#2C2C2C] bg-[#1C1C1C] hover:bg-[#2C2C2C] hover:text-gray-100"
 				>
-					<span className="flex items-center gap-2 text-gray-400 group-hover:text-gray-300">
-						<Plus className="w-3.5 h-3.5" />
-						Create New...
-						<kbd className="ml-auto text-[10px] font-mono opacity-50">⌘N</kbd>
-					</span>
-				</button>
+					<Plus className="h-4 w-4" />
+					Create New
+				</Button>
 			</DropdownMenuTrigger>
-			<AnimatePresence>
-				{isOpen && (
-					<DropdownMenuContent 
-						asChild
-						forceMount
-						sideOffset={4}
-						className="z-50"
-					>
-						<motion.div
-							className="w-[280px] p-2 bg-[#0A0A0A]/95 backdrop-blur-sm border border-[#1C1C1C] rounded-md shadow-2xl"
-							{...dropdownAnimation}
-						>
-							<form onSubmit={handleCreateList} className="space-y-2">
-								<div className="flex items-center gap-2">
-									<button
-										type="button"
-										className={cn(
-											"p-1.5 text-base bg-transparent rounded-md",
-											"hover:bg-[#1C1C1C] transition-colors duration-150",
-											"focus:outline-none"
-										)}
-										onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-									>
-										{selectedEmoji}
-										<AnimatePresence>
-											{showEmojiPicker && (
-												<motion.div
-													initial={{ opacity: 0, y: -4 }}
-													animate={{ opacity: 1, y: 0 }}
-													exit={{ opacity: 0, y: -4 }}
-													transition={{ duration: 0.15 }}
-													className="fixed left-0 top-full z-[60] mt-1"
-												>
-													<Picker
-														data={data}
-														onEmojiSelect={(emoji: any) => {
-															setSelectedEmoji(emoji.native)
-															setShowEmojiPicker(false)
-														}}
-														theme="dark"
-													/>
-												</motion.div>
-											)}
-										</AnimatePresence>
-									</button>
-									<input
-										ref={inputRef}
-										type="text"
-										placeholder="Enter list name..."
-										value={newListName}
-										onChange={(e) => setNewListName(e.target.value)}
-										className={cn(
-											"flex-1 bg-transparent text-sm text-white placeholder-gray-500",
-											"rounded-md px-2 py-1.5",
-											"focus:outline-none",
-											"transition-colors duration-150"
-										)}
-									/>
-									<button
-										type="submit"
-										disabled={!newListName.trim()}
-										className={cn(
-											"px-3 py-1.5 text-sm rounded-md",
-											"bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white",
-											"transition-colors duration-150",
-											"focus:outline-none",
-											"disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1C1C1C]"
-										)}
-									>
-										Create
-									</button>
-								</div>
-							</form>
-
-							{lists.length > 0 && (
-								<>
-									<div className="h-px bg-[#1C1C1C] my-2" />
-									<div className="space-y-1">
-										{lists.map((list) => (
-											<div
-												key={list.id}
-												className={cn(
-													"flex items-center gap-2 px-2 py-1.5 rounded-sm",
-													"hover:bg-[#1C1C1C] group/item",
-													"transition-colors duration-150"
-												)}
-											>
-												<span className="text-base">{list.emoji || "📝"}</span>
-												{editingList?.id === list.id ? (
-													<div className="flex-1 flex items-center gap-1">
-														<input
-															type="text"
-															value={editedName}
-															onChange={(e) => setEditedName(e.target.value)}
-															className={cn(
-																"flex-1 bg-transparent text-sm text-white",
-																"focus:outline-none"
-															)}
-															autoFocus
-														/>
-														<button
-															onClick={() => handleUpdateList(list)}
-															className="p-1 hover:text-green-500 transition-colors"
-														>
-															<Check className="w-3.5 h-3.5" />
-														</button>
-														<button
-															onClick={() => setEditingList(null)}
-															className="p-1 hover:text-red-500 transition-colors"
-														>
-															<X className="w-3.5 h-3.5" />
-														</button>
-													</div>
-												) : (
-													<>
-														<span className="flex-1 text-sm text-gray-300">{list.name}</span>
-														<div className="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
-															<button
-																onClick={() => {
-																	setEditingList(list)
-																	setEditedName(list.name)
-																}}
-																className="p-1 text-gray-400 hover:text-gray-300 transition-colors"
-															>
-																<Pencil className="w-3.5 h-3.5" />
-															</button>
-															<button
-																onClick={() => handleDeleteList(list.id)}
-																className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-															>
-																<Trash2 className="w-3.5 h-3.5" />
-															</button>
-														</div>
-													</>
-												)}
-											</div>
-										))}
-									</div>
-								</>
-							)}
-						</motion.div>
-					</DropdownMenuContent>
-				)}
-			</AnimatePresence>
+			<DropdownMenuContent
+				className="z-50 min-w-[8rem] overflow-hidden rounded-md border border-[#2C2C2C] bg-[#1C1C1C] p-1"
+				align="start"
+			>
+				<DropdownMenuItem
+					className="flex cursor-pointer items-center gap-2 px-2 py-1.5 text-sm text-gray-300 hover:bg-[#2C2C2C] hover:text-gray-100"
+					onClick={() => handleCreateList()}
+				>
+					<ListTodo className="h-4 w-4" />
+					New List in Quick Access
+				</DropdownMenuItem>
+				<DropdownMenuItem
+					className="flex cursor-pointer items-center gap-2 px-2 py-1.5 text-sm text-gray-300 hover:bg-[#2C2C2C] hover:text-gray-100"
+					onClick={handleCreateCategory}
+				>
+					<FolderPlus className="h-4 w-4" />
+					New Category
+				</DropdownMenuItem>
+			</DropdownMenuContent>
 		</DropdownMenu>
 	)
 }

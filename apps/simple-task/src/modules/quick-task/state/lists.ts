@@ -14,7 +14,8 @@ export interface List {
 	name: string
 	emoji?: string
 	categoryId?: string
-	tasks: unknown[]
+	createdAt: string
+	tasks?: any[] // TODO: Add proper Task type
 }
 
 interface ListsState {

@@ -37,6 +37,7 @@ import type { MockUser } from 'config'
 import { useActiveItemColor } from '../helpers/randomize-color'
 import { ListTodo } from 'lucide-react'
 import { UserMenu } from './user-menu'
+import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts'
 
 type NavItem = {
 	id: string
@@ -102,6 +103,12 @@ export function Sidebar({
 	const { lists, categories, addCategory } = useListsStore()
 	const user = mockUser as MockUser
 
+	useKeyboardShortcuts(() => {
+		if (!isLocked) {
+			onToggleLock()
+		}
+	})
+
 	useEffect(() => {
 		setMounted(true)
 	}, [])
@@ -164,46 +171,6 @@ export function Sidebar({
 				className
 			)}
 		>
-			<div className="flex items-center justify-between p-4">
-				<div className="flex items-center gap-2">
-					<Image
-						src={user.profile.avatar}
-						alt={user.profile.firstName}
-						width={32}
-						height={32}
-						className="rounded-full"
-					/>
-					<div className="flex flex-col">
-						<span className="text-sm font-medium">
-							{user.profile.firstName} {user.profile.lastName}
-						</span>
-						<span className="text-xs text-muted-foreground">
-							{user.email}
-						</span>
-					</div>
-				</div>
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger asChild>
-							<Button
-								variant="ghost"
-								size="icon"
-								onClick={onToggleLock}
-							>
-								{isLocked ? (
-									<Pin className="h-4 w-4" />
-								) : (
-									<PinOff className="h-4 w-4" />
-								)}
-							</Button>
-						</TooltipTrigger>
-						<TooltipContent>
-							{isLocked ? 'Unlock sidebar' : 'Lock sidebar'}
-						</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			</div>
-
 			<div className="flex flex-col flex-1 overflow-y-auto">
 				<div className="p-2">
 					<CreateNewDropdown />
