@@ -1,13 +1,14 @@
 "use client"
 
 import React, { useState, useRef, FormEvent, useEffect } from "react"
-import { Plus } from "lucide-react"
+import { Plus, Pencil, Trash2, Check, X } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import data from "@emoji-mart/data"
 import Picker from "@emoji-mart/react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useListsStore, List } from "@/src/modules/quick-task/state/lists"
 
 function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
@@ -36,20 +37,31 @@ export function CreateNewDropdown({ className }: CreateNewDropdownProps) {
 	const [selectedEmoji, setSelectedEmoji] = useState("📝")
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 	const [isOpen, setIsOpen] = useState(false)
+	const [editingList, setEditingList] = useState<List | null>(null)
+	const [editedName, setEditedName] = useState("")
 	const inputRef = useRef<HTMLInputElement>(null)
+	
+	const { lists, addList, removeList, updateList } = useListsStore()
 
 	useEffect(() => {
-		if (isOpen && inputRef.current) {
+		if (isOpen && inputRef.current && !editingList) {
 			inputRef.current.focus()
 		}
-	}, [isOpen])
+	}, [isOpen, editingList])
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Escape" && showEmojiPicker) {
-				e.preventDefault()
-				setShowEmojiPicker(false)
-				return
+			if (e.key === "Escape") {
+				if (showEmojiPicker) {
+					e.preventDefault()
+					setShowEmojiPicker(false)
+					return
+				}
+				if (editingList) {
+					e.preventDefault()
+					setEditingList(null)
+					return
+				}
 			}
 
 			if ((e.metaKey || e.ctrlKey) && e.key === "n") {
@@ -60,29 +72,48 @@ export function CreateNewDropdown({ className }: CreateNewDropdownProps) {
 
 		window.addEventListener("keydown", handleKeyDown)
 		return () => window.removeEventListener("keydown", handleKeyDown)
-	}, [isOpen, showEmojiPicker])
+	}, [isOpen, showEmojiPicker, editingList])
 
 	const handleCreateList = async (e: FormEvent) => {
 		e.preventDefault()
 		if (!newListName.trim()) return
 
 		try {
-			const response = await fetch("/api/lists", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					name: newListName,
-					emoji: selectedEmoji
-				}),
-			})
-
-			if (!response.ok) throw new Error("Failed to create list")
-
+			const newList: List = {
+				id: crypto.randomUUID(),
+				name: newListName.trim(),
+				emoji: selectedEmoji,
+				tasks: []
+			}
+			
+			addList(newList)
 			setNewListName("")
 			setSelectedEmoji("📝")
 			setIsOpen(false)
 		} catch (error) {
 			console.error("Error creating list:", error)
+		}
+	}
+
+	const handleUpdateList = async (list: List) => {
+		if (!editedName.trim() || editedName === list.name) {
+			setEditingList(null)
+			return
+		}
+
+		try {
+			updateList(list.id, { name: editedName })
+			setEditingList(null)
+		} catch (error) {
+			console.error("Error updating list:", error)
+		}
+	}
+
+	const handleDeleteList = async (id: string) => {
+		try {
+			removeList(id)
+		} catch (error) {
+			console.error("Error deleting list:", error)
 		}
 	}
 
@@ -178,6 +209,73 @@ export function CreateNewDropdown({ className }: CreateNewDropdownProps) {
 									</button>
 								</div>
 							</form>
+
+							{lists.length > 0 && (
+								<>
+									<div className="h-px bg-[#1C1C1C] my-2" />
+									<div className="space-y-1">
+										{lists.map((list) => (
+											<div
+												key={list.id}
+												className={cn(
+													"flex items-center gap-2 px-2 py-1.5 rounded-sm",
+													"hover:bg-[#1C1C1C] group/item",
+													"transition-colors duration-150"
+												)}
+											>
+												<span className="text-base">{list.emoji || "📝"}</span>
+												{editingList?.id === list.id ? (
+													<div className="flex-1 flex items-center gap-1">
+														<input
+															type="text"
+															value={editedName}
+															onChange={(e) => setEditedName(e.target.value)}
+															className={cn(
+																"flex-1 bg-transparent text-sm text-white",
+																"focus:outline-none"
+															)}
+															autoFocus
+														/>
+														<button
+															onClick={() => handleUpdateList(list)}
+															className="p-1 hover:text-green-500 transition-colors"
+														>
+															<Check className="w-3.5 h-3.5" />
+														</button>
+														<button
+															onClick={() => setEditingList(null)}
+															className="p-1 hover:text-red-500 transition-colors"
+														>
+															<X className="w-3.5 h-3.5" />
+														</button>
+													</div>
+												) : (
+													<>
+														<span className="flex-1 text-sm text-gray-300">{list.name}</span>
+														<div className="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
+															<button
+																onClick={() => {
+																	setEditingList(list)
+																	setEditedName(list.name)
+																}}
+																className="p-1 text-gray-400 hover:text-gray-300 transition-colors"
+															>
+																<Pencil className="w-3.5 h-3.5" />
+															</button>
+															<button
+																onClick={() => handleDeleteList(list.id)}
+																className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+															>
+																<Trash2 className="w-3.5 h-3.5" />
+															</button>
+														</div>
+													</>
+												)}
+											</div>
+										))}
+									</div>
+								</>
+							)}
 						</motion.div>
 					</DropdownMenuContent>
 				)}
