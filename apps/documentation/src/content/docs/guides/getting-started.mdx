@@ -1,0 +1,222 @@
+# Getting Started
+
+## Overview
+
+This is a monorepo-based Next.js application with a custom-rolled architecture focusing on modularity and separation of concerns. The project uses modern tools and practices to ensure maintainability and scalability.
+
+## Prerequisites
+
+- Node.js 18.x or higher
+- PNPM package manager
+- SQLite (for development)
+- Git
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone [your-repo-url]
+cd ryoa-mono-docs
+```
+
+2. Install dependencies:
+```bash
+pnpm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file with your configuration:
+```env
+JWT_SECRET=your-secure-secret-here
+DATABASE_URL=file:./sqlite.db
+```
+
+4. Initialize the database:
+```bash
+pnpm db:push
+```
+
+## Project Structure
+
+```
+ryoa-mono-docs/
+├── apps/
+│   ├── ryoa/                 # Main application
+│   └── documentation/        # Documentation site
+├── packages/                 # Shared packages
+│   ├── eslint-config/       # ESLint configuration
+│   └── typescript-config/   # TypeScript configuration
+└── package.json
+```
+
+### Key Directories
+
+- `src/shared`: Shared logic, components, hooks, utilities
+- `src/components`: Single-use components
+- `src/app`: Page rendering and routing
+- `src/views`: UI composition for pages
+- `src/modules`: Feature-specific code
+- `src/server`: Server-side code and database
+
+## Architecture
+
+### Module-based Structure
+
+Each feature is encapsulated in its own module under `src/modules/`:
+
+```
+src/modules/[feature]/
+├── api/
+│   ├── queries/
+│   └── mutations/
+├── components/
+├── hooks/
+├── models/
+└── state/
+```
+
+### Database Layer
+
+The application uses Drizzle ORM with SQLite:
+
+```typescript
+import { drizzle } from 'drizzle-orm/better-sqlite3'
+import Database from 'better-sqlite3'
+import * as schema from './schema'
+
+const sqlite = new Database('sqlite.db')
+export const db = drizzle(sqlite, { schema })
+```
+
+### Authentication
+
+Built-in authentication system using:
+- JWT tokens
+- HTTP-only cookies
+- Argon2 password hashing
+
+See the [Authentication Guide](./authentication.mdx) for details.
+
+## Development Workflow
+
+1. Start the development server:
+```bash
+pnpm dev
+```
+
+2. Create a new feature module:
+```
+src/modules/new-feature/
+├── api/
+│   ├── queries/
+│   │   └── index.ts
+│   └── mutations/
+│       └── index.ts
+├── components/
+│   └── index.ts
+├── hooks/
+│   └── index.ts
+├── models/
+│   └── index.ts
+└── state/
+    └── index.ts
+```
+
+3. Add your feature to the application:
+```typescript
+// src/app/[feature]/page.tsx
+import { YourFeatureView } from '@/views/your-feature'
+
+export default function FeaturePage() {
+  return <YourFeatureView />
+}
+```
+
+## Best Practices
+
+### Code Organization
+
+1. **Module Independence**
+   - Each module should be self-contained
+   - Minimize cross-module dependencies
+   - Use shared utilities for common functionality
+
+2. **Type Safety**
+   - Use TypeScript strictly
+   - Define types/schemas with Zod
+   - Validate data at runtime
+
+3. **State Management**
+   - Use Zustand for global state
+   - Keep state close to where it's used
+   - Prefer server state when possible
+
+### Performance
+
+1. **Server Components**
+   - Use React Server Components by default
+   - Client components only when necessary
+   - Implement proper loading states
+
+2. **Database Queries**
+   - Use prepared statements
+   - Implement proper indexes
+   - Keep queries efficient
+
+### Security
+
+1. **Authentication**
+   - Use HTTP-only cookies
+   - Implement proper session management
+   - Follow security best practices
+
+2. **Data Validation**
+   - Validate all inputs
+   - Sanitize user data
+   - Use proper error handling
+
+## Testing
+
+1. Run tests:
+```bash
+pnpm test
+```
+
+2. Run linting:
+```bash
+pnpm lint
+```
+
+## Deployment
+
+1. Build the application:
+```bash
+pnpm build
+```
+
+2. Start in production:
+```bash
+pnpm start
+```
+
+## Contributing
+
+1. Create a new branch:
+```bash
+git checkout -b feature/your-feature
+```
+
+2. Make your changes following the project structure
+
+3. Submit a pull request
+
+## Additional Resources
+
+- [Authentication Guide](./authentication.mdx)
+- [Database Guide](./database.mdx)
+- [API Documentation](./api.mdx)
+- [Component Library](./components.mdx) 

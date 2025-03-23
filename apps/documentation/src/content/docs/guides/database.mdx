@@ -1,0 +1,323 @@
+# Database Guide
+
+## Overview
+
+The application uses SQLite with Drizzle ORM for data persistence. This setup provides:
+- Type-safe database operations
+- Schema migrations
+- Prepared statements
+- Query building
+
+## Database Setup
+
+The database is initialized in `src/server/db/index.ts`:
+
+```typescript
+import { drizzle } from "drizzle-orm/better-sqlite3"
+import Database from "better-sqlite3"
+import * as schema from './schema'
+
+// Ensure server-side only
+if (typeof window !== "undefined") {
+  throw new Error("Database can only be accessed on the server")
+}
+
+declare global {
+  // eslint-disable-next-line no-var
+  var sqlite: ReturnType<typeof Database> | undefined
+  // eslint-disable-next-line no-var
+  var db: ReturnType<typeof drizzle<typeof schema>> | undefined
+}
+
+const dbPath = join(process.cwd(), "sqlite.db")
+let db: ReturnType<typeof drizzle<typeof schema>>
+
+// Production uses a single connection
+if (process.env.NODE_ENV === "production") {
+  if (!global.sqlite) {
+    global.sqlite = new Database(dbPath)
+    global.db = drizzle(global.sqlite, { schema })
+  }
+  db = global.db!
+} else {
+  // Development creates new connections
+  const sqlite = new Database(dbPath)
+  db = drizzle(sqlite, { schema })
+}
+
+export { db }
+```
+
+## Schema Definition
+
+The schema is defined in `src/server/db/schema/index.ts`:
+
+```typescript
+import { sql } from 'drizzle-orm'
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { createId } from '@paralleldrive/cuid2'
+
+// Example table definitions
+export const users = sqliteTable('users', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  email: text('email').notNull().unique(),
+  hashedPassword: text('hashed_password'),
+  emailVerified: integer('email_verified', { mode: 'boolean' }).default(false),
+  role: text('role').notNull().default('user'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
+
+// Type inference
+export type User = typeof users.$inferSelect
+export type NewUser = typeof users.$inferInsert
+```
+
+## Usage
+
+### Basic Operations
+
+1. **Querying Data**
+
+```typescript
+// Find a single record
+const user = await db.query.users.findFirst({
+  where: eq(users.email, email)
+})
+
+// Find multiple records
+const activeUsers = await db.query.users.findMany({
+  where: eq(users.emailVerified, true)
+})
+
+// Select specific columns
+const userEmails = await db.query.users.findMany({
+  columns: { email: true }
+})
+```
+
+2. **Inserting Data**
+
+```typescript
+// Single insert
+const user = await db.insert(users).values({
+  email,
+  hashedPassword,
+}).returning()
+
+// Bulk insert
+const newUsers = await db.insert(users).values([
+  { email: 'user1@example.com' },
+  { email: 'user2@example.com' },
+]).returning()
+```
+
+3. **Updating Data**
+
+```typescript
+// Update single record
+await db.update(users)
+  .set({ emailVerified: true })
+  .where(eq(users.id, userId))
+
+// Update multiple records
+await db.update(users)
+  .set({ role: 'member' })
+  .where(eq(users.emailVerified, true))
+```
+
+4. **Deleting Data**
+
+```typescript
+// Delete single record
+await db.delete(users)
+  .where(eq(users.id, userId))
+
+// Delete multiple records
+await db.delete(users)
+  .where(eq(users.emailVerified, false))
+```
+
+### Relations
+
+1. **Defining Relations**
+
+```typescript
+export const posts = sqliteTable('posts', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  userId: text('user_id').notNull().references(() => users.id),
+  title: text('title').notNull(),
+  content: text('content'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
+
+// Types
+export type Post = typeof posts.$inferSelect
+export type NewPost = typeof posts.$inferInsert
+```
+
+2. **Querying Relations**
+
+```typescript
+// Get user with their posts
+const userWithPosts = await db.query.users.findFirst({
+  with: {
+    posts: true
+  },
+  where: eq(users.id, userId)
+})
+
+// Get posts with their authors
+const postsWithAuthors = await db.query.posts.findMany({
+  with: {
+    user: true
+  }
+})
+```
+
+### Prepared Statements
+
+For better performance, use prepared statements for frequently executed queries:
+
+```typescript
+export const preparedStatements = {
+  getUserByEmail: db.query.users.findFirst().prepare(),
+  getUserById: db.query.users.findFirst().prepare(),
+  getSessionById: db.query.sessions.findFirst().prepare(),
+}
+
+// Usage
+const user = await preparedStatements.getUserByEmail.execute({
+  where: eq(users.email, email)
+})
+```
+
+## Migrations
+
+1. **Create Migration**
+
+```bash
+pnpm drizzle-kit generate:sqlite
+```
+
+2. **Apply Migration**
+
+```bash
+pnpm drizzle-kit push:sqlite
+```
+
+## Best Practices
+
+1. **Type Safety**
+   - Always use type inference
+   - Define proper relationships
+   - Validate data before insertion
+
+2. **Performance**
+   - Use prepared statements for repeated queries
+   - Index frequently queried columns
+   - Minimize the number of queries
+
+3. **Security**
+   - Never trust user input
+   - Use parameterized queries
+   - Implement proper access control
+
+4. **Error Handling**
+
+```typescript
+try {
+  await db.insert(users).values({
+    email,
+    hashedPassword,
+  })
+} catch (error) {
+  if (error instanceof Error) {
+    // Handle specific error types
+    console.error('Database error:', error.message)
+  }
+  throw error
+}
+```
+
+## Common Patterns
+
+1. **Soft Delete**
+
+```typescript
+export const users = sqliteTable('users', {
+  // ... other fields
+  deletedAt: integer('deleted_at', { mode: 'timestamp' }),
+})
+
+// Soft delete
+await db.update(users)
+  .set({ deletedAt: new Date() })
+  .where(eq(users.id, userId))
+
+// Query excluding soft deleted
+const activeUsers = await db.query.users.findMany({
+  where: isNull(users.deletedAt)
+})
+```
+
+2. **Pagination**
+
+```typescript
+const PAGE_SIZE = 10
+
+const posts = await db.query.posts.findMany({
+  limit: PAGE_SIZE,
+  offset: (page - 1) * PAGE_SIZE,
+  orderBy: desc(posts.createdAt)
+})
+```
+
+3. **Search**
+
+```typescript
+const searchUsers = await db.query.users.findMany({
+  where: or(
+    like(users.email, `%${searchTerm}%`),
+    like(users.name, `%${searchTerm}%`)
+  )
+})
+```
+
+## Testing
+
+1. **Setup Test Database**
+
+```typescript
+import { drizzle } from 'drizzle-orm/better-sqlite3'
+import Database from 'better-sqlite3'
+import * as schema from './schema'
+
+export function createTestDb() {
+  const sqlite = new Database(':memory:')
+  return drizzle(sqlite, { schema })
+}
+```
+
+2. **Example Test**
+
+```typescript
+import { createTestDb } from './test-utils'
+
+describe('User Repository', () => {
+  let db: ReturnType<typeof createTestDb>
+
+  beforeEach(() => {
+    db = createTestDb()
+  })
+
+  it('should create a user', async () => {
+    const user = await db.insert(users).values({
+      email: 'test@example.com',
+    }).returning()
+
+    expect(user).toBeDefined()
+    expect(user.email).toBe('test@example.com')
+  })
+})
+``` 

@@ -3,7 +3,7 @@
 import type React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { Search, Pin, PinOff } from 'lucide-react'
+import { Search, Pin, PinOff, MoreVertical } from 'lucide-react'
 import {
 	InboxIcon,
 	TodayIcon,
@@ -17,11 +17,15 @@ import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
-	TooltipTrigger
+	TooltipTrigger,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
 } from 'ui'
 import { ThemeSwitcher } from '@/src/components/theme-switcher'
 import { SettingsMenu } from './settings-menu'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { CreateNewDropdown } from './create-new-dropdown'
 import { useSearch } from '../../quick-task/hooks/use-search'
 import { SearchResults } from './search-results'
@@ -30,6 +34,8 @@ import { useListsStore } from '../../quick-task/state/lists'
 import Image from 'next/image'
 import { mockUser } from 'config'
 import type { MockUser } from 'config'
+import { useActiveItemColor } from '../helpers/randomize-color'
+import { ListTodo } from 'lucide-react'
 
 type NavItem = {
 	id: string
@@ -37,6 +43,7 @@ type NavItem = {
 	label: string
 	color?: string
 	isHidden?: boolean
+	href?: string
 }
 
 const initialNavItems: NavItem[] = [
@@ -132,6 +139,10 @@ export function Sidebar({
 		setSearchQuery('')
 	}
 
+	const handleNewListCreated = (listId: string) => {
+		onItemClick(listId)
+	}
+
 	if (!mounted) {
 		return null // Return null on server-side and first render
 	}
@@ -191,10 +202,15 @@ export function Sidebar({
 						placeholder="Search..."
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
-						className="w-full rounded-md border bg-background px-9 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+						className={cn(
+							"w-full rounded-md border bg-background px-9 py-2 text-sm",
+							"transition-all duration-200",
+							"border-input/10",
+							"focus:outline-none focus:border-input/20 focus:ring-0"
+						)}
 					/>
 				</div>
-				<CreateNewDropdown />
+				<CreateNewDropdown onListCreated={handleNewListCreated} />
 			</div>
 
 			{searchQuery.trim() ? (
@@ -247,6 +263,15 @@ export function Sidebar({
 																			item.id
 																		)
 																	}
+																	colorVariant="rainbow"
+																	colorConfig={{
+																		opacity: 100,
+																		saturation: 70,
+																		lightness: 50,
+																		borderWidth: 4,
+																		glow: true,
+																		gradient: true
+																	}}
 																/>
 															</div>
 														)}
@@ -258,6 +283,50 @@ export function Sidebar({
 								</Droppable>
 							</DragDropContext>
 						</nav>
+
+						{lists.length > 0 && (
+							<motion.div
+								initial={{ opacity: 0, y: -20 }}
+								animate={{ opacity: 1, y: 0 }}
+								className="mt-6"
+							>
+								<h3 className="text-xs font-medium text-muted-foreground mb-2 px-3">
+									MY LISTS
+								</h3>
+								<nav className="space-y-1">
+									<AnimatePresence>
+										{lists.map((list) => (
+											<motion.div
+												key={list.id}
+												initial={{ opacity: 0, y: -10 }}
+												animate={{ opacity: 1, y: 0 }}
+												exit={{ opacity: 0, y: -10 }}
+											>
+												<NavItemComponent
+													item={{
+														id: list.id,
+														label: list.name,
+														icon: ListTodo,
+														href: `/lists/${list.id}`
+													}}
+													isActive={activeItem === list.id}
+													onClick={() => onItemClick(list.id)}
+													colorVariant="rainbow"
+													colorConfig={{
+														opacity: 100,
+														saturation: 70,
+														lightness: 50,
+														borderWidth: 4,
+														glow: true,
+														gradient: true
+													}}
+												/>
+											</motion.div>
+										))}
+									</AnimatePresence>
+								</nav>
+							</motion.div>
+						)}
 					</div>
 				</div>
 			)}
@@ -275,25 +344,75 @@ export function Sidebar({
 function NavItemComponent({
 	item,
 	isActive,
-	onClick
+	onClick,
+	colorVariant = 'random',
+	colorConfig = {
+		opacity: 100,
+		saturation: 80,
+		lightness: 60,
+		borderWidth: 4,
+		glow: true,
+		gradient: true
+	}
 }: {
 	item: NavItem
 	isActive: boolean
 	onClick: () => void
+	colorVariant?: 'random' | 'rainbow' | 'monochrome'
+	colorConfig?: {
+		opacity?: number
+		saturation?: number
+		lightness?: number
+		borderWidth?: 1 | 2 | 4 | 8
+		glow?: boolean
+		gradient?: boolean
+	}
 }) {
+	const activeColor = useActiveItemColor(item.id, colorVariant, colorConfig)
+
 	return (
-		<motion.button
-			whileTap={{ scale: 0.98 }}
-			onClick={onClick}
-			className={cn(
-				'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
-				'hover:bg-accent/10',
-				'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent',
-				isActive && 'bg-accent/10 text-accent'
-			)}
-		>
-			<item.icon className="h-4 w-4" />
-			<span>{item.label}</span>
-		</motion.button>
+		<div className="group relative">
+			<button
+				onClick={onClick}
+				className={cn(
+					"relative w-full text-left px-3 py-2 text-sm",
+					"transition-all duration-200",
+					"hover:bg-accent/10",
+					"focus:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+					isActive && [
+						"bg-accent/10",
+						"before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1",
+						"before:bg-gradient-to-b before:from-[hsl(var(--random-hue),80%,60%)] before:to-[hsl(calc(var(--random-hue)+30),80%,60%)]",
+						"before:shadow-[0_0_10px_hsl(var(--random-hue),80%,60%)]",
+						activeColor
+					]
+				)}
+				style={isActive ? { '--random-hue': `${Math.random() * 360}` } as React.CSSProperties : undefined}
+			>
+				<span>{item.label}</span>
+			</button>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="opacity-0 group-hover:opacity-100 transition-opacity absolute right-2 top-1/2 -translate-y-1/2"
+					>
+						<MoreVertical className="h-4 w-4" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end">
+					<DropdownMenuItem>
+						Edit list
+					</DropdownMenuItem>
+					<DropdownMenuItem>
+						Share list
+					</DropdownMenuItem>
+					<DropdownMenuItem className="text-destructive">
+						Delete list
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</div>
 	)
 }

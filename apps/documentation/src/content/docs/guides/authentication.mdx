@@ -1,0 +1,242 @@
+# Authentication Guide
+
+## Overview
+
+The application uses a custom authentication system built with:
+- JWT tokens for session management
+- SQLite database (via Drizzle ORM) for data storage
+- Argon2 for password hashing
+- Next.js App Router cookie handling
+
+## Database Schema
+
+The authentication system uses the following tables:
+
+### Users Table
+```typescript
+users = sqliteTable('users', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  email: text('email').notNull().unique(),
+  hashedPassword: text('hashed_password'),
+  emailVerified: integer('email_verified', { mode: 'boolean' }).default(false),
+  role: text('role').notNull().default('user'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
+```
+
+### Sessions Table
+```typescript
+sessions = sqliteTable('sessions', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
+```
+
+### OAuth Accounts Table
+```typescript
+oauthAccounts = sqliteTable('oauth_accounts', {
+  id: text('id').primaryKey().$defaultFn(() => createId()),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  provider: text('provider').notNull(),
+  providerAccountId: text('provider_account_id').notNull(),
+  refreshToken: text('refresh_token'),
+  accessToken: text('access_token'),
+  expiresAt: integer('expires_at', { mode: 'timestamp' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+})
+```
+
+## Usage
+
+### Setting Up Environment Variables
+
+Create a `.env` file in your project root with:
+
+```env
+JWT_SECRET=your-secure-secret-here
+```
+
+### Basic Authentication Flow
+
+1. **User Registration**
+
+```typescript
+import { hashPassword } from '@/server/auth/service'
+
+// Create a new user
+const hashedPassword = await hashPassword(password)
+const user = await db.insert(users).values({
+  email,
+  hashedPassword,
+}).returning()
+```
+
+2. **User Login**
+
+```typescript
+import { verifyPassword, createSession } from '@/server/auth/service'
+
+// Verify password and create session
+const isValid = await verifyPassword(user.hashedPassword, password)
+if (isValid) {
+  const session = await createSession(user.id)
+}
+```
+
+3. **Getting Current User**
+
+```typescript
+import { getCurrentUser } from '@/server/auth/service'
+
+// In your server component or route handler
+const user = await getCurrentUser()
+if (!user) {
+  // Handle unauthenticated state
+}
+```
+
+4. **Sign Out**
+
+```typescript
+import { signOut } from '@/server/auth/service'
+
+// Sign out the user
+await signOut()
+```
+
+### Protected Routes
+
+Create a middleware to protect your routes:
+
+```typescript
+// middleware.ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { getSession } from '@/server/auth/service'
+
+export async function middleware(request: NextRequest) {
+  const session = await getSession()
+  
+  if (!session) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+  
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: '/protected/:path*'
+}
+```
+
+### Server Components
+
+In your server components, you can directly use the authentication service:
+
+```typescript
+import { getCurrentUser } from '@/server/auth/service'
+
+export default async function ProtectedPage() {
+  const user = await getCurrentUser()
+  
+  if (!user) {
+    redirect('/login')
+  }
+  
+  return (
+    <div>
+      <h1>Welcome {user.email}</h1>
+    </div>
+  )
+}
+```
+
+### Client Components
+
+For client components, you'll need to create API endpoints:
+
+```typescript
+// app/api/auth/login/route.ts
+import { createSession, verifyPassword } from '@/server/auth/service'
+import { db } from '@/server/db'
+import { users } from '@/server/db/schema'
+import { eq } from 'drizzle-orm'
+
+export async function POST(request: Request) {
+  const { email, password } = await request.json()
+  
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email)
+  })
+  
+  if (!user) {
+    return new Response('Invalid credentials', { status: 401 })
+  }
+  
+  const isValid = await verifyPassword(user.hashedPassword, password)
+  if (!isValid) {
+    return new Response('Invalid credentials', { status: 401 })
+  }
+  
+  await createSession(user.id)
+  return new Response('Logged in successfully')
+}
+```
+
+## Security Considerations
+
+1. **Password Storage**
+   - Passwords are hashed using Argon2
+   - Never store plain-text passwords
+   - Use environment variables for sensitive data
+
+2. **Session Management**
+   - Sessions expire after 30 days
+   - JWT tokens are stored in HTTP-only cookies
+   - Sessions are invalidated on sign out
+
+3. **CSRF Protection**
+   - Cookies use SameSite=Lax
+   - Secure flag is enabled in production
+
+4. **Rate Limiting**
+   - Implement rate limiting for authentication endpoints
+   - Use exponential backoff for failed attempts
+
+## Error Handling
+
+The authentication service throws errors in these cases:
+
+- Missing JWT_SECRET environment variable
+- Failed session creation
+- Invalid JWT token
+- Expired session
+- Database errors
+
+Handle these errors appropriately in your application:
+
+```typescript
+try {
+  await createSession(userId)
+} catch (error) {
+  if (error instanceof Error) {
+    console.error('Authentication error:', error.message)
+  }
+  // Handle error appropriately
+}
+```
+
+## OAuth Integration
+
+The schema supports OAuth authentication. To implement OAuth:
+
+1. Add provider configuration
+2. Create OAuth routes
+3. Link OAuth accounts to users
+4. Handle OAuth callbacks
+
+Example OAuth implementation will be covered in a separate guide. 

@@ -68,6 +68,7 @@ body {
 		--destructive: 0 62.8% 30.6%;
 		--destructive-foreground: 0 0% 98%;
 		--border: 0 0% 14.9%;
+		--border-hover: 0 0% 20%;
 		--input: 0 0% 14.9%;
 		--ring: 0 0% 83.1%;
 		--chart-1: 220 70% 50%;
@@ -93,4 +94,15 @@ body {
 	body {
 		@apply bg-background text-foreground;
 	}
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+.focus\:border-primary:focus,
+.focus\:border-primary:active,
+.focus\:border-primary:hover {
+	transition: border-color 1s ease-in-out;
+	border-color: hsl(var(--border-hover))!important;
 }
