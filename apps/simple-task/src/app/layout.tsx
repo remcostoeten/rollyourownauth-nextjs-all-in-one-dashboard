@@ -1,8 +1,9 @@
-import { ThemeProvider } from '@/src/components/theme-provider'
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../styles/app.css'
 import { TooltipProvider } from '@radix-ui/react-tooltip'
+import { ThemeProvider } from '../components/theme-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 

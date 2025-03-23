@@ -1,6 +1,6 @@
 import { LoaderCircleIcon, type LucideProps } from 'lucide-react'
 import { cn } from 'helpers'
-import { Center } from '@shared/components/common/center'
+import { Center } from '@/shared/components/common/center'
 import IsFullScreen from './is-full-screen'
 
 export type SpinnerProps = LucideProps & {

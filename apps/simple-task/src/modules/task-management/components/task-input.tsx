@@ -5,7 +5,7 @@ import { useRef, useEffect } from 'react'
 import { Plus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Kbd } from 'ui'
-import { TextEffect } from '@/src/shared/components/effects'
+import { TextEffect } from '@/shared/components/effects'
 
 interface TaskInputProps {
 	value: string

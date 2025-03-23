@@ -1,8 +1,8 @@
 'use client'
 import { MoreHorizontal } from 'lucide-react'
 import type { Task } from '../types/task'
-import { Checkbox } from '@/src/shared/components/ui/checkbox'
-import { cn } from '@/src/shared/helpers/cn'
+import { Checkbox } from '@/shared/components/ui/checkbox'
+import { cn } from '@/shared/helpers/cn'
 
 interface TaskItemProps {
 	task: Task

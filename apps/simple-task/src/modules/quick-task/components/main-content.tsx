@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react'
 import { Search } from './search-input'
 import { TaskList } from './task-list'
 import { useListsStore } from '../state/lists'
-import { AddTask } from '@/src/modules/task-management/components/add-task'
+import { AddTask } from '@/modules/task-management/components/add-task'
 const TaskDetail = lazy(() => import('./task-detail'))
 
 interface MainContentProps {

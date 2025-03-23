@@ -1,5 +1,5 @@
 import type { LucideProps } from 'lucide-react'
-import { Center } from '@shared/components/common/center'
+import { Center } from '@/shared/components/common/center'
 import IsFullScreen from './is-full-screen'
 
 export type BarsProps = LucideProps & {

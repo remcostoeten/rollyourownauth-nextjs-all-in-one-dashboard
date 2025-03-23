@@ -1,4 +1,4 @@
-import { EmptyState } from '@/src/shared/components/common'
+import { EmptyState } from '@/shared/components/common'
 import type { Task } from '../types/task'
 import { TaskItem } from './task-item'
 import { FileText, Link, Files } from 'lucide-react'

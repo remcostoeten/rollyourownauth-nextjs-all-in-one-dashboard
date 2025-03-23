@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { MainContent, Sidebar, TaskDetail } from '@/src/modules/quick-task'
-import type { Task } from '@/src/modules/quick-task/models/z.task'
+import { MainContent, Sidebar, TaskDetail } from '@/modules/quick-task'
+import type { Task } from '@/modules/quick-task/models/z.task'
 
 export function HomeView() {
 	const [isSidebarLocked, setIsSidebarLocked] = useState(true)

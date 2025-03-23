@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Settings } from 'lucide-react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from 'ui'
-import { ShortcutRecorder } from '@/src/modules/sidebar/components/shortcut-recorder'
+import { ShortcutRecorder } from '@/modules/sidebar/components/shortcut-recorder'
 import { useSettingsStore } from '../../quick-task/state/settings'
-import { Button } from '@/src/shared/components/ui/button'
+import { Button } from '@/shared/components/ui/button'
 
 export function SettingsMenu() {
 	const [isRecording, setIsRecording] = React.useState(false)
