@@ -21,11 +21,11 @@ export function UserMenu() {
           <button 
             className={cn(
               "flex items-center gap-2 w-full p-2 rounded-md",
-              "hover:bg-[#1C1C1C] transition-colors duration-150",
+              "hover:bg-accent/50 transition-colors duration-150",
               "focus:outline-none"
             )}
           >
-            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#2A2A2A]">
+            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-border">
               <Image
                 src={mockUser.profile.avatar}
                 alt={`${mockUser.profile.firstName}'s avatar`}
@@ -34,33 +34,33 @@ export function UserMenu() {
               />
             </div>
             <div className="flex-1 text-left">
-              <p className="text-sm font-medium text-gray-200">
+              <p className="text-sm font-medium text-foreground">
                 {mockUser.profile.firstName} {mockUser.profile.lastName}
               </p>
-              <p className="text-xs text-gray-500">{mockUser.email}</p>
+              <p className="text-xs text-muted-foreground">{mockUser.email}</p>
             </div>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent 
-          className="w-56 bg-[#0A0A0A]/95 backdrop-blur-sm border-[#1C1C1C]"
+          className="w-56 bg-background/95 backdrop-blur-sm border-border"
           align="end"
           sideOffset={8}
         >
-          <DropdownMenuLabel className="text-gray-400">
+          <DropdownMenuLabel className="text-muted-foreground">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium text-gray-200">
+              <p className="text-sm font-medium text-foreground">
                 {mockUser.profile.firstName} {mockUser.profile.lastName}
               </p>
-              <p className="text-xs font-normal text-gray-500">{mockUser.email}</p>
+              <p className="text-xs font-normal text-muted-foreground">{mockUser.email}</p>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuSeparator className="bg-[#1C1C1C]" />
-          <DropdownMenuItem className="gap-2 text-gray-300 focus:text-white focus:bg-[#1C1C1C]">
+          <DropdownMenuSeparator className="bg-border" />
+          <DropdownMenuItem className="gap-2 text-foreground focus:text-foreground focus:bg-accent">
             <User className="w-4 h-4" />
             Profile
           </DropdownMenuItem>
           <DropdownMenuItem 
-            className="gap-2 text-gray-300 focus:text-white focus:bg-[#1C1C1C]"
+            className="gap-2 text-foreground focus:text-foreground focus:bg-accent"
             onClick={() => {
               setIsOpen(false)
               setShowSettings(true)
@@ -70,7 +70,7 @@ export function UserMenu() {
             Settings
           </DropdownMenuItem>
           <DropdownMenuItem 
-            className="gap-2 text-gray-300 focus:text-white focus:bg-[#1C1C1C]"
+            className="gap-2 text-foreground focus:text-foreground focus:bg-accent"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
             {theme === "dark" ? (
@@ -80,8 +80,8 @@ export function UserMenu() {
             )}
             Switch Theme
           </DropdownMenuItem>
-          <DropdownMenuSeparator className="bg-[#1C1C1C]" />
-          <DropdownMenuItem className="gap-2 text-red-500 focus:text-red-400 focus:bg-[#1C1C1C]">
+          <DropdownMenuSeparator className="bg-border" />
+          <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive focus:bg-accent">
             <LogOut className="w-4 h-4" />
             Log Out
           </DropdownMenuItem>

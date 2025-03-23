@@ -123,14 +123,14 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           className={cn(
                             "p-4 rounded-lg border text-left transition-all",
                             theme === "dark"
-                              ? "border-white/20 bg-[#1C1C1C] ring-2 ring-white/20"
-                              : "border-[#2A2A2A] bg-[#1C1C1C] hover:border-white/20"
+                              ? "border-border bg-background ring-2 ring-border"
+                              : "border-border bg-background hover:border-border-hover"
                           )}
                         >
                           <div className="space-y-2">
                             <div className="w-8 h-8 rounded-full bg-[#0A0A0A] border border-[#2A2A2A]" />
-                            <div className="text-sm font-medium text-gray-200">Dark</div>
-                            <div className="text-xs text-gray-400">Dark mode for night owls</div>
+                            <div className="text-sm font-medium text-foreground">Dark</div>
+                            <div className="text-xs text-muted-foreground">Dark mode for night owls</div>
                           </div>
                         </button>
                         <button
@@ -138,14 +138,14 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                           className={cn(
                             "p-4 rounded-lg border text-left transition-all",
                             theme === "light"
-                              ? "border-black/20 bg-white ring-2 ring-black/20"
-                              : "border-[#2A2A2A] bg-[#1C1C1C] hover:border-white/20"
+                              ? "border-border bg-background ring-2 ring-border"
+                              : "border-border bg-background hover:border-border-hover"
                           )}
                         >
                           <div className="space-y-2">
-                            <div className="w-8 h-8 rounded-full bg-white border border-black/10" />
-                            <div className="text-sm font-medium text-gray-200">Light</div>
-                            <div className="text-xs text-gray-400">Light and clean</div>
+                            <div className="w-8 h-8 rounded-full bg-background border border-border" />
+                            <div className="text-sm font-medium text-foreground">Light</div>
+                            <div className="text-xs text-muted-foreground">Light and clean</div>
                           </div>
                         </button>
                       </div>

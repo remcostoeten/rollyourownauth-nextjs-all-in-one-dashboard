@@ -34,7 +34,7 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
 				>
 					{value === color && (
 						<Check
-							className="h-full w-full text-white 
+							className="h-full w-full text-primary-foreground 
                          stroke-[4] absolute inset-0 m-auto"
 							size={14}
 						/>
